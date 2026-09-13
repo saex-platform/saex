@@ -100,3 +100,15 @@ Entry source ayrı entry-policy.json/generated header’a bağlıdır. İlk imm3
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 Public CI ilk turda Linux bootstrap tür dönüşümü ve Windows fixture cwd metin eşitliğinde durdu. Açık uint32_t fallback ve OS dizin kimliğiyle doğrulayan fixture uygulanır; eşdeğer yol/farklı dizin/yanlış token regresyonları vardır. Bu düzeltmeler N2 unpack/bootstrap veya N3 kapısını kapatmaz; koşu sonuçları yayın raporunda kaydedilir.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[0.1.12 proxy dönüş kesiti](d1-proxy-return.md) N2’de girişten sonraki tek CALL/geri dönüş yolunu sınar. Entry restorasyonu ve GetStartupInfoA IAT değişimi ayrı doğrulanır; eski entry durağının üstüne otomatik yürütme eklenmez. Sonraki iş bu IAT yönlendirmesinin çağrılma zamanı, unpack ve dinamik DLL yolu; ardından loader lock dışındaki gerçek SAEX bootstrap çağrısıdır. N2/N3 ve D1 ürün kapıları açık kalır.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[0.1.13 startup-call](d1-startup-call.md), N2’nin entry sonrası proxy çağrı zamanını ölçer. Mevcut proxy-return ikinci durakta bitmeye devam eder; yeni mod üçüncü hitte wrapper gövdesini çalıştırmadan kapatır. Sonraki iş wrapper’ın dinamik codec/ASI yükleme yolu ve loader lock dışında gerçek SAEX bootstrap çağrısıdır. Dört anchor örneği tüm unpack/motor durumunu kanıtlamaz; N2 ve N3–N7 açık kalır.

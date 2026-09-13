@@ -111,3 +111,15 @@ executionPolicySourceDigest ayrı entry JSON’u; policySourceDigest eski mappin
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 Own launch-context fixture artık cwd için raw yol metni yerine Windows volume/file ID eşitliğini sınar; kısa/uzun ad farklılığı yanlış ret üretmemelidir. Farklı mevcut klasör ve yanlış environment token negatifleri korunur. Production CLI, directory handle pin ve explicit snapshot davranışı değişmez; launcher uygulanmış sayılmaz.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+Yeni açık geliştirme komutu --observe-proxy-return <exe> <absolute-cwd>, [ayrı compiled proxy execution policy](../development/d1-proxy-return.md) ve önceki 23 retained pin ile çalışır. Relative cwd/unknown exe child öncesi ret verir; arbitrary PID/RVA veya indirilen policy girişi yoktur. Exit 3 yalnız proxy_return_verified ve confirmed exit, 1 eksik/ret, 2 kullanımdır. Production launcher veya otomatik staging eklenmedi.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+Yeni --observe-startup-call <exe> <absolute-cwd>, [compiled startup execution policy](../development/d1-startup-call.md) ile seçilir. Unknown EXE/invalid cwd child öncesi ret; mevcut 23 pin korunur, codec/ASI veya yeni system DLL otomatik kabul edilmez. Scope bounded-startup-call-observation; exit 3 yalnız startup_call_verified + confirmed exit, 1 ret/incomplete, 2 kullanım. Bir önceki proxy komutu entry’yi otomatik ilerletmez.

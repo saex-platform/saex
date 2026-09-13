@@ -106,3 +106,7 @@ R-01b'nin SDK bağımsız DLL, açık başlatma ve oyun dışı ret/stop alt kan
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 GitHub Linux GCC derlemesi, uint32_t reason ile enum fallback arasındaki örtük koşullu dönüşümü -Werror altında reddetti. Fallback açık std::uint32_t dönüşümüdür; mevcut geçersiz reason → INTERNAL_ERROR regresyonu korunur. Export, 192 byte status, C ABI 1 ve terminal durumlar değişmez.
+
+### Hosted corpus tamamlaması
+
+Bootstrap session corpus artık geçersiz reason 0/999/UINT32_MAX için exact INTERNAL_ERROR değerini ve bilinen ret kodlarının korunmasını ayrıca sınar. Önceki test yalnız terminal ret durumunu ölçüyordu; bu ek assertion ABI/fallback değerini doğrudan kanıtlar. Production davranışı ve layout değişmez.

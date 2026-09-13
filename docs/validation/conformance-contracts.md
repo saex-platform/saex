@@ -124,3 +124,15 @@ executionPolicySourceDigest entry JSON SHA’sıdır; basePolicySha256 immutable
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 Own fixture cwd kanıtı artık string yazımı değil açılmış volume/file ID eşitliğidir. Eşdeğer alias pozitifi, farklı dizin ve yanlış token negatifleri ayrı koşulur. Bu test başarısı bütün ortam eşitliği, sandbox veya GTA çalışma kanıtı değildir; portable bootstrap dönüşümü ABI layout kanıtını değiştirmez.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[Yeni evidence](../development/d1-proxy-return.md) scope=bounded-proxy-return-observation/schemaVersion=1 taşır. entryObservation ilk durağın byte’larını korur; additive proxyObservation kendi executionPolicySourceDigest, validated/breakpointArmed/continued/returnReached, mappingId/base/returnAddress, entryRestored/entryAfterHex ve iatBefore/iatAfter/iatVerified içerir. İzin bayrağı mod seçimini, continued gerçek başarılı ContinueDebugEvent’i anlatır. Success yalnız reason=proxy_return_verified + childExitConfirmed; eski modlarda proxyObservation=null. CanAttach/initializationVerified false kalır.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[Startup evidence](../development/d1-startup-call.md) schema 1’de additive startupObservation içerir: kendi executionPolicy/digest’i, izin/armed/continued/reached, iatWriteObserved, targetStable, callsiteVerified, argumentValid, adresler/target before-after ve bounded sample dizisi. Sample read=false iken afterHex başarı kanıtı değildir; match=false okunmuş değişimi belirtir ve unpack etiketi üretmez. Eski modlarda startupObservation=null; root initializationVerified/canAttach false kalır.

@@ -131,3 +131,15 @@ Takvim veya bütçe için ekip kapasitesi ve D1/R sonuçları gerekir. Burada ay
 [Kontrollü entry durağı](development/d1-entry-boundary.md) ayrı explicit modda DLL/TLS initialization'ı ilerletir; ana thread PE entry'si tutulur. Bunun kanıtı entry byte mutation ve exit ile sınırlıdır. Sonraki N2 işi proxy yönlendirmesi/dynamic dependency ve unpack aşamasını çözmek, ardından SAEX bootstrap'ı loader lock dışında gerçek process'te doğrulamaktır. N3–N7, sandbox/GNS ve D2 sırası değişmez; kodlanmış/test edilmiş/gerçek GTA sonuçları status'ta ayrı tutulur.
 
 0.1.11 son çıktısı: x86 Debug/Release ve x64 Debug standardı geçti; 12/12 private GTA girişinde aynı DLL RVA'sına yönlendirme ölçüldü. Sıradaki N2 adımı bu entry sonrası proxy/dinamik yükleme ve unpack yolunun incelenmesi, ardından gerçek SAEX bootstrap/ABI çağrısıdır. Mevcut first-exception araçları ve original ret politikası ayrı korunur.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[0.1.12 proxy dönüşü](development/d1-proxy-return.md), 0.1.11’de ölçülen yönlendirmenin restorasyon ve IAT değişimini gözlemler. Sonraki N2 adımı GetStartupInfoA yönlendirmesinin gerçek çağrı zamanı/dinamik bağımlılıkları ve unpack aşamasını çözmek, ardından gerçek SAEX bootstrap C ABI’sini loader lock dışında doğrulamaktır. N3 frame/hook, GNS, sandbox ve D2–D5 kapıları değişmez.
+
+0.1.12 son kanıtı: 12/12 private GTA koşusunda proxy dönüşü ve entry restorasyonu ve IAT yönlendirmesi doğrulandı; üç legacy/original regresyon korundu. Dört Windows standart akışı geçti. Sıradaki iş IAT yönlendirmesinin çağrılma zamanı/dinamik yükleme ve unpack, ardından gerçek bootstrap C ABI; bu sıçrama ve SAEX DLL yüklemesi henüz yürütülmedi.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[0.1.13 startup-call](development/d1-startup-call.md) orijinal entry’nin proxy IAT hedefini çağırdığı noktayı ölçer; fonksiyon gövdesi üçüncü durakta yürütülmez. Sıradaki N2 işi dinamik codec/ASI yükleme yolu, unpack kanıtının kapsamı ve loader lock dışında gerçek SAEX bootstrap C ABI çağrısıdır. GNS/sandbox ve N3 frame/pool/collision, sonra D2 ortak dünya kapıları aynı sırada kalır.
+
+0.1.13 son kanıtı: 12/12 private GTA ilk startup-call hit, dört original/legacy regresyon ve dört Windows standart akışı başarılı. Sıradaki N2 işi dinamik codec/ASI yolu ile gerçek SAEX bootstrap C ABI; mevcut wrapper gövdesi ve tam unpack/engine initialization henüz doğrulanmadı.

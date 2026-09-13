@@ -220,3 +220,15 @@ Sekiz entry-policy testi base/engine drift, scope/schema/keys/size, system-only 
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 Launch-context own fixture için üç ek regresyon: aynı dizinin `\.` yazımı başarılı ve marker doğru cwd içinde; başka mevcut dizin beklentisi exit 72 ve marker yok; snapshot sonrası değişen token ile exit 72 ve marker yok. Mevcut snapshot freeze, retained directory ve 12 warm çevrim kontrolleri kalır. Bootstrap geçersiz reason testi GCC için açık dönüşümden sonra da INTERNAL_ERROR bekler.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+AC-90’a [proxy-return alt corpus’u](../development/d1-proxy-return.md) eklendi: normal iki hit, eksik entry restore, yanlış IAT, fault/stall, bozuk return pointer/redirect/suffix, pin/range/shape/budget ve owner/legacy-mode retleri; 19 senaryo ve 12 warm çevrim. DllMain/proxy/main marker’ları gerçek yürütme sınırını sınar. İlk Debug stack overflow başarısızlığı saklanır; düzeltme tüm eski observer yollarında regresyon gerektirir. Bu alt testler bütün AC-90/R-01 veya N2’yi kapatmaz.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+AC-90’a [startup-call corpus’u](../development/d1-startup-call.md) eklendi: dokuz EXE varyantı, 19 senaryo, gözlemcisiz canary pozitif kontrolü ve 12 warm çevrim. Null parametre/register call, aynı IAT değerini yeniden yazma, target mutation, okunamayan/değişen sample, fault/stall ve spec/owner/budget/legacy retleri sınanır. Okunmuş ama değişmiş örnek başarıyla raporlanabilir; okunamayan örnek complete değildir. Yedi policy ve iki CLI testi bu alt kapıya bağlıdır; AC-90/R-01/D1 bütünü kapanmaz.

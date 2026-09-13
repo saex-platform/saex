@@ -97,3 +97,15 @@ Bu sonuç R-01b/AC-90'ın mapping-lifecycle alt kanıtıdır. Başlangıç break
 ## Kod 0.1.11 — Entry supplement bağı
 
 Entry scope’undaki bir imm32 ek pini ledger kimlik/retire/hash/budget semantiğini değiştirmez. Eski history kanıtı yeni initializer/entry kanıtına dönüşmez. [Ayrıntı](d1-entry-boundary.md).
+
+### Hosted corpus tamamlaması
+
+İkinci hosted turda bütün native suite'ler geçti; ortak Python loader CLI corpus'undaki cwd string eşitliği kısa/uzun Windows adı nedeniyle hata verdi. Test artık pathlib.samefile ile aynı dizin kimliğini doğrular. Engine unknown-fingerprint reddi, environment redaction, childCreated=false, entry/loader policy ve lifecycle sınırları aynen kalır; önceki GTA artifact sonuçları yeni test kanıtı sayılmaz.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[Proxy dönüş modu](d1-proxy-return.md), ilk hitte doğrulanan exact file ID/hash eşlemesinin mappingId/base çiftini tutar. Bu mapping aradaki UNLOAD ile emekliye ayrılırsa proxy_mapping_retired terminal olur; tekrar aynı adrese yükleme eski yetkiyi taşımaz. İkinci hitte aktif eşleme yeniden kontrol edilir. Kümülatif event/module/byte/thread kotaları ve eski mapping komutları korunur.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[Üçüncü durak](d1-startup-call.md) aynı proxy mappingId/base kimliğini kullanır; aradaki unload terminal kalır. Yeni runtime hedefi eski mapping kanıtından bağımsız keyfî pointer olarak takip edilmez. 128 event/64 lifetime module/16 thread/256 MiB ve 5 saniye bütçeler korunur; IAT write watch metadata’sı modül yetkisi veya remap izni vermez.

@@ -1,6 +1,6 @@
 # Uygulama durumu ve doğrulama sınırı
 
-Sürüm: mimari v0.18 / kod 0.1.11, D1 foundation + native dependency + N2 preflight, bootstrap, askıda process, statik envanter ve sınırlı loader gözlemi alt kümeleri. Tarih: 13 Eylül 2026. Kullanıcı kodlamayı ve her kaynak değişiminde belgelerin güncellenmesini onayladı. [Ana indeks](../../README.md) · [Çalışma akışı](workflow.md) · [Foundation](d1-foundation.md) · [N1 kanıtı](d1-native-dependency.md) · [Değişiklik kaydı](change-log.md)
+Sürüm: mimari v0.20 / kod 0.1.13, D1 foundation + native dependency + N2 preflight, bootstrap, askıda process, statik envanter ve sınırlı loader gözlemi alt kümeleri. Tarih: 13 Eylül 2026. Kullanıcı kodlamayı ve her kaynak değişiminde belgelerin güncellenmesini onayladı. [Ana indeks](../../README.md) · [Çalışma akışı](workflow.md) · [Foundation](d1-foundation.md) · [N1 kanıtı](d1-native-dependency.md) · [Değişiklik kaydı](change-log.md)
 
 ## Gerçek durum
 
@@ -14,6 +14,8 @@ Public depolar ve ilk push tamamlandı. İlk hosted doküman/sır taraması geç
 
 | Bileşen | Kodlanmış davranış | Doğrulama | Kalan sınır |
 |---|---|---|---|
+| Startup çağrı sınırı | Üçüncü durak, main-thread IAT watch, FF15 callsite/stack argument ve bounded anchor gözlemi | Dört Windows standart akışı; 19 senaryo + control + 12 warm; 12/12 private GTA startup hit ve dört original/legacy regresyon; [rapor](d1-startup-call.md) | Fonksiyon gövdesi, dinamik load/SAEX DLL ve N2/D1 açık |
+| Proxy dönüş sınırı | Ayrı iki-hit API/CLI, compiled entry/module bağı, thunk/return pointer ve entry restorasyonu ve IAT hedef kontrolü | Dört Windows standart akışı; 19 senaryo+12 warm; 12/12 private GTA proxy dönüşü ve üç gerçek legacy/original regresyon; [kanıt](d1-proxy-return.md) | Asıl giriş/unpack, dinamik LoadPlugins, gerçek SAEX DLL/ABI ve N2/D1 açık |
 | Kontrollü entry boundary | Ayrı run_to_entry/CLI, CREATE_PROCESS safhasında DR0 kurulumu, DLL/TLS izni ve PE giriş fault/16 byte gözlemi | x86 Debug/Release corpus ve 12/12 gerçek özel GTA entry hit; dokuz unload, aynı vorbisfile RVA 0x1D60 hedefi; [kanıt](d1-entry-boundary.md) | Sadece owned main thread sınırı; initialized GTA/SAEX DLL/ABI ve N3 açık |
 | Native sembol bağlantı denetimi | C# engine linkage; normal/delay thunk, exact isim/ordinal, alias/hole, forwarder ve compact binding | 22 yeni corpus kaydı; x86 Debug/Release ve x64 Debug 79/79 managed test; 10 gerçek dosya karşılaştırması ve bağımsız dumpbin eşleşmesi; [rapor](d1-native-linkage.md) | Runtime DLL seçimi, dinamik proxy, initialization ve ABI doğrulanmadı |
 | Loader mapping lifecycle | Fixed history, gözlem içi mapping ID, known-active UNLOAD ve her LOAD için yeniden pin kontrolü | 10 metadata senaryosu + Windows corpus geçti; 12/12 private breakpoint adayı, 11 unload; [kanıt](d1-loader-lifecycle.md) | Initialization/SAEX bootstrap/ABI ve N3 açık |
@@ -37,7 +39,19 @@ Public depolar ve ilk push tamamlandı. İlk hosted doküman/sır taraması geç
 
 D0 v0.5 belge teslimatı tarihsel olarak tamamlandı. D1 **başladı ve henüz tamamlanmadı**. R-01 dosya incelemesi, R-13 metadata/kimlik üretimi, R-14 queue primitive ve R-21 lease/clock alt kanıtları oluştu. D1-N1/R-02a ve AC-89'un seçilmiş build alt kümesi eklendi; bütün ana R kayıtları açık kalır. AC-34/35/45/71/72/83/86 [foundation](d1-foundation.md), N1 ise [native dependency raporundaki](d1-native-dependency.md) sınırla yorumlanır. AC-90 dosya/image, oyun dışı DLL ve ilk create-debug görüntü alt kümeleri ayrı raporlarla sınandı; initialized runtime bölümü ve AC-91–96 çalıştırılmadı. 96 AC'nin topluca geçtiği söylenmez.
 
-Bir sonraki kesit **D1-N2 entry sonrası proxy/unpack ve gerçek SAEX bootstrap/ABI**: 0.1.11 ile DLL/TLS başlangıcı ilerletildi ve 12/12 private GTA koşusu ana-thread PE girişinde tutuldu. İlk beş byte, vorbisfile.dll+0x1D60 hedefine E9 oldu; bu atlama yürütülmedi. Incelenmiş imm32 ek pini ayrı entry-policy kaynağındadır; eski 22 pin recipe ve original AcLayers ret korunur. Bundan sonra proxy yönlendirmesi/dinamik bağımlılık ve unpack safhası çözümlenerek SAEX bootstrap C ABI loader lock dışında doğrulanmalıdır. Kullanıcının kurulum yolu biliniyor; tekrar istenmez. Initialized GTA, gerçek SAEX DLL, N3–N7, OS sandbox/GNS ve iki istemcili D2 kapıları açıktır.
+Bir sonraki kesit **D1-N2 dinamik codec/ASI yolu ve gerçek SAEX bootstrap/ABI**: 0.1.13 ile orijinal entry ilerletildi, GetStartupInfoA yönlendirmesinin ilk çağrısı 12/12 private GTA koşusunda gövde çalışmadan tutuldu. Çağıran/stack alanı ve dört anchor okuması doğrulandı; bunlar tam unpack/initialized engine değildir. Eski üç durak ve original AcLayers ret korundu. Sonraki iş kontrollü dinamik yükleme/SAEX bootstrap C ABI’sini loader lock dışında doğrulamaktır. Kullanıcının kurulum yolu biliniyor; tekrar istenmez. N2, N3–N7, OS sandbox/GNS ve iki istemcili D2 kapıları açıktır.
+
+## Kod 0.1.13 doğrulaması
+
+Windows x86 Debug/Release: her koşuda 11 native suite, 79 managed ve 85 Python testi geçti. X64 Debug/Release: her koşuda 6 suite, 79 managed ve 60 Python geçti. Startup corpus’u 19 senaryo + gözlemcisiz canary kontrolü + 12 warm çevrimdir. İlk custom CRT entry link hatası düzeltildi, başarısız kayıt saklandı.
+
+Gerçek özel kopyada 6 Debug+6 Release startup_call_verified; dört original/legacy regresyonla **16/16 confirmed exit**. Her pozitif koşuda aynı callsite/return address, target ve stack alanı doğrulandı; dört mevcut anchor’ın 48 okuması eşleşti. Orijinal 13/private 3 input hash’i değişmedi. [Tam kanıt](d1-startup-call.md). Linux/hosted CI/N1 bu kesitte yeniden koşulmadı; gerçek SAEX DLL/dinamik wrapper gövdesi ve N2/D1 açık kalır.
+
+## Kod 0.1.12 doğrulaması
+
+Windows x86 Debug/Release: her koşuda 10 native suite, 79 managed ve 76 Python testi geçti. X64 Debug/Release: her koşuda 6 suite, 79 managed ve 53 Python geçti. Proxy corpus’u 19 senaryo+12 warm çevrim; ilk Debug stack overflow giderildi ve başarısız kayıt saklandı. Gerçek özel kopyada 6 Debug+6 Release proxy_return_verified; 3 original/legacy regresyonla toplam 15/15 confirmed exit. Orijinal 13 ve private 3 dosya hash’i değişmedi. [Ayrıntı ve artifact kimlikleri](d1-proxy-return.md).
+
+Linux/hosted CI ve N1 opt-in SDK bu değişiklik için yeniden doğrulanmadı. Proxy sonrası oyun girişi, SAEX bootstrap yüklemesi ve D1/D2 ürün davranışı hazır değildir.
 
 ## Kod 0.1.11 doğrulaması
 
@@ -110,3 +124,15 @@ Her kaynak ekleme/değiştirme/çıkarma bu tablo, [change-log](change-log.md) v
 0.1.9 son statik belge kontrolü: 76 Markdown, 1013 yerel bağlantı, 6 JSON örneği ve sıfır hata. Bu sonuç kaynak/belge eşlemesi ve statik yapı kanıtıdır; bütün mimarinin anlamsal kusursuzluğu veya GTA initialization başarısı değildir.
 
 0.1.11 ara gerçek kanıt: ilk initializer koşusu imm32 unpinned ret verdi. Ayrı entry-policy.json + strict compiler, mevcut 22 pinin exact digest'ine bir incelenmiş system-x86 imm32 kaydı ekler. Sekiz generator testi geçti; ilk ek-pinli Debug özel kopya entry_boundary_modified sonucuna ulaştı. Son standart toplamlar ve 12/12 gerçek entry tekrarı yukarıdaki 0.1.11 bölümündedir; ilk ret kanıtı korunur.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.
+
+## Kod 0.1.12
+
+[Proxy dönüş sınırı](d1-proxy-return.md) uygulanmıştır; test ve gerçek GTA kanıtı ilgili raporda ayrı tutulur. N2/D1 ve oynanabilir multiplayer kapsamı açık kalır.
+
+## Kod 0.1.13
+
+[Startup çağrı raporu](d1-startup-call.md) implementasyon, fixture ve gerçek GTA kanıtını ayrı tutar. D1 kapıları henüz tamamlanmadı.

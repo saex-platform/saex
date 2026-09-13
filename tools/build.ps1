@@ -21,6 +21,8 @@ try {
     Invoke-Checked $Python @('tools/engine_profiles.py', '--check')
     Invoke-Checked $Python @('tools/loader_policy.py', '--check')
     Invoke-Checked $Python @('tools/entry_policy.py', '--check')
+    Invoke-Checked $Python @('tools/proxy_policy.py', '--check')
+    Invoke-Checked $Python @('tools/startup_policy.py', '--check')
     Invoke-Checked 'cmake' @('--preset', "windows-$Architecture")
     Invoke-Checked 'cmake' @('--build', '--preset', "windows-$Architecture", '--config', $Configuration)
     if ($Architecture -eq 'x86') {
@@ -34,6 +36,8 @@ try {
     Invoke-Checked $Python @('tests/engine/test_engine_profiles.py')
     Invoke-Checked $Python @('tests/engine/test_loader_policy.py')
     Invoke-Checked $Python @('tests/engine/test_entry_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_proxy_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_startup_policy.py')
     Invoke-Checked $Python @('tests/engine/test_engine_probe.py', "out/windows-$Architecture/$Configuration/saex_engine_image_probe.exe")
     Invoke-Checked $Python @('tests/engine/test_process_probe.py', "out/windows-$Architecture/$Configuration/saex_engine_process_probe.exe")
     if ($Architecture -eq 'x86') {

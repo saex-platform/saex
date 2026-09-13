@@ -56,3 +56,13 @@ Actionlint 1.7.12 ve YAML/SVG parse kontrolleri geçti. Gitleaks 8.30.1 ilk Git 
 [İlk Build koşusu](https://github.com/saex-platform/saex/actions/runs/34746684095) başarısızdır: Linux GCC enum/uint32_t koşullu dönüşümü reddetti; dört Windows yapılandırmasında own launch-context fixture ham cwd metin eşitliğinde durdu. Bootstrap fallback açık uint32_t dönüşümüne çevrildi. Fixture gerçek/beklenen klasörü volume/file ID ile eşler; eşdeğer yol pozitifi ve farklı dizin/yanlış token negatifleri eklenir. C ABI, production LaunchContext ve hash/policy sınırları değişmedi. [Doküman ve sır kontrolü](https://github.com/saex-platform/saex/actions/runs/34746684074) ilk turda geçti. Düzeltme sonrası yerel dört standart akış yeniden geçti: x64 Debug/Release 6 native suite, 79 managed, 46 Python; x86 Debug/Release 9 native suite, 79 managed, 67 Python. Yeni fixture alias/farklı dizin/yanlış token kontrolleri bu koşulara dahildir. Hosted yeniden koşu ayrıca kaydedilecektir.
 
 İsteğe bağlı N1 SDK temiz clone denemesi uzun yerel checkout yolunda MSBuild compiler-ID tlog dizini oluşturulamadığı için durdu. Daha kısa, ayrı bir geçici checkout ile Debug/Release yeniden çalıştırıldı: her biri 1 SDK probe, 17 dependency ve 2 configure ret testini geçti. SDK recipe/patch/lock byte'ları değiştirilmedi; lock SHA-256 `eec9cbc16685563a08c4a121ddb885fcfe554dff99b055a4d516d810fe5d7670`. İlk hata kaydı korunur.
+
+[İkinci Build koşusu](https://github.com/saex-platform/saex/actions/runs/34747151868) Linux x64 Debug ve Windows x64 Debug/Release için geçti. X86 iki yapılandırmada bütün 9 native suite geçtikten sonra Python loader CLI cwd string eşitliği `runneradmin`/`RUNNER~1` yazım farkıyla durdu. Aynı test `Path.samefile` ile kimlik karşılaştırmasına geçirildi; engine/child/redaction kapıları korunur. Bootstrap reason corpus'una exact fallback ve UINT32_MAX assertion'ı eklenmiştir. Yeniden koşu bu iki son test değişimini de doğrular.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+0.1.12 geliştirmesi Linux CI girişine proxy_policy --check ve portable policy corpus’unu ekler; Windows standart build aynı source gate’i ve x86 proxy fixture’ını kapsar. Bu yerel değişiklik yeni hosted workflow sonucu veya yayın/push kanıtı değildir. Önceki yayın ve CI kayıtlarının kapsamı korunur.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+0.1.13 kaynak değişimi Linux CI girişine startup-policy generation check ve portable negatif corpus’u ekler. Windows standart build yeni x86 startup suite’ini kapsar. Yerel sonuçlar [raporda](d1-startup-call.md) tutulur; yeni hosted çalışma/push veya yayın kanıtı değildir. Önceki yayın/CI kayıtları korunur.

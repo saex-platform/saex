@@ -50,14 +50,14 @@ def linux():
         raise ValueError('Linux CI requires Linux')
     docs()
     run('dotnet', 'run', '--project', 'tools/ContractGen', '--', '.', '--check')
-    for generator in ('engine_profiles', 'loader_policy', 'entry_policy'):
+    for generator in ('engine_profiles', 'loader_policy', 'entry_policy', 'proxy_policy', 'startup_policy'):
         run(sys.executable, f'tools/{generator}.py', '--check')
     run('cmake', '--preset', 'linux-x64')
     run('cmake', '--build', '--preset', 'linux-x64', '--parallel', '2')
     run('ctest', '--preset', 'linux-x64')
     run('dotnet', 'run', '--project', 'tests/managed/Saex.Foundation.Tests', '--', '.',
         'out/linux-x64/saex_contract_probe')
-    for suite in ('test_engine_profiles', 'test_loader_policy', 'test_entry_policy'):
+    for suite in ('test_engine_profiles', 'test_loader_policy', 'test_entry_policy', 'test_proxy_policy', 'test_startup_policy'):
         run(sys.executable, f'tests/engine/{suite}.py')
     print('SAEX portable Linux core verified; Windows/GTA runtime is outside this job.')
 

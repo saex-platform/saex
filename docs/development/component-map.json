@@ -6,6 +6,52 @@
   "components": [
     {
       "patterns": [
+        "include/saex/engine/startup*",
+        "contracts/engine/startup-policy.json",
+        "tools/startup_policy.py",
+        "tests/engine/startup*",
+        "tests/engine/test_startup_policy.py",
+        "include/saex/engine/loader_observation.hpp",
+        "src/engine/loader/loader_observation.cpp",
+        "src/engine/loader/loader_probe.cpp",
+        "tests/engine/test_loader_probe.py",
+        "tests/engine/proxy_fixture_support.hpp",
+        "tests/engine/proxy_fixture_dll.cpp"
+      ],
+      "documents": [
+        "docs/development/d1-startup-call.md",
+        "docs/architecture/engine-adapter.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md",
+        "docs/platform/launcher-operations.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/proxy*",
+        "contracts/engine/proxy-policy.json",
+        "tools/proxy_policy.py",
+        "tests/engine/proxy*",
+        "tests/engine/test_proxy_policy.py",
+        "include/saex/engine/loader_observation.hpp",
+        "src/engine/loader/loader_observation.cpp",
+        "src/engine/loader/loader_probe.cpp",
+        "tests/engine/test_loader_probe.py"
+      ],
+      "documents": [
+        "docs/development/d1-proxy-return.md",
+        "docs/architecture/engine-adapter.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md",
+        "docs/platform/launcher-operations.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
         "include/saex/engine/loader_observation.hpp",
         "src/engine/loader/loader_observation.cpp",
         "src/engine/loader/loader_probe.cpp",

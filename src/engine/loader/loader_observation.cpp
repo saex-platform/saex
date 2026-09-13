@@ -63,13 +63,27 @@ LoaderTrace LoaderObservation::run_to_entry(SuspendedImage& child, void* executa
     std::span<const LoaderFile* const> pins, const EntryStopSpec& entry, LoaderLimits limits) noexcept {
     return run_impl(child, executable, pins, limits, &entry);
 }
+LoaderTrace LoaderObservation::run_to_proxy_return(SuspendedImage& child, void* executable,
+    std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+    const ProxyStopSpec& proxy, LoaderLimits limits) noexcept {
+    return run_impl(child, executable, pins, limits, &entry, &proxy);
+}
+LoaderTrace LoaderObservation::run_to_startup_call(SuspendedImage& child, void* executable,
+    std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+    const ProxyStopSpec& proxy, const StartupStopSpec& startup, LoaderLimits limits) noexcept {
+    return run_impl(child, executable, pins, limits, &entry, &proxy, &startup);
+}
 LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
-    std::span<const LoaderFile* const> pins, LoaderLimits limits, const EntryStopSpec* entry) noexcept {
+    std::span<const LoaderFile* const> pins, LoaderLimits limits, const EntryStopSpec* entry,
+    const ProxyStopSpec* proxy, const StartupStopSpec* startup) noexcept {
     static_assert(sizeof(void*) == 4, "loader experiment requires a same-bitness x86 observer");
+    static_assert(sizeof(STARTUPINFOA) == 68, "startup observation requires the x86 Windows structure layout");
     LoaderTrace trace{};
     // Wrong-thread calls cannot change the owner's pending debug event or cleanup.
     if (GetCurrentThreadId() != child.owner_thread_) { trace.reason = "loader_owner_thread"; return trace; }
-    const auto finish = [&](std::string_view reason) {
+    // Return a reference internally: MSVC /Od otherwise reserves one large trace
+    // temporary per return site and can exhaust the default x86 stack.
+    const auto finish = [&](std::string_view reason) -> const LoaderTrace& {
         trace.reason = reason;
         trace.exit_confirmed = child.created() && child.stop();
         if (child.created() && !trace.exit_confirmed) trace.reason = "loader_exit_unconfirmed";
@@ -81,6 +95,31 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
         return finish("loader_invalid_limits");
     for (const auto pin : pins) if (!pin || !pin->valid()) return finish("loader_invalid_pin");
     if (!child.error_.empty() || child.loader_started_ || !child.same_file(executable)) return finish("loader_child_identity_or_state");
+    if (proxy && (!entry || !proxy->module || std::find(pins.begin(), pins.end(), proxy->module) == pins.end() ||
+        !proxy->thunk_rva || proxy->thunk_rva > max_image_bytes - 11 ||
+        !proxy->call_target_rva || proxy->call_target_rva >= max_image_bytes ||
+        !proxy->return_slot_rva || proxy->return_slot_rva > max_image_bytes - 4 ||
+        !proxy->iat_target_rva || proxy->iat_target_rva >= max_image_bytes ||
+        !proxy->iat_rva || proxy->iat_rva > child.image_bytes_ || child.image_bytes_ - proxy->iat_rva < 4))
+        return finish("proxy_invalid_spec");
+    if (startup) {
+        if (!proxy || proxy->iat_rva % 4 || startup->samples.empty() || startup->samples.size() > trace.startup_samples.size())
+            return finish("startup_invalid_spec");
+        for (const auto& sample : startup->samples) {
+            if (!sample.rva || !sample.length || sample.length > 16) return finish("startup_invalid_sample");
+            for (std::uint32_t i = 0; i < trace.startup_sample_count; ++i) {
+                const auto& prior = trace.startup_samples[i];
+                if (static_cast<std::uint64_t>(sample.rva) < static_cast<std::uint64_t>(prior.rva) + prior.length &&
+                    static_cast<std::uint64_t>(prior.rva) < static_cast<std::uint64_t>(sample.rva) + sample.length)
+                    return finish("startup_sample_overlap");
+            }
+            auto& observed = trace.startup_samples[trace.startup_sample_count++];
+            observed.rva = sample.rva; observed.length = sample.length;
+            auto bytes = std::span(observed.before).first(sample.length);
+            if (!child.copy(sample.rva, bytes) || !std::equal(bytes.begin(), bytes.end(), sample.bytes.begin()))
+                return finish("startup_sample_precondition");
+        }
+    }
     if (entry) {
         if (!entry->rva || entry->rva >= child.image_bytes_ || entry->expected.size() > child.image_bytes_ - entry->rva ||
             !child.copy(entry->rva, trace.entry_before) || trace.entry_before != entry->expected)
@@ -116,6 +155,41 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
     }
     child.loader_started_ = true;
     LoaderMappingLedger mappings(limits.modules);
+    // Bounded remote reads in one region of a live admitted image; never follow arbitrary pointers.
+    const auto read_image = [&](std::uintptr_t base, std::uint32_t rva, std::span<std::byte> output, bool code) {
+        if (!base || output.empty() || output.size() > 16 || rva > UINT32_MAX - base ||
+            output.size() > UINT32_MAX - (base + rva)) return false;
+        const auto address = base + rva;
+        MEMORY_BASIC_INFORMATION region{};
+        if (VirtualQueryEx(child.process_, reinterpret_cast<void*>(address), &region, sizeof(region)) != sizeof(region) ||
+            region.Type != MEM_IMAGE || region.State != MEM_COMMIT || reinterpret_cast<std::uintptr_t>(region.AllocationBase) != base ||
+            (region.Protect & (PAGE_GUARD | PAGE_NOACCESS)) ||
+            (code && !(region.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY))) ||
+            address < reinterpret_cast<std::uintptr_t>(region.BaseAddress) ||
+            address - reinterpret_cast<std::uintptr_t>(region.BaseAddress) >= region.RegionSize ||
+            output.size() > region.RegionSize - (address - reinterpret_cast<std::uintptr_t>(region.BaseAddress))) return false;
+        SIZE_T copied{};
+        return ReadProcessMemory(child.process_, reinterpret_cast<void*>(address), output.data(), output.size(), &copied) && copied == output.size();
+    };
+    const auto read_word = [&](std::uintptr_t base, std::uint32_t rva, std::uint32_t& value) {
+        return read_image(base, rva, std::as_writable_bytes(std::span(&value, 1)), false);
+    };
+    const auto proxy_shape = [&] {
+        if (!mappings.active(trace.proxy_mapping_id, trace.proxy_base)) return false;
+        std::array<std::byte, 11> thunk{};
+        std::uint32_t relative{}, operand{}, original{};
+        if (!read_image(trace.proxy_base, proxy->thunk_rva, thunk, true) ||
+            thunk[0] != std::byte{0xe8} || thunk[5] != std::byte{0xff} || thunk[6] != std::byte{0x25}) return false;
+        std::memcpy(&relative, thunk.data() + 1, 4); std::memcpy(&operand, thunk.data() + 7, 4);
+        // rel32 arithmetic deliberately follows the 32-bit instruction address space.
+        if (static_cast<std::uint32_t>(proxy->thunk_rva + 5 + relative) != proxy->call_target_rva ||
+            proxy->return_slot_rva > UINT32_MAX - trace.proxy_base ||
+            operand != trace.proxy_base + proxy->return_slot_rva ||
+            !read_word(trace.proxy_base, proxy->return_slot_rva, original) || original != trace.entry_address) return false;
+        std::array<std::byte, 1> probe{};
+        return read_image(trace.proxy_base, proxy->call_target_rva, probe, true) &&
+            read_image(trace.proxy_base, proxy->iat_target_rva, probe, true);
+    };
     trace.event_count = 1; trace.thread_count = 1;
     trace.last_event_code = CREATE_PROCESS_DEBUG_EVENT; trace.last_event_thread_id = child.pending_thread_;
     const auto deadline = GetTickCount64() + limits.milliseconds;
@@ -126,6 +200,8 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
             trace.system_error = GetLastError(); return finish("loader_continue_failed");
         }
         child.pending_ = false; trace.advanced = true;
+        if (trace.startup_breakpoint_armed) trace.startup_continued = true;
+        if (trace.proxy_breakpoint_armed) trace.proxy_continued = true;
         if (trace.entry_breakpoint_armed && trace.breakpoint_candidate) trace.initial_breakpoint_continued = true;
         DEBUG_EVENT event{};
         const auto now = GetTickCount64();
@@ -183,6 +259,8 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
             retired->unload_event_index = trace.event_count;
             trace.active_module_count = mappings.active_count();
             trace.unload_count = mappings.unload_count();
+            if (trace.proxy_validated && transition.mapping_id == trace.proxy_mapping_id)
+                return finish("proxy_mapping_retired");
             // Do not read the retired address or refund any lifetime load/byte budget.
         } else if (event.dwDebugEventCode == CREATE_THREAD_DEBUG_EVENT) {
             if (++trace.thread_count > limits.threads) return finish("loader_thread_limit");
@@ -192,21 +270,146 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
             trace.last_event_address = trace.exception_address;
             if (entry && trace.initial_breakpoint_continued) {
                 CONTEXT context{}; context.ContextFlags = CONTEXT_CONTROL | CONTEXT_DEBUG_REGISTERS;
+                const auto expected_address = trace.startup_continued ? trace.startup_address : trace.proxy_continued ? trace.proxy_return_address : trace.entry_address;
                 if (trace.exception_code != EXCEPTION_SINGLE_STEP || !event.u.Exception.dwFirstChance ||
-                    event.dwThreadId != GetThreadId(child.thread_) || trace.exception_address != trace.entry_address)
+                    event.dwThreadId != GetThreadId(child.thread_))
                     return finish("entry_unexpected_exception");
                 if (!GetThreadContext(child.thread_, &context)) {
                     trace.system_error = GetLastError(); return finish("entry_context_read_failed");
                 }
-                // DR6 B0 only; reject single-step/task-switch/debug-register causes.
-                // DR7 L0 enabled, G0/other slots and all RW/LEN bits clear.
-                if (context.Eip != trace.entry_address || context.Dr0 != trace.entry_address ||
-                    (context.Dr6 & 0xe00fU) != 1 || (context.Dr7 & 0xffff00ffU) != 1)
+                if (trace.startup_continued && (context.Dr0 != trace.startup_address ||
+                    context.Dr1 != child.base_ + proxy->iat_rva || (context.Dr7 & 0xffff20ffU) != 0x00d00005U))
                     return finish("entry_breakpoint_identity");
+                // The main-thread IAT write watchpoint traps AFTER a write; it is not prevention.
+                if (trace.startup_continued && (context.Dr6 & 2U)) {
+                    if ((context.Dr6 & 0xe00fU) != 2U) return finish("entry_breakpoint_identity");
+                    trace.startup_iat_write_observed = true;
+                    return finish("startup_iat_written");
+                }
+                if (trace.exception_address != expected_address) return finish("entry_unexpected_exception");
+                // B0 only for the execution fault. Startup also retains a 4-byte write watch in DR1.
+                if (context.Eip != expected_address || context.Dr0 != expected_address ||
+                    (context.Dr6 & 0xe00fU) != 1 ||
+                    (context.Dr7 & (trace.startup_continued ? 0xffff20ffU : 0xffff00ffU)) != (trace.startup_continued ? 0x00d00005U : 1U) ||
+                    (trace.startup_continued && context.Dr1 != child.base_ + proxy->iat_rva))
+                    return finish("entry_breakpoint_identity");
+                if (trace.startup_continued) {
+                    trace.startup_reached = true;
+                    if (!proxy_shape()) return finish("startup_proxy_shape");
+                    std::uint32_t iat{};
+                    if (!read_word(child.base_, proxy->iat_rva, iat) || iat != trace.startup_address)
+                        return finish("startup_iat_drift");
+                    if (!read_image(trace.proxy_base, proxy->iat_target_rva, trace.startup_target_after, true))
+                        return finish("startup_target_unreadable");
+                    trace.startup_target_stable = trace.startup_target_after == trace.startup_target_before;
+                    if (!trace.startup_target_stable) return finish("startup_target_drift");
+                    MEMORY_BASIC_INFORMATION stack{};
+                    const auto stack_address = static_cast<std::uintptr_t>(context.Esp);
+                    if (VirtualQueryEx(child.process_, reinterpret_cast<void*>(stack_address), &stack, sizeof(stack)) != sizeof(stack) ||
+                        stack.Type != MEM_PRIVATE || stack.State != MEM_COMMIT || (stack.Protect & (PAGE_GUARD | PAGE_NOACCESS)) ||
+                        stack_address < reinterpret_cast<std::uintptr_t>(stack.BaseAddress) ||
+                        stack_address - reinterpret_cast<std::uintptr_t>(stack.BaseAddress) >= stack.RegionSize ||
+                        8 > stack.RegionSize - (stack_address - reinterpret_cast<std::uintptr_t>(stack.BaseAddress)))
+                        return finish("startup_stack_region");
+                    std::array<std::uint32_t, 2> words{}; SIZE_T copied{};
+                    if (!ReadProcessMemory(child.process_, reinterpret_cast<void*>(stack_address), words.data(), sizeof(words), &copied) || copied != sizeof(words))
+                        return finish("startup_stack_read");
+                    trace.startup_return_address = words[0]; trace.startup_argument_address = words[1];
+                    if (words[0] < child.base_ || words[0] - child.base_ < 6 || words[0] - child.base_ >= child.image_bytes_)
+                        return finish("startup_callsite_range");
+                    std::array<std::byte, 6> call{}; std::uint32_t operand{};
+                    if (!read_image(child.base_, words[0] - child.base_ - 6, call, true)) return finish("startup_callsite_read");
+                    std::memcpy(&operand, call.data() + 2, 4);
+                    trace.startup_callsite_verified = call[0] == std::byte{0xff} && call[1] == std::byte{0x15} && operand == child.base_ + proxy->iat_rva;
+                    if (!trace.startup_callsite_verified) return finish("startup_callsite_shape");
+                    MEMORY_BASIC_INFORMATION argument{};
+                    const auto address = static_cast<std::uintptr_t>(words[1]);
+                    // Admit a complete x86 STARTUPINFOA in the same allocation as the held stack.
+                    trace.startup_argument_valid = address && !(address % 4) &&
+                        VirtualQueryEx(child.process_, reinterpret_cast<void*>(address), &argument, sizeof(argument)) == sizeof(argument) &&
+                        argument.Type == MEM_PRIVATE && argument.State == MEM_COMMIT && argument.AllocationBase == stack.AllocationBase &&
+                        !(argument.Protect & (PAGE_GUARD | PAGE_NOACCESS)) && (argument.Protect & (PAGE_READWRITE | PAGE_EXECUTE_READWRITE)) &&
+                        address >= reinterpret_cast<std::uintptr_t>(argument.BaseAddress) &&
+                        address - reinterpret_cast<std::uintptr_t>(argument.BaseAddress) < argument.RegionSize &&
+                        68 <= argument.RegionSize - (address - reinterpret_cast<std::uintptr_t>(argument.BaseAddress));
+                    if (!trace.startup_argument_valid) return finish("startup_argument_region");
+                    for (std::uint32_t i = 0; i < trace.startup_sample_count; ++i) {
+                        auto& sample = trace.startup_samples[i];
+                        auto bytes = std::span(sample.after).first(sample.length);
+                        sample.read = child.copy(sample.rva, bytes);
+                        if (!sample.read) return finish("startup_sample_unreadable");
+                        sample.match = std::equal(bytes.begin(), bytes.end(), sample.before.begin());
+                    }
+                    return finish("startup_call_verified");
+                }
+                if (trace.proxy_continued) {
+                    trace.proxy_return_reached = true;
+                    if (!proxy_shape()) return finish("proxy_return_shape");
+                    if (!child.copy(entry->rva, trace.proxy_entry_after)) return finish("proxy_return_entry_unreadable");
+                    trace.proxy_entry_restored = trace.proxy_entry_after == trace.entry_before;
+                    if (!trace.proxy_entry_restored) return finish("proxy_entry_not_restored");
+                    if (!read_word(child.base_, proxy->iat_rva, trace.proxy_iat_after)) return finish("proxy_iat_unreadable");
+                    trace.proxy_iat_verified = trace.proxy_iat_after == trace.proxy_base + proxy->iat_target_rva;
+                    if (!trace.proxy_iat_verified) return finish("proxy_iat_mismatch");
+                    if (!startup) return finish("proxy_return_verified");
+                    trace.startup_address = trace.proxy_iat_after;
+                    if (!read_image(trace.proxy_base, proxy->iat_target_rva, trace.startup_target_before, true))
+                        return finish("startup_target_unreadable");
+                    context.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+                    context.Dr0 = static_cast<DWORD>(trace.startup_address); context.Dr1 = static_cast<DWORD>(child.base_ + proxy->iat_rva);
+                    context.Dr6 = 0; context.Dr7 = (context.Dr7 & ~0xffff20ffU) | 0x00d00005U;
+                    if (!SetThreadContext(child.thread_, &context)) return finish("startup_breakpoint_write_failed");
+                    CONTEXT verified{}; verified.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+                    if (!GetThreadContext(child.thread_, &verified) || verified.Dr0 != trace.startup_address ||
+                        verified.Dr1 != child.base_ + proxy->iat_rva || (verified.Dr7 & 0xffff20ffU) != 0x00d00005U)
+                        return finish("startup_breakpoint_arm_failed");
+                    trace.startup_breakpoint_armed = true;
+                    continue;
+                }
                 trace.entry_reached = true;
                 trace.entry_bytes_read = child.copy(entry->rva, trace.entry_after);
                 if (!trace.entry_bytes_read) return finish("entry_bytes_unreadable");
                 trace.entry_bytes_match = trace.entry_after == trace.entry_before;
+                if (proxy) {
+                    const auto& identity = proxy->module->identity();
+                    for (std::uint32_t i = 0; i < trace.module_count; ++i) {
+                        const auto& module = trace.modules[i];
+                        if (module.admitted && mappings.active(module.mapping_id, module.base) &&
+                            module.file.volume == identity.volume && module.file.file_id == identity.file_id &&
+                            module.file.bytes == identity.bytes && module.file.sha256 == identity.sha256) {
+                            if (trace.proxy_mapping_id) return finish("proxy_mapping_ambiguous");
+                            trace.proxy_mapping_id = module.mapping_id; trace.proxy_base = module.base;
+                        }
+                    }
+                    if (!trace.proxy_mapping_id) return finish("proxy_mapping_missing");
+                    if (!proxy_shape()) return finish("proxy_entry_shape");
+                    std::uint32_t relative{}; std::memcpy(&relative, trace.entry_after.data() + 1, 4);
+                    if (trace.entry_after[0] != std::byte{0xe9} ||
+                        static_cast<std::uint32_t>(trace.entry_address + 5 + relative) != trace.proxy_base + proxy->thunk_rva ||
+                        !std::equal(trace.entry_after.begin() + 5, trace.entry_after.end(), trace.entry_before.begin() + 5))
+                        return finish("proxy_entry_redirect");
+                    if (!read_word(child.base_, proxy->iat_rva, trace.proxy_iat_before)) return finish("proxy_iat_unreadable");
+                    bool system_target{};
+                    for (std::uint32_t i = 0; i < trace.module_count; ++i) {
+                        const auto& module = trace.modules[i];
+                        const std::string_view name(module.file.name.data());
+                        std::array<std::byte, 1> byte{};
+                        if ((name == "kernel32.dll" || name == "kernelbase.dll") && module.admitted &&
+                            mappings.active(module.mapping_id, module.base) && trace.proxy_iat_before >= module.base &&
+                            read_image(module.base, trace.proxy_iat_before - module.base, byte, true)) system_target = true;
+                    }
+                    if (!system_target) return finish("proxy_iat_before_not_system");
+                    trace.proxy_validated = true;
+                    trace.proxy_return_address = trace.proxy_base + proxy->thunk_rva + 5;
+                    context.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+                    context.Dr0 = static_cast<DWORD>(trace.proxy_return_address); context.Dr6 = 0;
+                    if (!SetThreadContext(child.thread_, &context)) return finish("proxy_breakpoint_write_failed");
+                    CONTEXT verified{}; verified.ContextFlags = CONTEXT_DEBUG_REGISTERS;
+                    if (!GetThreadContext(child.thread_, &verified) || verified.Dr0 != trace.proxy_return_address ||
+                        (verified.Dr7 & 0xffff20ffU) != 1) return finish("proxy_breakpoint_arm_failed");
+                    trace.proxy_breakpoint_armed = true;
+                    continue;
+                }
                 return finish(trace.entry_bytes_match ? "entry_boundary_reached" : "entry_boundary_modified");
             }
             MEMORY_BASIC_INFORMATION region{};

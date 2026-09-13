@@ -133,3 +133,11 @@ Entry supplement observed engine SHA ve base policy SHA’sını birlikte doğru
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 Portable bootstrap session fallback türü GCC -Werror uyumu için uint32_t olarak açıklaştırıldı. PE parser, observation source/anchor/hash ve invalid reason reddi değişmez. Yeni bir executable veya capability onayı verilmedi.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[ProxyReturn alt kesiti](d1-proxy-return.md) preflight sonrası açık yürütme modudur; observed-profile, dört file/create-time anchor ve unknown-exe kapısı değiştirilmez. Yeni proxy RVA’ları exact dosya incelemesinden türetilir ve entry-policy digest bağı taşır. Giriş baytlarının geri gelmesi bütün mapped image’ın unpack/ABI eşitliği değildir.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[Üçüncü runtime durak](d1-startup-call.md) observed profile’ın dört anchor’ını yeniden okur. Girdi 1–4 adet, 1–16 byte uzunluk, geçerli RVA, çakışmama ve create-time expected byte eşitliği ister. Runtime değişim tanısal match=false; okunamama incomplete ret. Profile JSON/engine hash ve dört anchor değiştirilmedi; initialized profile veya canAttach onayı oluşmaz.

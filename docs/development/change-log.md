@@ -1,5 +1,15 @@
 # Kaynak ve belge değişiklik kaydı
 
+## Kod 0.1.13 / mimari v0.20 — 13 Eylül 2026
+
+Ayrı run_to_startup_call/--observe-startup-call ile orijinal entry’den sonraki ilk proxy IAT çağrısı tutulur. DR0 fonksiyon başlangıcına taşınır, DR1 aynı main-thread’in IAT yazımlarını gözler. CALL biçimi/slot, stack parametre alanı, target byte kararlılığı ve dört sınırlı image örneği raporlanır. Eski entry/proxy durakları korunur; startupObservation eski modlarda null olur. Strict startup-policy source’u proxy ve observed profile digest’ine bağlıdır; yeni DLL pini veya otomatik native izin eklenmedi. Dokuz fixture, 19 senaryo + canary positive control + 12 warm, yedi policy ve iki CLI testi eklendi. Özel CRT entry denemesi unresolved CRT sembolleriyle başarısız oldu; normal CRT entry seçilerek düzeltildi. Ortak fixture PE helper taşındı; production parser/SDK/ABI/otorite değişmedi. Public C++ trace/API kullanıcıları birlikte yeniden derlenir; bootstrap C ABI 1 aynı, kaldırılan ürün özelliği/kalıcı migration yoktur. ADR-48, sahip belgeleri, status/roadmap/component-map ve Windows/Linux test girişleri güncellendi. [Doğrulama ve sınırlar](d1-startup-call.md). Son standart sonuç: x86 Debug/Release 11 native suite + 79 managed + 85 Python; x64 Debug/Release 6 suite + 79 managed + 60 Python geçti. Gerçek private GTA 12/12 startup hit, dört original/legacy regresyonla 16/16 confirmed exit; 16 input dosyası değişmedi. Linux/hosted/N1 bu kesit için yeniden doğrulanmadı.
+
+
+## Kod 0.1.12 / mimari v0.19 — 13 Eylül 2026
+
+Ayrı run_to_proxy_return/--observe-proxy-return, exact entry→proxy dönüş durağı, runtime thunk/return slot/aktif mapping ve entry/IAT doğrulaması eklendi. Yeni compiled proxy-policy entry digest ve game-root modül hash’ine bağlıdır; otomatik izin/pin genişlemesi yoktur. Sekiz own EXE/DLL fixture varyantı, 19 native senaryo/12 warm çevrim, yedi policy ve iki CLI testi eklendi. İlk Debug stack overflow büyük trace geçicileri kaldırılarak giderildi; yığın limiti artırılmadı. Eski CLI’lar durma sınırlarını korur; additive proxyObservation eski modlarda null olur. Public C++ observer tipi değiştiğinden çağıranlar birlikte yeniden derlenir; bootstrap C ABI 1 ve N1/GNS kararları aynı kalır. Kaldırılan özellik veya kalıcı veri migration’ı yoktur. ADR-47, normatif owner’lar, status/roadmap/component-map ve Windows/Linux test girişleri birlikte güncellendi. [Kanıt ve sınırlar](d1-proxy-return.md). Son doğrulama: Windows x86 Debug/Release 10 native suite + 79 managed + 76 Python; x64 Debug/Release 6 suite + 79 managed + 53 Python geçti. Gerçek private GTA 12/12 proxy dönüşü ve üç original/legacy regresyonda 15/15 confirmed exit; 16 girdi dosyası değişmedi. Linux/hosted/N1 yeniden doğrulaması bu kayıt kapsamında değildir.
+
+
 Her kayıt davranış, kaynak, doküman, test ve kalan sınırı birlikte taşır. [Durum](status.md) · [İş akışı](workflow.md)
 
 ## 2026-09-13 — Hosted CI taşınabilirlik düzeltmesi
@@ -141,3 +151,7 @@ Kaldırılan ürün özelliği yoktur. “Yalnız Markdown çalışma dizini” 
 0.1.8 gerçek context deneyi, loader_unexpected_event için event türünün raporda eksik olduğunu gösterdi. lastEventCode/lastEventThreadId additive alanları ve regresyonları eklendi; bilinmeyen olay hâlâ terminal ret alır. Başarısız Debug deneyini Release başarısıyla gizleme veya mevcut policy'yi genişletme yoktur.
 
 0.1.11 aynı kesitin ek-pini: ilk gerçek initializer deneyi imm32.dll'de ret verdi. Yerel metadata/hash/import ve Microsoft imzası incelemesinden sonra ayrı entry-policy.json/compiler/header eklendi. Base source/hash değişmedi; ek tablo 1–8 system-only kayıt, base/engine digest ve override yasağıyla sınırlıdır. Sekiz generator testi ve build --check eklendi; ilk ek-pinli Debug özel kopyada entry byte mutation ve owned exit doğrulandı.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.

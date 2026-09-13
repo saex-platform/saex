@@ -146,3 +146,11 @@ Kullanıcıya özgü Python yolları genel kurulum örneklerinden çıkarıldı.
 Genel kaynak metni LF kullanır; raw SHA-256 ile bağlı `contracts/engine/*.json` ve `tools/native/patches/*.json` için `.gitattributes` dönüşümü kapatır. Bu istisna mevcut kanıt digest'lerini korur; yeni clone'da generator/SDK verify kapıları ayrıca geçmelidir.
 
 Temiz N1 SDK derlemesi için kısa bir checkout yolu kullanılır: uzun kullanıcı/OneDrive/alt-checkout yollarında MSBuild compiler-ID tlog oluşturma adımı hata verebilir. İlk uzun-yol başarısızlığı ve kısa checkout Debug/Release başarıları [yayın raporunda](github-publication.md) ayrı kaydedilir. Lock/toolchain kontrolü bu hata için gevşetilmez.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[Proxy dönüş kesiti](d1-proxy-return.md) için source bilinçli değişince python tools/proxy_policy.py çalıştırılır; normal Windows ve Linux CI yalnız --check ve yedi generator negatif testini yürütür. X86 native.proxy_observation sekiz EXE/DLL varyantı, 19 senaryo ve 12 warm çevrim içerir; kod yalnız kendi canary dosyalarını kullanır. Windows CLI corpus’u 13 testtir. Standart build GTA başlatmaz. Component-map yeni policy/header/generator/corpus ve eski ortak observer owner’larını birlikte denetler.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[Startup-call kesiti](d1-startup-call.md) source değişince python tools/startup_policy.py üretimi, normal Windows/Linux akışında --check + yedi policy testi kullanır. X86 native.startup_observation dokuz standart CRT EXE, tek mevcut proxy DLL, 19 senaryo + canary control + 12 warm çevrimdir. CLI corpus 15 testtir. Yeni kaynaklar/component-map bu rapor ve bütün örtüşen sahip belgeleri denetler; normal build GTA çalıştırmaz.

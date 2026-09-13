@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.windows-26200.proxy-return-v1",
+  "stage": "proxy-return-boundary",
+  "entryPolicySha256": "56328c7da0b0de6f3584e526b5fae3484634af927ce3a2cc8ace311112166cb2",
+  "module": "vorbisfile.dll",
+  "moduleSha256": "bdcf32fc3961eebffb4104327ca1396daf1cbd5e736930ed247836035148dafc",
+  "thunkRva": 7520,
+  "callTargetRva": 7136,
+  "returnSlotRva": 25624,
+  "iatRva": 4555248,
+  "iatTargetRva": 7072,
+  "reviewDocument": "docs/development/d1-proxy-return.md"
+}
