@@ -96,3 +96,19 @@ Organizasyon profilindeki banner ve belge bağlantıları görünür, `saex` ana
 ## Kod 0.1.13 kaynak birleştirmesi
 
 0.1.12 ve 0.1.13 geliştirmesini içeren yerel `aede99f` commit’i, yayımlanmış `a0562ef` tabanıyla ayrı `feature/startup-call-observation` dalında birleştirildi. Önceki yerel commit tam Git bundle ve güvenlik dalıyla korundu. Yalnız ek belge bölümleri çakıştı; iki sürümün kayıtları korundu, kaynak dosyaları ve hash’e bağlı sözleşme byte’ları değiştirilmedi. Yayın mevcut PR ve yedi zorunlu kontrol akışını kullanır; bu birleştirme tek başına yeni hosted başarı kanıtı değildir.
+
+### Kod 0.1.13 GitHub doğrulaması
+
+[PR #9](https://github.com/saex-platform/saex/pull/9) kaynak commit’i `bd98c4a7746888c89c919312d8ea6de95bcd461c` için yedi zorunlu kontrol geçti: [Build](https://github.com/saex-platform/saex/actions/runs/34749019782), [Documentation and source safety](https://github.com/saex-platform/saex/actions/runs/34749019756).
+
+| GitHub hosted kontrolü | Native suite | Managed/entegrasyon | Python |
+|---|---|---|---|
+| Windows x64 Debug | 6/6 | 79/79 | 60/60 |
+| Windows x64 Release | 6/6 | 79/79 | 60/60 |
+| Windows x86 Debug | 11/11 | 79/79 | 85/85 |
+| Windows x86 Release | 11/11 | 79/79 | 85/85 |
+| Linux x64 Debug / Ubuntu 24.04 | 4/4 | 79/79 | 51/51 |
+
+Ayrı Documentation kontrolü gerçek `a0562ef` PR tabanına göre 46 değişmiş yol, 91 Markdown, 1254 yerel bağlantı, 6 JSON örneği ve 13 tooling testinde geçti; Secret scan başarılıdır. Ana çalışma klasöründeki x86 Debug birleştirme doğrulaması da 11 native suite/79 managed/85 Python ve aynı belge kapısıyla geçti. Altı commit’li yerel Git geçmişinde Gitleaks sıfır bulgu verdi. 229 tracked dosyada oyun/build binary’si ve çözümlenmemiş çakışma işareti bulunmadı; kaynak dosyaları `aede99f` ile aynıdır. Bu kanıtlar adı geçen kaynak commit’ine aittir; sonraki sonuç kaydı yalnız belgedir ve PR’ın güncel başı yine zorunlu kontrollerden geçer.
+
+N1 SDK hosted işi ve gerçek GTA bu aktarımda çalıştırılmadı. Önceki gerçek GTA raporları kendi artifact kimlikleriyle korunur; proxy/startup wrapper gövdesi, dinamik SAEX DLL yüklemesi ve D1/D2 ürün kapıları bu CI sonucuyla kapanmaz.

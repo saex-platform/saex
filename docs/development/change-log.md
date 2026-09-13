@@ -1,5 +1,9 @@
 # Kaynak ve belge değişiklik kaydı
 
+## 2026-09-13 — 0.1.13 hosted yayın kanıtı
+
+`bd98c4a` kaynakları için PR #9’daki beş Windows/Linux build, doküman ve sır taramasının tamamı geçti. Windows x64 6 native/79 managed/60 Python, x86 11 native/79 managed/85 Python; Linux 4 native/79 managed/51 Python. Yerel x86 Debug birleştirme koşusu ve altı commit’li geçmişin Gitleaks taraması da geçti. Status ve yayın raporu güncellendi; bu sonuç kaydı yalnız belgedir. Kaynak/ABI/otorite, raw hash girdileri ve önceki gerçek GTA kanıtının sınırı değişmedi; N1 hosted ve GTA yeniden çalıştırılmadı.
+
 ## 2026-09-13 — 0.1.13 kaynaklarının yayın tabanıyla birleştirilmesi
 
 0.1.12/0.1.13 kaynakları, önceki public yayın ve hosted CI düzeltmeleriyle birleştirildi. Çakışan belge ekleri iki tarafın kanıtını korur; kaynak/ABI/otorite ve raw hash girdileri bu birleştirmede değişmedi. Yerel başlangıç commit’i güvenlik dalı ve tam Git bundle ile korundu. Yeni yayın PR ve mevcut yedi zorunlu kontrol üzerinden ilerler; sonuç [yayın raporunda](github-publication.md) ayrı kaydedilir.

@@ -12,6 +12,10 @@ Kaynak commit'i `e5e2dd0d77e37447eca4b7e32c0b89306978c096` için **GitHub'daki y
 
 Bu kaynak yayını D1'i kapatmaz; D2 oynanabilir multiplayer veya native binary release değildir. 0.1.12/0.1.13 proxy ve startup geliştirmesi bu ilk yayın kanıtının kapsamı dışındadır. Yeni kaynaklar yayımlanmış tabanla birleştirildi; bu sürümün GitHub doğrulaması [yayın raporunda](github-publication.md#kod-0113-kaynak-birleştirmesi) ayrıca izlenir.
 
+### Kod 0.1.13 GitHub doğrulaması
+
+[PR #9](https://github.com/saex-platform/saex/pull/9), `bd98c4a` kaynak commit’i: **yedi zorunlu hosted kontrol geçti**. Windows x64 Debug/Release 6 native suite/79 managed/60 Python; x86 Debug/Release 11 suite/79 managed/85 Python; Linux x64 Debug 4 suite/79 managed/51 Python başarılıdır. Ayrı belge kontrolü ve sır taraması geçti. Yerel x86 Debug birleştirme koşusu da geçti. [Koşu bağlantıları ve kapsam](github-publication.md#kod-0113-github-doğrulaması). N1 SDK ve gerçek GTA bu yayın çalışmasında tekrar çalıştırılmadı; aşağıdaki tarihsel runtime kanıtları kendi artifact kapsamındadır.
+
 ### Ürün bileşenleri
 
 | Bileşen | Kodlanmış davranış | Doğrulama | Kalan sınır |
