@@ -124,3 +124,7 @@ executionPolicySourceDigest entry JSON SHA’sıdır; basePolicySha256 immutable
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 Own fixture cwd kanıtı artık string yazımı değil açılmış volume/file ID eşitliğidir. Eşdeğer alias pozitifi, farklı dizin ve yanlış token negatifleri ayrı koşulur. Bu test başarısı bütün ortam eşitliği, sandbox veya GTA çalışma kanıtı değildir; portable bootstrap dönüşümü ABI layout kanıtını değiştirmez.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.

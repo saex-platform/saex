@@ -131,3 +131,7 @@ Entry izin source’u entry-policy.json olarak somutlaştı: exact base/engine d
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 Bootstrap uint32_t fallback dönüşümü ve Windows own fixture dizin kimliği düzeltmesi kaynak taşınabilirliği kapsamındadır. Fixture eşdeğer yol yazımını kabul eder, farklı dizin/yanlış token sonucunu reddeder. Production directory pin, exact SDK/profile/recipe digest ve C ABI 1 aynı kalır; GTA entegrasyon kanıtı eklenmez.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.

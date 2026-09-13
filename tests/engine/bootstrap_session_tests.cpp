@@ -41,11 +41,14 @@ int main() {
         BootstrapSession early;
         require(early.invoke(BootstrapOperation::stop, probe, 1, &out, sizeof(out)) == SAEX_BOOTSTRAP_OK && out.observation_attempts == 0, "stop before initialize");
         require(early.invoke(BootstrapOperation::initialize, probe, 1, &out, sizeof(out)) == SAEX_BOOTSTRAP_OK && out.state == SAEX_BOOTSTRAP_STOPPED, "early stopped session restarted");
-        for (const auto reason : {0U, 1U, 2U, 3U, 4U, 6U, 999U}) {
+        for (const auto reason : {0U, 1U, 2U, 3U, 4U, 6U, 999U, 0xffffffffU}) {
             BootstrapSession rejected;
             Probe failure; failure.reason = reason;
             require(rejected.invoke(BootstrapOperation::initialize, failure, 1, &out, sizeof(out)) == SAEX_BOOTSTRAP_OK &&
                 out.state == SAEX_BOOTSTRAP_REJECTED && !out.can_attach && !out.bindings_loaded && !out.observed_profile_id[0], "failed observation allowed");
+            if (reason == 0U || reason == 999U || reason == 0xffffffffU)
+                require(out.reason == SAEX_BOOTSTRAP_INTERNAL_ERROR, "unknown reason was not mapped to internal error");
+            else require(out.reason == reason, "known rejection reason changed");
             require(rejected.invoke(BootstrapOperation::initialize, failure, 1, &out, sizeof(out)) == SAEX_BOOTSTRAP_OK && failure.calls == 1, "failure retry storm");
         }
         BootstrapSession concurrent;

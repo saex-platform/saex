@@ -112,3 +112,7 @@ Kod 0.1.5 [başlangıç envanteri](../development/d1-native-startup.md), exe ile
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 GitHub Linux derlemesi için bootstrap fallback türü açıklaştırıldı. Windows own context fixture dizin adını metin yerine volume/file ID ile doğrular. Engine profili, canAttach=false ve native adres/initialization sınırları değişmez.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.

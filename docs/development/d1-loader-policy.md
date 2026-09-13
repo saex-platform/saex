@@ -100,3 +100,7 @@ Bu dosyada tanımlı JSON stage=first-exception-only, source digest ve 22 exact 
 ## Kod 0.1.11 — Entry supplement bağı
 
 entry-policy.json içindeki basePolicySha256 bu değişmeyen JSON’un exact SHA’sıdır. Yalnız entry seti 23’e çıktı; 22 kayıtlı base recipe ve first-exception-only stage değiştirilmedi. [Ayrıntı](d1-entry-boundary.md).
+
+### Hosted corpus tamamlaması
+
+İkinci hosted turda bütün native suite'ler geçti; ortak Python loader CLI corpus'undaki cwd string eşitliği kısa/uzun Windows adı nedeniyle hata verdi. Test artık pathlib.samefile ile aynı dizin kimliğini doğrular. Engine unknown-fingerprint reddi, environment redaction, childCreated=false, entry/loader policy ve lifecycle sınırları aynen kalır; önceki GTA artifact sonuçları yeni test kanıtı sayılmaz.

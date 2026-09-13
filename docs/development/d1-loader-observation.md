@@ -113,3 +113,7 @@ Bu rapordaki üç pinli --observe-loader ve tarihsel apphelp ret sonuçları kor
 ## Kod 0.1.11 — Entry supplement bağı
 
 run_to_entry birleşik base22 + ayrı imm32 supplement setini kullanır. run() ve legacy üç CLI aynı pin/faz sınırını korur. JSON executionPolicySourceDigest yeni source’u tanımlar. [Ayrıntı](d1-entry-boundary.md).
+
+### Hosted corpus tamamlaması
+
+İkinci hosted turda bütün native suite'ler geçti; ortak Python loader CLI corpus'undaki cwd string eşitliği kısa/uzun Windows adı nedeniyle hata verdi. Test artık pathlib.samefile ile aynı dizin kimliğini doğrular. Engine unknown-fingerprint reddi, environment redaction, childCreated=false, entry/loader policy ve lifecycle sınırları aynen kalır; önceki GTA artifact sonuçları yeni test kanıtı sayılmaz.

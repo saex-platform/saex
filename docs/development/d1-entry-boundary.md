@@ -100,3 +100,7 @@ Bu sonuç, seçilmiş DLL başlangıcı sırasında entry yönlendirmesinin ger�
 | Release loader probe | `8ef37d29438a81b9816ff0e3db5f73208cd4c24170719c476b90bf19d36c25bd` |
 
 Environment digest bütün private koşularda `3725a091ed77f875b48ab336a8162328429aeebc82f2c4779f897ed54f62407e`; raw değerler raporlanmadı. Entry source ve probe değişirse bu sonuç yeni artifact'a otomatik taşınmaz. N2 sonraki adımı entry sonrası proxy/unpack ve loader lock dışında gerçek SAEX bootstrap/ABI kanıtıdır; D1/N3 ve multiplayer hâlâ açık kapılardır.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted turda bütün native suite'ler geçti; ortak Python loader CLI corpus'undaki cwd string eşitliği kısa/uzun Windows adı nedeniyle hata verdi. Test artık pathlib.samefile ile aynı dizin kimliğini doğrular. Engine unknown-fingerprint reddi, environment redaction, childCreated=false, entry/loader policy ve lifecycle sınırları aynen kalır; önceki GTA artifact sonuçları yeni test kanıtı sayılmaz.

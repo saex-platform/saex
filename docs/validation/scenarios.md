@@ -220,3 +220,7 @@ Sekiz entry-policy testi base/engine drift, scope/schema/keys/size, system-only 
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 Launch-context own fixture için üç ek regresyon: aynı dizinin `\.` yazımı başarılı ve marker doğru cwd içinde; başka mevcut dizin beklentisi exit 72 ve marker yok; snapshot sonrası değişen token ile exit 72 ve marker yok. Mevcut snapshot freeze, retained directory ve 12 warm çevrim kontrolleri kalır. Bootstrap geçersiz reason testi GCC için açık dönüşümden sonra da INTERNAL_ERROR bekler.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.

@@ -110,3 +110,7 @@ Her kaynak ekleme/değiştirme/çıkarma bu tablo, [change-log](change-log.md) v
 0.1.9 son statik belge kontrolü: 76 Markdown, 1013 yerel bağlantı, 6 JSON örneği ve sıfır hata. Bu sonuç kaynak/belge eşlemesi ve statik yapı kanıtıdır; bütün mimarinin anlamsal kusursuzluğu veya GTA initialization başarısı değildir.
 
 0.1.11 ara gerçek kanıt: ilk initializer koşusu imm32 unpinned ret verdi. Ayrı entry-policy.json + strict compiler, mevcut 22 pinin exact digest'ine bir incelenmiş system-x86 imm32 kaydı ekler. Sekiz generator testi geçti; ilk ek-pinli Debug özel kopya entry_boundary_modified sonucuna ulaştı. Son standart toplamlar ve 12/12 gerçek entry tekrarı yukarıdaki 0.1.11 bölümündedir; ilk ret kanıtı korunur.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.

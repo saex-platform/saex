@@ -141,3 +141,7 @@ Kaldırılan ürün özelliği yoktur. “Yalnız Markdown çalışma dizini” 
 0.1.8 gerçek context deneyi, loader_unexpected_event için event türünün raporda eksik olduğunu gösterdi. lastEventCode/lastEventThreadId additive alanları ve regresyonları eklendi; bilinmeyen olay hâlâ terminal ret alır. Başarısız Debug deneyini Release başarısıyla gizleme veya mevcut policy'yi genişletme yoktur.
 
 0.1.11 aynı kesitin ek-pini: ilk gerçek initializer deneyi imm32.dll'de ret verdi. Yerel metadata/hash/import ve Microsoft imzası incelemesinden sonra ayrı entry-policy.json/compiler/header eklendi. Base source/hash değişmedi; ek tablo 1–8 system-only kayıt, base/engine digest ve override yasağıyla sınırlıdır. Sekiz generator testi ve build --check eklendi; ilk ek-pinli Debug özel kopyada entry byte mutation ve owned exit doğrulandı.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.

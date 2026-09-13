@@ -96,3 +96,7 @@ Ek entry policy imm32 kaydı kullansa da cwd/environment aynı explicit snapshot
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 GitHub Windows runner ilk koşusunda own fixture ham cwd metnini, LaunchContext ise Windows tarafından çözümlenmiş dizini kullanıyordu. Aynı klasörün kısa/uzun veya `\.` yazımları metinsel eşitlik garantisi vermez. Fixture artık açılmış cwd ve beklenen klasörün volume/file ID bilgisini karşılaştırır. Eşdeğer yol pozitif; farklı mevcut klasör ve yanlış environment token negatif kontrolleri eklenmiştir. Production LaunchContext, directory pin ve snapshot davranışı değişmez.
+
+### Hosted corpus tamamlaması
+
+İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.

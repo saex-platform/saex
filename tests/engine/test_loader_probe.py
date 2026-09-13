@@ -125,7 +125,7 @@ class LoaderProbeTests(unittest.TestCase):
             self.assertFalse(output['initializationVerified'])
             context = output['launchContext']
             self.assertTrue(context['prepared'])
-            self.assertEqual(Path(context['directory']), Path(directory))
+            self.assertTrue(Path(context['directory']).samefile(directory))
             self.assertRegex(context['environmentSha256'], r'^[0-9a-f]{64}$')
             self.assertGreater(context['environmentEntries'], 0)
             self.assertLessEqual(context['environmentCodeUnits'], 65536)

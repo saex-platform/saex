@@ -90,3 +90,7 @@ Entry initialization policy, core ControlClock/LeaseAuthority veya bootstrap C A
 ## GitHub kaynak yayını — taşınabilirlik düzeltmesi
 
 Bootstrap reason fallback artık açık uint32_t dönüşümü kullanır; C ABI 1/status layout ve hata kodlarının sayısal değeri değişmez. GCC derleme uyumu IPC veya execution izni eklemez.
+
+### Hosted corpus tamamlaması
+
+Bootstrap session corpus artık geçersiz reason 0/999/UINT32_MAX için exact INTERNAL_ERROR değerini ve bilinen ret kodlarının korunmasını ayrıca sınar. Önceki test yalnız terminal ret durumunu ölçüyordu; bu ek assertion ABI/fallback değerini doğrudan kanıtlar. Production davranışı ve layout değişmez.

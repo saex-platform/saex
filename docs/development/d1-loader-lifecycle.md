@@ -97,3 +97,7 @@ Bu sonuç R-01b/AC-90'ın mapping-lifecycle alt kanıtıdır. Başlangıç break
 ## Kod 0.1.11 — Entry supplement bağı
 
 Entry scope’undaki bir imm32 ek pini ledger kimlik/retire/hash/budget semantiğini değiştirmez. Eski history kanıtı yeni initializer/entry kanıtına dönüşmez. [Ayrıntı](d1-entry-boundary.md).
+
+### Hosted corpus tamamlaması
+
+İkinci hosted turda bütün native suite'ler geçti; ortak Python loader CLI corpus'undaki cwd string eşitliği kısa/uzun Windows adı nedeniyle hata verdi. Test artık pathlib.samefile ile aynı dizin kimliğini doğrular. Engine unknown-fingerprint reddi, environment redaction, childCreated=false, entry/loader policy ve lifecycle sınırları aynen kalır; önceki GTA artifact sonuçları yeni test kanıtı sayılmaz.
