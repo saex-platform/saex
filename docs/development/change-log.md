@@ -8,7 +8,7 @@ Kullanıcı kurgunun uygulanmasını onayladı. SAEX marka görselleri, sade REA
 
 Windows x64/x86 Debug/Release, portable Linux x64, belge eşlemesi ve hash-pinli Gitleaks için workflow'lar eklendi; SDK işi ayrı manuel opt-in kaldı. Yeni `tools/ci.py` event/base doğrulaması sekiz negatif/pozitif testle standart build'e bağlandı. Component map, yayın sözleşmesi, workflow, foundation/status/roadmap birlikte güncellendi. Python örnek yolları taşınabilir hale getirildi.
 
-Ürün API/ABI/otorite ve GTA davranışı değişmedi; kaldırılan ürün özelliği veya migration yok. 189 kaynak + Git metadata'sının yerel yedeği doğrulandı. Temiz checkout ve GitHub CI sonuçları [yayın raporunda](github-publication.md) tamamlanacak; kaynak aktarımı oynanabilir release değildir.
+Ürün API/ABI/otorite ve GTA davranışı değişmedi; kaldırılan ürün özelliği veya migration yok. 189 kaynak + Git metadata'sının yerel yedeği doğrulandı. Temiz checkout x64/x86 Debug/Release akışları geçti: her koşuda 79 managed, x64 6 native suite/46 Python, x86 9 suite/67 Python testi. Actionlint/YAML/SVG ve Gitleaks kontrolleri geçti. GitHub CI sonuçları [yayın raporunda](github-publication.md) tamamlanacak; kaynak aktarımı oynanabilir release değildir.
 
 Staging sırasında hash'li engine JSON ve SDK patch girdilerinin genel LF dönüşümünden etkileneceği saptandı. `.gitattributes` bu girdileri exact byte olarak koruyacak şekilde düzeltildi; hash kapıları veya eski lock/profil değiştirilmedi.
 

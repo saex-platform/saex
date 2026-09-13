@@ -1,6 +1,6 @@
 # GitHub kaynak yayını: iş akışı ve doğrulama
 
-Tarih: 13 Eylül 2026. **Uygulama sürüyor.** Kullanıcı [kurgunun](github-publication-plan.md) uygulanmasını, ilk yayının public olmasını ve mevcut hesabın sahipliğini onayladı. Kod 0.1.11 / mimari v0.18 kapsamı korunur; bu çalışma oyun içi yetenek eklemez.
+Tarih: 13 Eylül 2026. **Yerel yayın adayı doğrulandı; GitHub kontrolleri sürüyor.** Kullanıcı [kurgunun](github-publication-plan.md) uygulanmasını, ilk yayının public olmasını ve mevcut hesabın sahipliğini onayladı. Kod 0.1.11 / mimari v0.18 kapsamı korunur; bu çalışma oyun içi yetenek eklemez.
 
 ## Depolar ve sahiplik
 
@@ -38,4 +38,15 @@ Bu exact-byte girdilerindeki CRLF, Git whitespace kontrolünde `cr-at-eol` ile s
 
 ## Sonuç kaydı
 
-Yerel kaynak/CI hazırlığı ve GitHub kurulum doğrulaması sürüyor. Son commit, platform sonuçları, depo bağlantıları ve kalan sınırlar işlem tamamlanınca bu bölümde kaydedilir. 0.1.11'in daha önce yapılmış gerçek GTA gözlem sonuçları [status](status.md) ve [entry raporunda](d1-entry-boundary.md) tarihsel kapsamıyla korunur; bu yayın çalışmasında GTA tekrar başlatılmaz.
+İlk kaynak commit'i `8d775e7848c792b8070cf4e8155e14fc55fbec90`, sıfır build cache'iyle ayrı yerel checkout'ta doğrulandı:
+
+| Yerel temiz checkout | Native suite | Managed/entegrasyon | Python test |
+|---|---|---|---|
+| Windows x64 Debug | 6/6 | 79/79 | 46/46 |
+| Windows x64 Release | 6/6 | 79/79 | 46/46 |
+| Windows x86 Debug | 9/9 | 79/79 | 67/67 |
+| Windows x86 Release | 9/9 | 79/79 | 67/67 |
+
+Actionlint 1.7.12 ve YAML/SVG parse kontrolleri geçti. Gitleaks 8.30.1 ilk Git commit'inin tamamında ve 10 dosyalı topluluk deposunda sıfır bulgu verdi. Staging 213 dosya, yaklaşık 1,40 MB; yasak oyun/build binary'si, symlink veya submodule yok. Exact engine JSON/recipe/patch hash'leri Git index'inde doğrulandı.
+
+[Organizasyon](https://github.com/saex-platform), [ana depo](https://github.com/saex-platform/saex) ve [profil/topluluk deposu](https://github.com/saex-platform/.github) public olarak oluşturuldu. Hesabın active/admin organizasyon üyeliği ve özel güvenlik bildirim kanalı doğrulandı. İlk kaynak push ve GitHub CI sonuçları bu kayıtta tamamlanacak. 0.1.11'in daha önce yapılmış gerçek GTA gözlem sonuçları [status](status.md) ve [entry raporunda](d1-entry-boundary.md) tarihsel kapsamıyla korunur; bu yayın çalışmasında GTA tekrar başlatılmaz.

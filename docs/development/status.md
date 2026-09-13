@@ -6,7 +6,7 @@ Sürüm: mimari v0.18 / kod 0.1.11, D1 foundation + native dependency + N2 prefl
 
 ### GitHub yayın hazırlığı
 
-13 Eylül 2026: Kullanıcı [kurgunun](github-publication-plan.md) uygulanmasını onayladı. **SAEX — San Andreas Extended** için `saex-platform` organizasyonu Owner `Rohatcengizhanbucak` altında oluşturuldu. İlk yayın public `.github` + `saex` monorepo; MIT, marka/doküman/katkı dosyaları ve Windows/Linux/secret/doc CI tanımları hazırlandı. [Uygulama ve kanıt kaydı](github-publication.md) yerel temiz checkout ile GitHub sonuçlarını ayrı tutar. Depo aktarımı ve kontroller sürüyor; D1/D2 ürün durumu değişmedi.
+13 Eylül 2026: Kullanıcı [kurgunun](github-publication-plan.md) uygulanmasını onayladı. **SAEX — San Andreas Extended** için `saex-platform` organizasyonu Owner `Rohatcengizhanbucak` altında oluşturuldu. İlk yayın public `.github` + `saex` monorepo; MIT, marka/doküman/katkı dosyaları ve Windows/Linux/secret/doc CI tanımları hazırlandı. [Uygulama ve kanıt kaydı](github-publication.md) yerel temiz checkout ile GitHub sonuçlarını ayrı tutar. Temiz checkout Windows x64/x86 Debug/Release akışları geçti; her koşuda 79 managed, x64 6 native suite/46 Python, x86 9 suite/67 Python testi başarılı. GitHub aktarımı ve uzak kontroller sürüyor; D1/D2 ürün durumu değişmedi.
 
 ### Ürün bileşenleri
 
