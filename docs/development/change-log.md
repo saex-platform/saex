@@ -2,6 +2,10 @@
 
 Her kayıt davranış, kaynak, doküman, test ve kalan sınırı birlikte taşır. [Durum](status.md) · [İş akışı](workflow.md)
 
+## 2026-09-13 — Hosted CI taşınabilirlik düzeltmesi
+
+İlk GitHub Build başarısızlığından sonra bootstrap reason fallback açık uint32_t dönüşümüne çevrildi. Windows own fixture ham cwd metni yerine OS volume/file ID eşitliğini doğrular; eşdeğer yol, farklı mevcut klasör ve yanlış token regresyonları eklendi. Production LaunchContext, ABI/status layout, engine/policy/SDK hash girdileri ve GTA yetkileri değişmez; migration veya kaldırılan özellik yoktur. Bütün bootstrap/context normatif ve test sahibi belgeleri aynı değişiklikte güncellendi. İlk başarısız CI ve N1 uzun-yol denemesi yayın raporunda korunur; yeni yerel/hosted sonuçlar ayrıca kaydedilecektir.
+
 ## 2026-09-13 — İlk public GitHub yayını ve CI hazırlığı
 
 Kullanıcı kurgunun uygulanmasını onayladı. SAEX marka görselleri, sade README ve belge indeksi, MIT lisansı, üçüncü taraf bildirimleri, katkı/destek/güvenlik kuralları, issue/PR şablonları, CODEOWNERS ve LF politikası eklendi. Önceki README açıklamaları bağlantıları düzeltilmiş tarihsel arşivde korundu. GitHub organizasyonu `saex-platform`, mevcut kullanıcının sahipliğinde ücretsiz planla oluşturuldu.

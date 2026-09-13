@@ -107,3 +107,7 @@ Yeni `--observe-entry-boundary <gta_sa.exe> <absolute-working-directory>` [dar i
 ## Kod 0.1.11 — Entry supplement bağı
 
 executionPolicySourceDigest ayrı entry JSON’u; policySourceDigest eski mapping kaynağıdır. Entry CLI bütün 23 pini child öncesi hazırlar; yeni DLL için otomatik onay/repair yoktur. Legacy 22/3 setleri aynı kalır. [Ayrıntı](../development/d1-entry-boundary.md).
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+Own launch-context fixture artık cwd için raw yol metni yerine Windows volume/file ID eşitliğini sınar; kısa/uzun ad farklılığı yanlış ret üretmemelidir. Farklı mevcut klasör ve yanlış environment token negatifleri korunur. Production CLI, directory handle pin ve explicit snapshot davranışı değişmez; launcher uygulanmış sayılmaz.

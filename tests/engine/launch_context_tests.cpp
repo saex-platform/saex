@@ -94,19 +94,35 @@ int wmain(int argc, wchar_t** argv) {
         require(SetEnvironmentVariableW(token.name.c_str(), L"changed-after-snapshot") != 0, "change fixture parent environment");
         LaunchContext later(directory.path);
         require(later.valid() && later.environment_hash() != snapshot.environment_hash(), "capture ignored parent mutation");
-        auto command = L"\"" + std::wstring(argv[1]) + L"\"";
-        std::vector<wchar_t> block(snapshot.environment().begin(), snapshot.environment().end());
-        STARTUPINFOW startup{}; startup.cb = sizeof(startup);
-        PROCESS_INFORMATION process{};
-        require(CreateProcessW(argv[1], command.data(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW | CREATE_UNICODE_ENVIRONMENT,
-            block.data(), snapshot.directory().c_str(), &startup, &process) != 0, "context fixture launch");
-        Handle p{process.hProcess}, t{process.hThread};
-        if (WaitForSingleObject(p.value, 5000) != WAIT_OBJECT_0) {
-            TerminateProcess(p.value, 80); WaitForSingleObject(p.value, 5000); throw std::runtime_error("context fixture timeout");
-        }
-        DWORD exit{};
-        require(GetExitCodeProcess(p.value, &exit) && exit == 73 && !absent(directory.path), "child received wrong cwd or environment");
-        require(DeleteFileW((directory.path + L"\\context.received").c_str()) != 0, "owned marker cleanup");
+        const auto run_fixture = [&](const LaunchContext& context, DWORD expected_exit) {
+            require(context.valid(), "fixture context invalid");
+            auto command = L"\"" + std::wstring(argv[1]) + L"\"";
+            std::vector<wchar_t> block(context.environment().begin(), context.environment().end());
+            STARTUPINFOW startup{}; startup.cb = sizeof(startup);
+            PROCESS_INFORMATION process{};
+            require(CreateProcessW(argv[1], command.data(), nullptr, nullptr, FALSE, CREATE_NO_WINDOW | CREATE_UNICODE_ENVIRONMENT,
+                block.data(), context.directory().c_str(), &startup, &process) != 0, "context fixture launch");
+            Handle p{process.hProcess}, t{process.hThread};
+            if (WaitForSingleObject(p.value, 5000) != WAIT_OBJECT_0) {
+                TerminateProcess(p.value, 80); WaitForSingleObject(p.value, 5000); throw std::runtime_error("context fixture timeout");
+            }
+            DWORD exit{};
+            require(GetExitCodeProcess(p.value, &exit) != 0, "fixture exit unavailable");
+            if (exit != expected_exit) throw std::runtime_error("context fixture exit " + std::to_string(exit));
+            require(absent(directory.path) == (expected_exit != 73), "fixture marker disagrees with context result");
+            if (expected_exit == 73)
+                require(DeleteFileW((directory.path + L"\\context.received").c_str()) != 0, "owned marker cleanup");
+        };
+        run_fixture(snapshot, 73);
+        run_fixture(later, 72); // The same directory cannot hide a wrong environment token.
+        require(SetEnvironmentVariableW(token.name.c_str(), L"sabit-çığ=1") &&
+            SetEnvironmentVariableW(expected.name.c_str(), (directory.path + L"\\.").c_str()), "set equivalent path spelling");
+        LaunchContext alias(directory.path);
+        run_fixture(alias, 73); // Different spellings must resolve to the same volume/file identity.
+        Directory different_directory;
+        require(SetEnvironmentVariableW(expected.name.c_str(), different_directory.path.c_str()) != 0, "set wrong directory");
+        LaunchContext mismatch(directory.path);
+        run_fixture(mismatch, 72); // An existing but different directory must still fail.
         const auto cycle = [&] {
             LaunchContext iteration(directory.path);
             SuspendedImage held(argv[1], 4096, &iteration);
@@ -118,7 +134,7 @@ int wmain(int argc, wchar_t** argv) {
         for (unsigned i = 0; i < 12; ++i) cycle();
         DWORD after{};
         require(GetProcessHandleCount(GetCurrentProcess(), &after) && before == after, "context handle growth");
-        std::cout << "PASS launch context: canonical hash, Unicode/empty/drive entries, limits/duplicates/NUL/path rejection, snapshot freeze, child cwd/environment, held child, 12 warm cycles; cold/warm/final handles " << cold << '/' << before << '/' << after << '\n';
+        std::cout << "PASS launch context: canonical hash, Unicode/empty/drive entries, limits/duplicates/NUL/path rejection, snapshot freeze, child directory identity/alias, wrong directory/token rejection, held child, 12 warm cycles; cold/warm/final handles " << cold << '/' << before << '/' << after << '\n';
         return 0;
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

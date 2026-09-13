@@ -120,3 +120,7 @@ Sekiz entry-policy generator testi bütün standart akışlara eklendi. Yeni sou
 ## GitHub yayın tooling kesiti
 
 13 Eylül 2026: [yayın iş akışı](github-publication.md), sekiz event/base SHA testini standart build'e ekler. İlk push, PR base, bozuk/eksik SHA ve privileged event reddi test edilir. Linux için portable core/managed fixture girişi eklendi. Bu tooling testleri mevcut core/ABI invariant sayısını veya GTA kabul kapsamını değiştirmez; yerel/GitHub sonuçları yayın raporunda ayrılır.
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+GitHub taşınabilirlik düzeltmesi Windows native.launch_context suite içine alias/farklı dizin/yanlış token regresyonları ekler; native suite ve managed test toplamları değişmez. Portable bootstrap reason fallback açık uint32_t dönüşümüdür. Yerel yeniden doğrulama ve hosted CI sonucu ayrı kayıtlanır.

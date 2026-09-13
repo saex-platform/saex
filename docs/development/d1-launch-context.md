@@ -92,3 +92,7 @@ Bu rapordaki 0.1.8 UNLOAD retleri tarihsel olarak korunur. [0.1.9 lifecycle](d1-
 ## Kod 0.1.11 — Entry supplement bağı
 
 Ek entry policy imm32 kaydı kullansa da cwd/environment aynı explicit snapshot sözleşmesidir. Context ve tüm birleşik pinler child öncesi denetlenir; ham environment veya registry snapshot’ı eklenmedi. [Ayrıntı](d1-entry-boundary.md).
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+GitHub Windows runner ilk koşusunda own fixture ham cwd metnini, LaunchContext ise Windows tarafından çözümlenmiş dizini kullanıyordu. Aynı klasörün kısa/uzun veya `\.` yazımları metinsel eşitlik garantisi vermez. Fixture artık açılmış cwd ve beklenen klasörün volume/file ID bilgisini karşılaştırır. Eşdeğer yol pozitif; farklı mevcut klasör ve yanlış environment token negatif kontrolleri eklenmiştir. Production LaunchContext, directory pin ve snapshot davranışı değişmez.

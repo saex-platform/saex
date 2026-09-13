@@ -108,3 +108,7 @@ Kod 0.1.5 [başlangıç envanteri](../development/d1-native-startup.md), exe ile
 ## Kod 0.1.11 — Entry supplement bağı
 
 İlk imm32 ret sonrasında ayrı entry supplement incelenmiş x86 dosyayı hash/byte ile sabitler. Engine hash ve base recipe digest birlikte bağlanır; 23 dosya child öncesi doğrulanır. Entry mutation runtime capability veya ABI açmaz. [Ayrıntı](../development/d1-entry-boundary.md).
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+GitHub Linux derlemesi için bootstrap fallback türü açıklaştırıldı. Windows own context fixture dizin adını metin yerine volume/file ID ile doğrular. Engine profili, canAttach=false ve native adres/initialization sınırları değişmez.

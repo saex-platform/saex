@@ -129,3 +129,7 @@ Bu raporun artifact kimlikleri ve ilk sonuçları kod 0.1.2'ye aittir. Kod 0.1.3
 ## Kod 0.1.11 — Entry supplement bağı
 
 Entry supplement observed engine SHA ve base policy SHA’sını birlikte doğrular; generated header static_assert’i base drift’ini reddeder. Engine observation/anchor/support ve bootstrap C ABI değişmez. [Ayrıntı](d1-entry-boundary.md).
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+Portable bootstrap session fallback türü GCC -Werror uyumu için uint32_t olarak açıklaştırıldı. PE parser, observation source/anchor/hash ve invalid reason reddi değişmez. Yeni bir executable veya capability onayı verilmedi.

@@ -127,3 +127,7 @@ ADR-45 ve [0.1.10 linkage](../development/d1-native-linkage.md), native başlang
 ## Kod 0.1.11 — Entry supplement bağı
 
 Entry izin source’u entry-policy.json olarak somutlaştı: exact base/engine digest ve system-only ek pin. Imm32 ile 23 birleşik kayıt vardır; eski 22 pin/first-exception komutları değişmez. Runtime JSON, override veya otomatik hash kabulü bulunmaz. [Ayrıntı](../development/d1-entry-boundary.md).
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+Bootstrap uint32_t fallback dönüşümü ve Windows own fixture dizin kimliği düzeltmesi kaynak taşınabilirliği kapsamındadır. Fixture eşdeğer yol yazımını kabul eder, farklı dizin/yanlış token sonucunu reddeder. Production directory pin, exact SDK/profile/recipe digest ve C ABI 1 aynı kalır; GTA entegrasyon kanıtı eklenmez.

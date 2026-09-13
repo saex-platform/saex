@@ -102,3 +102,7 @@ R-01b'nin SDK bağımsız DLL, açık başlatma ve oyun dışı ret/stop alt kan
 ## Kod 0.1.4 devamı
 
 [Ayrı process observer](d1-suspended-process.md) eklendi; bootstrap DLL kaynakları/C ABI ve Debug/Release DLL artifact hash'leri değişmedi. Her iki yapılandırmada mevcut audit ve oyun dışı 100 warm lifecycle regresyonu geçti. Yeni gerçek GTA ilk-image gözlemi DLL'nin GTA'ya yüklendiği veya Initialize export'unun GTA'da çalıştığı anlamına gelmez. Bir sonraki faz unpack/ABI ve gerçek DLL load sırasıdır.
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+GitHub Linux GCC derlemesi, uint32_t reason ile enum fallback arasındaki örtük koşullu dönüşümü -Werror altında reddetti. Fallback açık std::uint32_t dönüşümüdür; mevcut geçersiz reason → INTERNAL_ERROR regresyonu korunur. Export, 192 byte status, C ABI 1 ve terminal durumlar değişmez.

@@ -144,3 +144,5 @@ GitHub hosted Windows matrisi x64/x86 Debug/Release; Linux matrisi x64 Debug'dı
 Kullanıcıya özgü Python yolları genel kurulum örneklerinden çıkarıldı. `C:\Python312\python.exe` yalnız örnek yoldur; gerçek kurulu Python 3 yolu `-Python` ile seçilir. Kaynak/ABI/GTA davranışı değişmedi.
 
 Genel kaynak metni LF kullanır; raw SHA-256 ile bağlı `contracts/engine/*.json` ve `tools/native/patches/*.json` için `.gitattributes` dönüşümü kapatır. Bu istisna mevcut kanıt digest'lerini korur; yeni clone'da generator/SDK verify kapıları ayrıca geçmelidir.
+
+Temiz N1 SDK derlemesi için kısa bir checkout yolu kullanılır: uzun kullanıcı/OneDrive/alt-checkout yollarında MSBuild compiler-ID tlog oluşturma adımı hata verebilir. İlk uzun-yol başarısızlığı ve kısa checkout Debug/Release başarıları [yayın raporunda](github-publication.md) ayrı kaydedilir. Lock/toolchain kontrolü bu hata için gevşetilmez.

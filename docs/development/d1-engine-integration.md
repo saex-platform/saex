@@ -96,3 +96,7 @@ D2'de iki aktif client ve üçüncü late join ile ortak yıkım; server collisi
 Entry source ayrı entry-policy.json/generated header’a bağlıdır. İlk imm32 ret ve incelenmiş supplement sonrası gerçek Debug entry mutation ayrı gözlemlerdir. Sekiz strict generator testi ve --check eklendi; N2 unpack/SAEX DLL/ABI hâlâ açıktır. [Ayrıntı](d1-entry-boundary.md).
 
 0.1.11 son kanıt: 12/12 private GTA koşusu giriş atlamasını yürütmeden vorbisfile.dll+0x1D60 yönlendirmesini gösterdi. Son matris 14 child exit ve 16 native dosya hash korunumu içerir. DLL/TLS başlangıcı/entry boundary alt kapsamı uygulanmış ve bu profilde ölçülmüştür; entry sonrası proxy/unpack, gerçek SAEX bootstrap ve ABI sıradadır. Standart x86 Debug/Release ve x64 Debug akışları geçti; sonuçların tam kapsamı entry raporundadır.
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+Public CI ilk turda Linux bootstrap tür dönüşümü ve Windows fixture cwd metin eşitliğinde durdu. Açık uint32_t fallback ve OS dizin kimliğiyle doğrulayan fixture uygulanır; eşdeğer yol/farklı dizin/yanlış token regresyonları vardır. Bu düzeltmeler N2 unpack/bootstrap veya N3 kapısını kapatmaz; koşu sonuçları yayın raporunda kaydedilir.

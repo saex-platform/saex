@@ -86,3 +86,7 @@ Kimlikler dört uint64 EntityRef alanı ve explicit checked artış kullanır. [
 ## Kod 0.1.11 — Entry supplement bağı
 
 Entry initialization policy, core ControlClock/LeaseAuthority veya bootstrap C ABI değildir. Yalnız local debugger experiment iznidir; source build zamanında derlenir. Base pin/source digest ile executionPolicySourceDigest ayrı tutulur. Worker/SDK/IPC sözleşmeleri değişmez. [Ayrıntı](../development/d1-entry-boundary.md).
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+Bootstrap reason fallback artık açık uint32_t dönüşümü kullanır; C ABI 1/status layout ve hata kodlarının sayısal değeri değişmez. GCC derleme uyumu IPC veya execution izni eklemez.

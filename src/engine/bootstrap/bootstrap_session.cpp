@@ -12,7 +12,7 @@ std::uint32_t BootstrapSession::invoke(BootstrapOperation operation, BootstrapOb
         status_.observation_attempts = 1;
         const auto reason = observation.inspect();
         status_.reason = reason >= SAEX_BOOTSTRAP_HOST_PATH && reason <= SAEX_BOOTSTRAP_INTERNAL_ERROR
-            ? reason : SAEX_BOOTSTRAP_INTERNAL_ERROR;
+            ? reason : static_cast<std::uint32_t>(SAEX_BOOTSTRAP_INTERNAL_ERROR);
         status_.state = status_.reason == SAEX_BOOTSTRAP_RUNTIME_UNVERIFIED
             ? SAEX_BOOTSTRAP_OBSERVED_UNVERIFIED : SAEX_BOOTSTRAP_REJECTED;
         if (status_.state == SAEX_BOOTSTRAP_OBSERVED_UNVERIFIED) {

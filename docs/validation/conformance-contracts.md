@@ -120,3 +120,7 @@ LayoutNotes alanı raw padding gibi gözlemlenen sapmaları içerir; boş not li
 ## Kod 0.1.11 — Entry supplement bağı
 
 executionPolicySourceDigest entry JSON SHA’sıdır; basePolicySha256 immutable mapping source’una bağlanır. Source’lar, gerçek modül hash’leri, probe artifact SHA ve context birlikte kaydedilir; policy adı tek başına kanıt değildir. [Ayrıntı](../development/d1-entry-boundary.md).
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+Own fixture cwd kanıtı artık string yazımı değil açılmış volume/file ID eşitliğidir. Eşdeğer alias pozitifi, farklı dizin ve yanlış token negatifleri ayrı koşulur. Bu test başarısı bütün ortam eşitliği, sandbox veya GTA çalışma kanıtı değildir; portable bootstrap dönüşümü ABI layout kanıtını değiştirmez.

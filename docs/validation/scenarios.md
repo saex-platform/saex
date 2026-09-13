@@ -216,3 +216,7 @@ Raw padding farkı için file-backed sınırlar içindeki metadata notu kabul ed
 ## Kod 0.1.11 — Entry supplement bağı
 
 Sekiz entry-policy testi base/engine drift, scope/schema/keys/size, system-only origin/duplicate override, hash/path/byte, count/order ve review/id sınırlarını denetler. İlk gerçek imm32 ret negatif kanıt, supplement sonrası entry mutation ayrı alt sonuçtur. [Ayrıntı](../development/d1-entry-boundary.md).
+
+## GitHub kaynak yayını — taşınabilirlik düzeltmesi
+
+Launch-context own fixture için üç ek regresyon: aynı dizinin `\.` yazımı başarılı ve marker doğru cwd içinde; başka mevcut dizin beklentisi exit 72 ve marker yok; snapshot sonrası değişen token ile exit 72 ve marker yok. Mevcut snapshot freeze, retained directory ve 12 warm çevrim kontrolleri kalır. Bootstrap geçersiz reason testi GCC için açık dönüşümden sonra da INTERNAL_ERROR bekler.
