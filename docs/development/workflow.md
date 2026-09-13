@@ -40,7 +40,7 @@ dotnet run --project managed/Saex.Tools -- engine inspect "C:\Program Files (x86
 
 Plan CLI: 0 metadata-valid, 1 validation/input ret, 2 kullanım hatası. Engine inspect: 3 dosya incelendi ama destek/attach doğrulanmadı; 1 bozuk/girdi hatası, 2 kullanım hatası. Mevcut inspector hiçbir profile attach izni vermez. Dotnet run çıktısında build metni de olabilir; otomasyon için derlenmiş Saex.Tools.dll doğrudan `dotnet` ile çalıştırılır. Bu komutlar oyun başlatmaz.
 
-Linux için `cmake --preset linux-x64`, build/test preset'leri ve managed test runner'a `out/linux-x64/saex_contract_probe` yolu kullanılır. Linux'ta .NET 10.0.300 feature band, Ninja ve C++20 derleyici gerekir. Bu talimat test edildi iddiası değildir; bu cihazda yalnız Windows ölçüldü.
+Linux için `cmake --preset linux-x64`, build/test preset'leri ve managed test runner'a `out/linux-x64/saex_contract_probe` yolu kullanılır. Linux'ta .NET 10.0.300 feature band, Ninja ve C++20 derleyici gerekir. Portable kapsam GitHub Ubuntu 24.04 üzerinde doğrulandı: `python tools/ci.py linux`; exact commit ve sonuçlar [yayın raporundadır](github-publication.md). Windows/GTA adapter bu Linux işinde sınanmaz.
 
 ## İsteğe bağlı D1-N1 SDK derlemesi
 
@@ -77,7 +77,7 @@ Doküman değişiminde `tools/check_docs.py` link/JSON/eşleme kontrolü kullan�
 
 `out/verification/docs-check.json` son statik kontrolü, CTest `out/<platform>/Testing/Temporary/LastTest.log` native koşuyu kaydeder. Native foundation runner 16 isimli test, managed runner 26 isimli test raporlar. CTest foundation'a ek PE/profile preflight ve portable bootstrap session suite'lerini içerir; x86'da gerçek bootstrap DLL suite'i de çalışır. X64'te üç, x86'da dört suite vardır. Python tarafında 5 belge, 8 engine profile ve 4 native CLI testi çalışır. Raporlarda suite sayısı ile senaryo sayısı karıştırılmaz. Tooling testleri belge eşlemesinin hatalı değişiklikleri reddettiğini sınar.
 
-Build veya belge kapısı başarısızsa önce neden giderilir; bağımlılık/uyarı/izin kontrolü sırf yeşil sonuç için kaldırılmaz. Hook deneyi, server restart, dağıtım veya oyun dosyası yazma bu iş akışına gizlenmez. Yerel Git deposu oluşturulmuştur; remote/push/commit bu kesitte yapılmamıştır.
+Build veya belge kapısı başarısızsa önce neden giderilir; bağımlılık/uyarı/izin kontrolü sırf yeşil sonuç için kaldırılmaz. Hook deneyi, server restart, dağıtım veya oyun dosyası yazma bu iş akışına gizlenmez. İlk foundation kesitinde remote/push yapılmamıştı. Güncel public GitHub yayını, protected main ve doğrulama kayıtları [yayın raporundadır](github-publication.md).
 
 ## Birincil kaynaklar
 
@@ -146,6 +146,9 @@ Kullanıcıya özgü Python yolları genel kurulum örneklerinden çıkarıldı.
 Genel kaynak metni LF kullanır; raw SHA-256 ile bağlı `contracts/engine/*.json` ve `tools/native/patches/*.json` için `.gitattributes` dönüşümü kapatır. Bu istisna mevcut kanıt digest'lerini korur; yeni clone'da generator/SDK verify kapıları ayrıca geçmelidir.
 
 Temiz N1 SDK derlemesi için kısa bir checkout yolu kullanılır: uzun kullanıcı/OneDrive/alt-checkout yollarında MSBuild compiler-ID tlog oluşturma adımı hata verebilir. İlk uzun-yol başarısızlığı ve kısa checkout Debug/Release başarıları [yayın raporunda](github-publication.md) ayrı kaydedilir. Lock/toolchain kontrolü bu hata için gevşetilmez.
+
+
+Yayın sonrası değişiklikler kısa ömürlü dal → PR → yedi zorunlu kontrol → squash merge sırasını izler. `main` güncel base'i ister; başka onaylayıcı zorunlu değildir (başlangıçta tek Owner). PR base doküman eşlemesini ve bütün standart matrisi geçmeden merge yapılmaz. `.github` topluluk deposunun `main` dalı da PR/linear history ile korunur; uygulama build kontrolleri yalnız `saex` deposundadır.
 
 ## Kod 0.1.12 — Proxy dönüş sınırı
 

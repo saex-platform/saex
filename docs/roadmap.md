@@ -132,6 +132,11 @@ Takvim veya bütçe için ekip kapasitesi ve D1/R sonuçları gerekir. Burada ay
 
 0.1.11 son çıktısı: x86 Debug/Release ve x64 Debug standardı geçti; 12/12 private GTA girişinde aynı DLL RVA'sına yönlendirme ölçüldü. Sıradaki N2 adımı bu entry sonrası proxy/dinamik yükleme ve unpack yolunun incelenmesi, ardından gerçek SAEX bootstrap/ABI çağrısıdır. Mevcut first-exception araçları ve original ret politikası ayrı korunur.
 
+
+## Public iş takibi
+
+[SAEX geliştirme panosu](https://github.com/orgs/saex-platform/projects/1), D1/D2/D3 milestone'larına bağlı yedi başlangıç işiyle yayımlandı. Planlandı, Çalışılıyor, İncelemede, Doğrulama bekliyor ve Tamamlandı sütunları bu belgedeki kabul kapılarının yerini almaz. İlk kaynak yayını ve beş platform/yapılandırma CI kanıtı [yayın raporundadır](development/github-publication.md); oynanabilir sürüm yayımlanmış sayılmaz.
+
 ## Kod 0.1.12 — Proxy dönüş sınırı
 
 [0.1.12 proxy dönüşü](development/d1-proxy-return.md), 0.1.11’de ölçülen yönlendirmenin restorasyon ve IAT değişimini gözlemler. Sonraki N2 adımı GetStartupInfoA yönlendirmesinin gerçek çağrı zamanı/dinamik bağımlılıkları ve unpack aşamasını çözmek, ardından gerçek SAEX bootstrap C ABI’sini loader lock dışında doğrulamaktır. N3 frame/hook, GNS, sandbox ve D2–D5 kapıları değişmez.

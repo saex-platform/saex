@@ -1,5 +1,9 @@
 # Kaynak ve belge değişiklik kaydı
 
+## 2026-09-13 — 0.1.13 kaynaklarının yayın tabanıyla birleştirilmesi
+
+0.1.12/0.1.13 kaynakları, önceki public yayın ve hosted CI düzeltmeleriyle birleştirildi. Çakışan belge ekleri iki tarafın kanıtını korur; kaynak/ABI/otorite ve raw hash girdileri bu birleştirmede değişmedi. Yerel başlangıç commit’i güvenlik dalı ve tam Git bundle ile korundu. Yeni yayın PR ve mevcut yedi zorunlu kontrol üzerinden ilerler; sonuç [yayın raporunda](github-publication.md) ayrı kaydedilir.
+
 ## Kod 0.1.13 / mimari v0.20 — 13 Eylül 2026
 
 Ayrı run_to_startup_call/--observe-startup-call ile orijinal entry’den sonraki ilk proxy IAT çağrısı tutulur. DR0 fonksiyon başlangıcına taşınır, DR1 aynı main-thread’in IAT yazımlarını gözler. CALL biçimi/slot, stack parametre alanı, target byte kararlılığı ve dört sınırlı image örneği raporlanır. Eski entry/proxy durakları korunur; startupObservation eski modlarda null olur. Strict startup-policy source’u proxy ve observed profile digest’ine bağlıdır; yeni DLL pini veya otomatik native izin eklenmedi. Dokuz fixture, 19 senaryo + canary positive control + 12 warm, yedi policy ve iki CLI testi eklendi. Özel CRT entry denemesi unresolved CRT sembolleriyle başarısız oldu; normal CRT entry seçilerek düzeltildi. Ortak fixture PE helper taşındı; production parser/SDK/ABI/otorite değişmedi. Public C++ trace/API kullanıcıları birlikte yeniden derlenir; bootstrap C ABI 1 aynı, kaldırılan ürün özelliği/kalıcı migration yoktur. ADR-48, sahip belgeleri, status/roadmap/component-map ve Windows/Linux test girişleri güncellendi. [Doğrulama ve sınırlar](d1-startup-call.md). Son standart sonuç: x86 Debug/Release 11 native suite + 79 managed + 85 Python; x64 Debug/Release 6 suite + 79 managed + 60 Python geçti. Gerçek private GTA 12/12 startup hit, dört original/legacy regresyonla 16/16 confirmed exit; 16 input dosyası değişmedi. Linux/hosted/N1 bu kesit için yeniden doğrulanmadı.
@@ -11,6 +15,10 @@ Ayrı run_to_proxy_return/--observe-proxy-return, exact entry→proxy dönüş d
 
 
 Her kayıt davranış, kaynak, doküman, test ve kalan sınırı birlikte taşır. [Durum](status.md) · [İş akışı](workflow.md)
+
+## 2026-09-13 — Public yayın doğrulaması ve korumalı katkı akışı
+
+Kaynak `e5e2dd0` için beş hosted build ve doküman/sır kontrollerinin tamamı geçti. README gerçek Actions rozetlerine ve public proje panosuna bağlandı; status/workflow Linux portable kanıtını kaydetti. İki public repo, MIT/notice belgeleri, Owner sahipliği, main PR/linear/squash koruması, ana depoda yedi zorunlu check, özel güvenlik bildirimleri, secret/push taraması, Türkçe issue formları, üç milestone ve yedi planlı iş doğrulandı. İlk başarısız koşular ve giderilen taşınabilirlik sorunları [yayın raporunda](github-publication.md) korunur. Son özet yalnız doküman/README değişimidir; D1/D2 veya GTA runtime yetkisini ilerletmez. Avatar kaynak varlığı hazır, tarayıcı yükleme izni bekleniyor.
 
 ## 2026-09-13 — Hosted CI taşınabilirlik düzeltmesi
 

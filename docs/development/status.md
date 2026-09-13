@@ -4,11 +4,13 @@ Sürüm: mimari v0.20 / kod 0.1.13, D1 foundation + native dependency + N2 prefl
 
 ## Gerçek durum
 
-### GitHub yayın hazırlığı
+### Public GitHub kaynak yayını
 
-Public depolar ve ilk push tamamlandı. İlk hosted doküman/sır taraması geçti; Build Linux tür dönüşümü ve Windows fixture cwd eşitliğinde hata verdi. Düzeltme ve üç fixture regresyonu uygulandı; yerel dört standart akış geçti, hosted yeniden doğrulama sürüyor. Ayrı kısa temiz checkout N1 SDK Debug/Release koşuları geçti. Ayrıntı: [yayın kaydı](github-publication.md).
+13 Eylül 2026: **SAEX — San Andreas Extended**, [saex-platform](https://github.com/saex-platform) organizasyonunda Owner `Rohatcengizhanbucak` yönetiminde yayımlandı. Public [saex](https://github.com/saex-platform/saex) kaynak monoreposu ve [.github](https://github.com/saex-platform/.github) profil/topluluk deposu; MIT, doküman/marka varlıkları, issue/PR şablonları, güvenlik bildirim kanalı ve [geliştirme panosu](https://github.com/orgs/saex-platform/projects/1) hazırdır. Her iki `main` dalında PR, linear/squash geçmişi, silme/force-push engeli uygulanır; ana depoda yedi GitHub Actions kontrolü zorunludur.
 
-13 Eylül 2026: Kullanıcı [kurgunun](github-publication-plan.md) uygulanmasını onayladı. **SAEX — San Andreas Extended** için `saex-platform` organizasyonu Owner `Rohatcengizhanbucak` altında oluşturuldu. İlk yayın public `.github` + `saex` monorepo; MIT, marka/doküman/katkı dosyaları ve Windows/Linux/secret/doc CI tanımları hazırlandı. [Uygulama ve kanıt kaydı](github-publication.md) yerel temiz checkout ile GitHub sonuçlarını ayrı tutar. Temiz checkout Windows x64/x86 Debug/Release akışları geçti; her koşuda 79 managed, x64 6 native suite/46 Python, x86 9 suite/67 Python testi başarılı. GitHub aktarımı ve uzak kontroller sürüyor; D1/D2 ürün durumu değişmedi.
+Kaynak commit'i `e5e2dd0d77e37447eca4b7e32c0b89306978c096` için **GitHub'daki yedi kontrol geçti**: Windows x64/x86 Debug/Release, Linux x64 Debug, doküman ve sır taraması. Her build'de 79 managed test; Windows x64 6 native suite/46 Python, x86 9 suite/67 Python, Linux 4 suite/37 Python başarılı. Ayrı kısa temiz checkout N1 SDK Debug/Release'te 1 probe + 17 dependency + 2 configure ret testi geçti; manuel hosted SDK işi çalıştırılmadı. İlk başarısızlıklar, düzeltmeler ve kanıt bağlantıları [yayın raporunda](github-publication.md) korunur.
+
+Bu kaynak yayını D1'i kapatmaz; D2 oynanabilir multiplayer veya native binary release değildir. 0.1.12/0.1.13 proxy ve startup geliştirmesi bu ilk yayın kanıtının kapsamı dışındadır. Yeni kaynaklar yayımlanmış tabanla birleştirildi; bu sürümün GitHub doğrulaması [yayın raporunda](github-publication.md#kod-0113-kaynak-birleştirmesi) ayrıca izlenir.
 
 ### Ürün bileşenleri
 
@@ -32,7 +34,7 @@ Public depolar ve ilk push tamamlandı. İlk hosted doküman/sır taraması geç
 | SDK bağımsız bootstrap DLL | x86 C ABI 1, Initialize/Query/Stop, kendi host yolunu doğrulama, terminal ret/stop, BUSY | Oyun dışı DLL yükleme ve 100 ölçülen lifecycle çevrimi; session ve artifact negatif testleri; [rapor](d1-bootstrap-module.md) | Gerçek GTA'da yüklenmedi; can_attach=0; hook, binding ve production loader yok |
 | Plugin-SDK-SA dependency | 23 dosyalı exact source/patch/recipe/notice lock, açık edinme, private x86 library/probe; ADR-36 private C++23 uyarlaması | x86 Debug/Release opt-in build/probe; 17 dependency + 2 gerçek CMake ret testi geçti; [exact kanıt](d1-native-dependency.md) | Seçilmiş build alt kümesi; bootstrap/hook/production IPC/GTA yok; runtimeEligible=false |
 | Belge kontrolü | Dosya/link/JSON, kaynak→belge eşlemesi, ekleme/değişme/silme takibi | Foundation ve yeni opt-in native build girişinde zorunlu; 5 tooling testi | Güncel statik sonuç out/verification/docs-check.json; anlamsal doğruluğu tek başına kanıtlamaz |
-| Linux x64 | Portable core kaynakları ve Ninja preset'i mevcut | Bu cihazda Linux geliştirme dağıtımıyla çalıştırılmadı | Linux build/test kanıtı bekliyor |
+| Linux x64 | Portable core, preflight/bootstrap session ve managed fixture | GitHub Ubuntu 24.04 Debug: 4 native suite, 79 managed, 37 Python geçti; [yayın kanıtı](github-publication.md) | Windows/GTA adapter veya production server doğrulaması değil |
 | GNS / worker runtime / GTA gameplay | Mimari kararları korunuyor | Çalışan oyun döngüsü veya multiplayer bu kesitte sınanmadı | GNS kimliği, sandbox, native frame/pool/collision ve multiplayer yok |
 
 ## Aşama kapıları
