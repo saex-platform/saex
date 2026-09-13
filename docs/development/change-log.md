@@ -2,6 +2,10 @@
 
 Her kayıt davranış, kaynak, doküman, test ve kalan sınırı birlikte taşır. [Durum](status.md) · [İş akışı](workflow.md)
 
+## 2026-09-13 — Public yayın doğrulaması ve korumalı katkı akışı
+
+Kaynak `e5e2dd0` için beş hosted build ve doküman/sır kontrollerinin tamamı geçti. README gerçek Actions rozetlerine ve public proje panosuna bağlandı; status/workflow Linux portable kanıtını kaydetti. İki public repo, MIT/notice belgeleri, Owner sahipliği, main PR/linear/squash koruması, ana depoda yedi zorunlu check, özel güvenlik bildirimleri, secret/push taraması, Türkçe issue formları, üç milestone ve yedi planlı iş doğrulandı. İlk başarısız koşular ve giderilen taşınabilirlik sorunları [yayın raporunda](github-publication.md) korunur. Son özet yalnız doküman/README değişimidir; D1/D2 veya GTA runtime yetkisini ilerletmez. Avatar kaynak varlığı hazır, tarayıcı yükleme izni bekleniyor.
+
 ## 2026-09-13 — Hosted CI taşınabilirlik düzeltmesi
 
 İlk GitHub Build başarısızlığından sonra bootstrap reason fallback açık uint32_t dönüşümüne çevrildi. Windows own fixture ham cwd metni yerine OS volume/file ID eşitliğini doğrular; eşdeğer yol, farklı mevcut klasör ve yanlış token regresyonları eklendi. Production LaunchContext, ABI/status layout, engine/policy/SDK hash girdileri ve GTA yetkileri değişmez; migration veya kaldırılan özellik yoktur. Bütün bootstrap/context normatif ve test sahibi belgeleri aynı değişiklikte güncellendi. İlk başarısız CI ve N1 uzun-yol denemesi yayın raporunda korunur; yeni yerel/hosted sonuçlar ayrıca kaydedilecektir.

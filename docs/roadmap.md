@@ -131,3 +131,8 @@ Takvim veya bütçe için ekip kapasitesi ve D1/R sonuçları gerekir. Burada ay
 [Kontrollü entry durağı](development/d1-entry-boundary.md) ayrı explicit modda DLL/TLS initialization'ı ilerletir; ana thread PE entry'si tutulur. Bunun kanıtı entry byte mutation ve exit ile sınırlıdır. Sonraki N2 işi proxy yönlendirmesi/dynamic dependency ve unpack aşamasını çözmek, ardından SAEX bootstrap'ı loader lock dışında gerçek process'te doğrulamaktır. N3–N7, sandbox/GNS ve D2 sırası değişmez; kodlanmış/test edilmiş/gerçek GTA sonuçları status'ta ayrı tutulur.
 
 0.1.11 son çıktısı: x86 Debug/Release ve x64 Debug standardı geçti; 12/12 private GTA girişinde aynı DLL RVA'sına yönlendirme ölçüldü. Sıradaki N2 adımı bu entry sonrası proxy/dinamik yükleme ve unpack yolunun incelenmesi, ardından gerçek SAEX bootstrap/ABI çağrısıdır. Mevcut first-exception araçları ve original ret politikası ayrı korunur.
+
+
+## Public iş takibi
+
+[SAEX geliştirme panosu](https://github.com/orgs/saex-platform/projects/1), D1/D2/D3 milestone'larına bağlı yedi başlangıç işiyle yayımlandı. Planlandı, Çalışılıyor, İncelemede, Doğrulama bekliyor ve Tamamlandı sütunları bu belgedeki kabul kapılarının yerini almaz. İlk kaynak yayını ve beş platform/yapılandırma CI kanıtı [yayın raporundadır](development/github-publication.md); oynanabilir sürüm yayımlanmış sayılmaz.

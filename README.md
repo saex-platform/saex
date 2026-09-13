@@ -2,6 +2,9 @@
 
 ![SAEX — San Andreas Extended](docs/branding/saex-banner.svg)
 
+[![Build](https://github.com/saex-platform/saex/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/saex-platform/saex/actions/workflows/ci.yml)
+[![Documentation and source safety](https://github.com/saex-platform/saex/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/saex-platform/saex/actions/workflows/docs.yml)
+
 **GTA: San Andreas üzerinde kendi dünyanı ve oyun deneyimini geliştir.**
 
 SAEX; dünya, oyun kuralları, içerik ve arayüzlerini tanımlayabilmek için geliştirilen modüler bir platformdur. C++20 çekirdek ve C#/.NET 10 araçları üzerine kuruludur.
@@ -10,7 +13,7 @@ SAEX; dünya, oyun kuralları, içerik ve arayüzlerini tanımlayabilmek için g
 
 Çekirdek temeli ve doğrulama araçları mevcuttur. Oynanabilir multiplayer istemcisi/sunucusu, production SDK ve launcher henüz yayımlanmadı. [Uygulama durumu](docs/development/status.md), kodlanmış ve doğrulanmış kapsamı ayrı gösterir.
 
-[Dokümantasyon](docs/README.md) · [Derleme](docs/development/workflow.md) · [Yol haritası](docs/roadmap.md) · [Katkı](CONTRIBUTING.md) · [Değişiklikler](docs/development/change-log.md)
+[Dokümantasyon](docs/README.md) · [Derleme](docs/development/workflow.md) · [Yol haritası](docs/roadmap.md) · [İş panosu](https://github.com/orgs/saex-platform/projects/1) · [Katkı](CONTRIBUTING.md) · [Değişiklikler](docs/development/change-log.md)
 
 ## Bugün depoda bulunanlar
 
