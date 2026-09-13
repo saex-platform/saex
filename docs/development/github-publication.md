@@ -1,10 +1,10 @@
 # GitHub kaynak yayını: iş akışı ve doğrulama
 
-Tarih: 13 Eylül 2026. **Yerel yayın adayı doğrulandı; GitHub kontrolleri sürüyor.** Kullanıcı [kurgunun](github-publication-plan.md) uygulanmasını, ilk yayının public olmasını ve mevcut hesabın sahipliğini onayladı. Kod 0.1.11 / mimari v0.18 kapsamı korunur; bu çalışma oyun içi yetenek eklemez.
+Tarih: 13 Eylül 2026. **Public kaynak yayını ve yedi hosted kontrol tamamlandı.** Kullanıcı [kurgunun](github-publication-plan.md) uygulanmasını, ilk yayının public olmasını ve mevcut hesabın sahipliğini onayladı. Kod 0.1.11 / mimari v0.18 kapsamı korunur; bu çalışma oyun içi yetenek eklemez.
 
 ## Depolar ve sahiplik
 
-Organizasyon `saex-platform`, marka **SAEX — San Andreas Extended**, Owner `Rohatcengizhanbucak`. İlk hedefler public `.github` profil/topluluk deposu ve public `saex` monorepodur. SDK/launcher/web/examples bağımsız ürün ve testleri oluşmadan ayrı depolara bölünmez. Kayıt sırasında verilen iletişim e-postası yalnız hesap iletişim alanındadır; public kaynaklara veya profile eklenmez.
+Organizasyon `saex-platform`, marka **SAEX — San Andreas Extended**, Owner `Rohatcengizhanbucak`. Public `.github` profil/topluluk deposu ve public `saex` monorepo yayımlandı. SDK/launcher/web/examples bağımsız ürün ve testleri oluşmadan ayrı depolara bölünmez. Kayıt sırasında verilen iletişim e-postası yalnız hesap iletişim alanındadır; public kaynaklara veya profile eklenmez.
 
 SAEX'e ait kaynaklar [MIT](../../LICENSE) lisanslıdır. [Üçüncü taraf bildirimleri](../../THIRD_PARTY_NOTICES.md) exact dependency lock ile birlikte korunur. GTA dosyaları, yerel dependency/research cache'i ve build çıktıları aktarılmaz.
 
@@ -49,11 +49,11 @@ Bu exact-byte girdilerindeki CRLF, Git whitespace kontrolünde `cr-at-eol` ile s
 
 Actionlint 1.7.12 ve YAML/SVG parse kontrolleri geçti. Gitleaks 8.30.1 ilk Git commit'inin tamamında ve 10 dosyalı topluluk deposunda sıfır bulgu verdi. Staging 213 dosya, yaklaşık 1,40 MB; yasak oyun/build binary'si, symlink veya submodule yok. Exact engine JSON/recipe/patch hash'leri Git index'inde doğrulandı.
 
-[Organizasyon](https://github.com/saex-platform), [ana depo](https://github.com/saex-platform/saex) ve [profil/topluluk deposu](https://github.com/saex-platform/.github) public olarak oluşturuldu. Hesabın active/admin organizasyon üyeliği ve özel güvenlik bildirim kanalı doğrulandı. İlk kaynak push ve GitHub CI sonuçları bu kayıtta tamamlanacak. 0.1.11'in daha önce yapılmış gerçek GTA gözlem sonuçları [status](status.md) ve [entry raporunda](d1-entry-boundary.md) tarihsel kapsamıyla korunur; bu yayın çalışmasında GTA tekrar başlatılmaz.
+[Organizasyon](https://github.com/saex-platform), [ana depo](https://github.com/saex-platform/saex) ve [profil/topluluk deposu](https://github.com/saex-platform/.github) public olarak oluşturuldu. Hesabın active/admin organizasyon üyeliği ve özel güvenlik bildirim kanalı doğrulandı. İlk kaynak push ve aşağıdaki hosted doğrulama tamamlandı. 0.1.11'in daha önce yapılmış gerçek GTA gözlem sonuçları [status](status.md) ve [entry raporunda](d1-entry-boundary.md) tarihsel kapsamıyla korunur; bu yayın çalışmasında GTA tekrar başlatılmaz.
 
 ## İlk hosted CI bulguları ve düzeltme
 
-[İlk Build koşusu](https://github.com/saex-platform/saex/actions/runs/34746684095) başarısızdır: Linux GCC enum/uint32_t koşullu dönüşümü reddetti; dört Windows yapılandırmasında own launch-context fixture ham cwd metin eşitliğinde durdu. Bootstrap fallback açık uint32_t dönüşümüne çevrildi. Fixture gerçek/beklenen klasörü volume/file ID ile eşler; eşdeğer yol pozitifi ve farklı dizin/yanlış token negatifleri eklenir. C ABI, production LaunchContext ve hash/policy sınırları değişmedi. [Doküman ve sır kontrolü](https://github.com/saex-platform/saex/actions/runs/34746684074) ilk turda geçti. Düzeltme sonrası yerel dört standart akış yeniden geçti: x64 Debug/Release 6 native suite, 79 managed, 46 Python; x86 Debug/Release 9 native suite, 79 managed, 67 Python. Yeni fixture alias/farklı dizin/yanlış token kontrolleri bu koşulara dahildir. Hosted yeniden koşu ayrıca kaydedilecektir.
+[İlk Build koşusu](https://github.com/saex-platform/saex/actions/runs/34746684095) başarısızdır: Linux GCC enum/uint32_t koşullu dönüşümü reddetti; dört Windows yapılandırmasında own launch-context fixture ham cwd metin eşitliğinde durdu. Bootstrap fallback açık uint32_t dönüşümüne çevrildi. Fixture gerçek/beklenen klasörü volume/file ID ile eşler; eşdeğer yol pozitifi ve farklı dizin/yanlış token negatifleri eklenir. C ABI, production LaunchContext ve hash/policy sınırları değişmedi. [Doküman ve sır kontrolü](https://github.com/saex-platform/saex/actions/runs/34746684074) ilk turda geçti. Düzeltme sonrası yerel dört standart akış yeniden geçti: x64 Debug/Release 6 native suite, 79 managed, 46 Python; x86 Debug/Release 9 native suite, 79 managed, 67 Python. Yeni fixture alias/farklı dizin/yanlış token kontrolleri bu koşulara dahildir. Hosted son sonuç aşağıda ayrı kaydedilmiştir.
 
 İsteğe bağlı N1 SDK temiz clone denemesi uzun yerel checkout yolunda MSBuild compiler-ID tlog dizini oluşturulamadığı için durdu. Daha kısa, ayrı bir geçici checkout ile Debug/Release yeniden çalıştırıldı: her biri 1 SDK probe, 17 dependency ve 2 configure ret testini geçti. SDK recipe/patch/lock byte'ları değiştirilmedi; lock SHA-256 `eec9cbc16685563a08c4a121ddb885fcfe554dff99b055a4d516d810fe5d7670`. İlk hata kaydı korunur.
 
@@ -61,3 +61,26 @@ Actionlint 1.7.12 ve YAML/SVG parse kontrolleri geçti. Gitleaks 8.30.1 ilk Git 
 
 
 Son iki corpus düzeltmesi, ilk yayındaki kaynaklardan oluşturulmuş ayrı temiz checkout'ta dört standart Windows akışının tamamını geçti (x64: 6 native/79 managed/46 Python; x86: 9 native/79 managed/67 Python). Yayın sırasında ana çalışma klasöründe başlayan sonraki proxy geliştirmesi belge kapısını etkilediği için yayın doğrulaması bu ayrı checkout'ta yapıldı; eşzamanlı çalışma dosyaları korunur ve bu yayın commit'ine eklenmez. İlk ana-klasör belge kapısı hatası saklanmıştır.
+
+
+## Doğrulanmış public yayın
+
+Kaynak commit'i **`e5e2dd0d77e37447eca4b7e32c0b89306978c096`**: [Build başarı kaydı](https://github.com/saex-platform/saex/actions/runs/34747513672) ve [Documentation and source safety başarı kaydı](https://github.com/saex-platform/saex/actions/runs/34747513666).
+
+| GitHub hosted kontrolü | Native suite | Managed/entegrasyon | Python |
+|---|---|---|---|
+| Windows x64 Debug | 6/6 | 79/79 | 46/46 |
+| Windows x64 Release | 6/6 | 79/79 | 46/46 |
+| Windows x86 Debug | 9/9 | 79/79 | 67/67 |
+| Windows x86 Release | 9/9 | 79/79 | 67/67 |
+| Linux x64 Debug / Ubuntu 24.04 | 4/4 | 79/79 | 37/37 |
+
+Ayrı Documentation kontrolü 89 Markdown, 1191 yerel bağlantı, 6 JSON örneği ve 13 tooling testinde geçti. Secret scan başarılıdır. Yerel Gitleaks dört commit'li ana kaynak geçmişi ve iki commit'li topluluk geçmişinde sıfır bulgu verdi. Son kaynak manifest'i 213 dosya / 1.418.606 byte; GTA/build binary'si, submodule/symlink, büyük dosya veya özel kayıt e-postası içermez. Bütün engine sözleşmelerinin raw byte'ları ilk source commit'iyle aynıdır. Bu sayılar belirtilen kaynak commit'ine aittir; sonraki belge-only özet commit'inin boyutu farklı olabilir.
+
+Her iki repo public, default branch `main`, merge yöntemi squash'tır. İki `main` için PR, çözülmüş konuşmalar ve linear history zorunludur; force push/silme kapalı ve kural yöneticilere de uygulanır. Tek bakımcı için zorunlu review sayısı sıfırdır. Ana depo strict base ile şu yedi check'i **GitHub Actions app 15368** kimliğine bağlı ister: Documentation, Secret scan, Windows x64 Debug, Windows x64 Release, Windows x86 Debug, Windows x86 Release, Linux x64 Debug. Owner organizasyon yönetimini korur; bu kurallar yeni kişilere erişim vermez.
+
+İki depoda secret scanning/push protection açıktır. Ana depoda private vulnerability reporting ve read-only workflow token ayarı doğrulandı. GitHub community health API ana depo için 100 puan, MIT lisansı ve topluluk belgelerini tanıdı; bu puan uygulama güvenliği derecesi değildir. Hata/özellik formları ve gerçek `type:bug` etiketi tarayıcıda doğrulandı.
+
+Organizasyon profilindeki banner ve belge bağlantıları görünür, `saex` ana repo sabitlenmiştir. Organizasyon Discussions, `saex` tartışmalarına bağlandı. [Public geliştirme panosu](https://github.com/orgs/saex-platform/projects/1) beş Türkçe durum sütunu, yedi açık iş, D1/D2/D3 milestone'ları içerir; yeni eklenen iş Planlandı durumuna geçer. D1/D2/D3 otomatik tamamlandı sayılmaz. Avatar varlığı kaynaklarda hazırdır; organizasyona profil resmi yükleme adımı tarayıcının yerel dosya erişim iznini bekler.
+
+İsteğe bağlı N1 SDK hosted workflow'u tanımlıdır ve manuel çalışır; bu yayında hosted olarak çalıştırılmadı. Yukarıdaki kısa temiz checkout Debug/Release kanıtı kendi kapsamındadır. Oynanabilir release, installer, server deployment veya gerçek GTA başlangıcı bu kaynak yayınına dahil değildir.
