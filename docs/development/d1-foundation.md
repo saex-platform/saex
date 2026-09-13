@@ -128,3 +128,11 @@ GitHub taşınabilirlik düzeltmesi Windows native.launch_context suite içine a
 ### Hosted corpus tamamlaması
 
 İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[0.1.12](d1-proxy-return.md), x86 observer için iki-hit corpus ve yedi portable proxy-policy testi ekler. Ortak ContractGen/EntityRef/ControlClock/LeaseAuthority/BoundedInbox ve C# plan/linkage davranışı değişmez. Standart build GTA kurulumu gerektirmez; gerçek GTA koşusu ayrı opt-in deneydir. Foundation fixture başarısı server/client veya tam D1 hazır oluşu değildir.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[0.1.13](d1-startup-call.md) x86 native.startup_observation ve yedi portable policy testi ekler; C# fixture runner/çekirdek otorite davranışı değişmedi. Test helper taşınması production PE parser’ını genişletmez. Standart build kendi CRT/test programlarını çalıştırır, GTA gerektirmez. İlk özel CRT entry denemesi link hatası verdi; normal CRT entry ile düzeltildi ve başarısız kayıt saklandı.

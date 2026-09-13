@@ -135,3 +135,11 @@ Bootstrap uint32_t fallback dönüşümü ve Windows own fixture dizin kimliği 
 ### Hosted corpus tamamlaması
 
 İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[ProxyStopSpec](../development/d1-proxy-return.md) yalnız güvenilir local C++ observer çağıranının ödünç pin ve derlenmiş RVA tarifidir. İlk hitten sonra DR0 dönüş talimatına taşınır; IP/stack/EFlags veya child kodu observer tarafından yazılmaz. İkinci hit terminaldir. Bootstrap C ABI 1 ve N1 toolchain/SDK lock değişmez; gerçek SAEX Initialize/Query/Stop çağrısı hâlâ kanıtlanmadı.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[StartupStopSpec](../development/d1-startup-call.md) yalnız güvenilir local C++ çağıranın tuttuğu 1–4 ImageAnchor span’ıdır. Üçüncü hedefte DR0 execution, main-thread IAT slotunda DR1 dört byte write watch kurulur; EIP/stack/EFlags veya code/IAT observer tarafından yazılmaz. Watchpoint yazımdan sonra tuzak verir; cross-thread güvenlik sınırı değildir. Bootstrap C ABI 1 ve N1 SDK bağı/standardı değişmez.

@@ -116,3 +116,11 @@ GitHub Linux derlemesi için bootstrap fallback türü açıklaştırıldı. Win
 ### Hosted corpus tamamlaması
 
 İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+ADR-47 ile [proxy dönüş gözlemi](../development/d1-proxy-return.md), doğrulanmış entry E9 hedefindeki CALL gövdesini ilerletir ve dönüş JMP talimatında durur. Exact modül kimliği, executable MEM_IMAGE, thunk/return pointer ve entry suffix şarttır. Geri yüklenen 16 byte ve tek IAT slotu ayrı ölçülür; unpack/WinMain/SDK symbol veya gameplay capability türetilmez. Yeni RVA’lar bu tek hash’in incelenmiş gözlem reçetesidir; genel GTA adresleri değildir.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[Startup çağrı sınırı](../development/d1-startup-call.md), ayrı izinle orijinal entry’yi ilerletir ve proxy IAT hedefinin ilk talimatında durur. Çağıranın main EXE içinde FF15 [exact IAT] biçimi, aynı stack allocation’ındaki 68 byte parametre alanı ve iki durak arasındaki target byte kararlılığı denetlenir. Dört mevcut anchor’ın yeniden okunması tanısal örneklemedir; matched sample unpack, engine symbol veya fonksiyon ABI’si açmaz.

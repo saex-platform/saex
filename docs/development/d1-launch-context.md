@@ -100,3 +100,11 @@ GitHub Windows runner ilk koşusunda own fixture ham cwd metnini, LaunchContext 
 ### Hosted corpus tamamlaması
 
 İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[0.1.12 proxy-return](d1-proxy-return.md) entry moduyla aynı explicit cwd ve retained environment snapshot akışını kullanır; yeni environment değeri, registry kuralı veya arama dizini eklemez. Aynı orijinal/private dosya hash’i launch context eşitliği değildir. Gerçek deneyler input önce/sonra hash ve context digest ile ayrı raporlanır; dizin içeriği bu helper tarafından dondurulmaz.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[Startup-call CLI](d1-startup-call.md) proxy-return ile aynı retained directory ve tek bounded environment snapshot’ını kullanır. Entry yürütme izni context’ten türetilmez, ayrı compiled stage gerekir. Ham ortam/stack içerikleri raporlanmaz; yalnız call return/argument adresleri ve seçilmiş image baytları vardır. Original/private aynı hash’e sahip olsa da loader ortamları ayrı kanıttır.

@@ -117,3 +117,11 @@ run_to_entry birleşik base22 + ayrı imm32 supplement setini kullanır. run() v
 ### Hosted corpus tamamlaması
 
 İkinci hosted turda bütün native suite'ler geçti; ortak Python loader CLI corpus'undaki cwd string eşitliği kısa/uzun Windows adı nedeniyle hata verdi. Test artık pathlib.samefile ile aynı dizin kimliğini doğrular. Engine unknown-fingerprint reddi, environment redaction, childCreated=false, entry/loader policy ve lifecycle sınırları aynen kalır; önceki GTA artifact sonuçları yeni test kanıtı sayılmaz.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[run_to_proxy_return](d1-proxy-return.md) ayrı ve açık bir ileri yürütme modudur; run ve run_to_entry durma sınırları korunur. Ortak finish helper Debug’da büyük LoaderTrace geçicilerini her dönüş noktasında ayırmamak için içeride const referans döndürür, dış public API değer döndürmeye devam eder. Default x86 stack büyütülmez; ilk taşma ve düzeltilmiş corpus ayrı kaydedilir.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[run_to_startup_call](d1-startup-call.md) ayrı üçüncü duraktır. İlk exception/entry/proxy-return modları önceki sınırlarında kalır. Ortak event döngüsü yeni modda main-thread DR1 yazma tuzağını terminal tanılar; DR0 hedef kimliği ve DR6/DR7 doğrulaması sürer. Önceki stack kullanım düzeltmesi korunur; yeni katman da mevcut owned kill/confirmed exit yolunu kullanır.

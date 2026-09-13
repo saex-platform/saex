@@ -149,3 +149,11 @@ Temiz N1 SDK derlemesi için kısa bir checkout yolu kullanılır: uzun kullanı
 
 
 Yayın sonrası değişiklikler kısa ömürlü dal → PR → yedi zorunlu kontrol → squash merge sırasını izler. `main` güncel base'i ister; başka onaylayıcı zorunlu değildir (başlangıçta tek Owner). PR base doküman eşlemesini ve bütün standart matrisi geçmeden merge yapılmaz. `.github` topluluk deposunun `main` dalı da PR/linear history ile korunur; uygulama build kontrolleri yalnız `saex` deposundadır.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[Proxy dönüş kesiti](d1-proxy-return.md) için source bilinçli değişince python tools/proxy_policy.py çalıştırılır; normal Windows ve Linux CI yalnız --check ve yedi generator negatif testini yürütür. X86 native.proxy_observation sekiz EXE/DLL varyantı, 19 senaryo ve 12 warm çevrim içerir; kod yalnız kendi canary dosyalarını kullanır. Windows CLI corpus’u 13 testtir. Standart build GTA başlatmaz. Component-map yeni policy/header/generator/corpus ve eski ortak observer owner’larını birlikte denetler.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[Startup-call kesiti](d1-startup-call.md) source değişince python tools/startup_policy.py üretimi, normal Windows/Linux akışında --check + yedi policy testi kullanır. X86 native.startup_observation dokuz standart CRT EXE, tek mevcut proxy DLL, 19 senaryo + canary control + 12 warm çevrimdir. CLI corpus 15 testtir. Yeni kaynaklar/component-map bu rapor ve bütün örtüşen sahip belgeleri denetler; normal build GTA çalıştırmaz.

@@ -17,3 +17,9 @@ SAEX — San Andreas Extended. Belgeler Türkçedir; API ve kaynak kimlikleri İ
 | GitHub ve katkı | [Yayın sözleşmesi/raporu](development/github-publication.md), [katkı](../CONTRIBUTING.md) |
 
 [V0.18 README arşivi](development/readme-history-v0.18.md), önceki ayrıntılı açıklamalar ve tam belge indeksini korur. Tarihsel metinlerdeki planlanan davranışlar güncel uygulama kanıtının yerine geçmez.
+
+## Kod 0.1.12
+
+[Proxy dönüş sınırı](development/d1-proxy-return.md) uygulanmıştır; test ve gerçek GTA kanıtı ilgili raporda ayrı tutulur. N2/D1 ve oynanabilir multiplayer kapsamı açık kalır.
+
+[0.1.13 startup çağrı sınırı](development/d1-startup-call.md): üçüncü durak, IAT write watch, çağıran/argument ve image örnekleri.

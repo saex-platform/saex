@@ -1,6 +1,6 @@
 # GitHub kaynak yayını: iş akışı ve doğrulama
 
-Tarih: 13 Eylül 2026. **Public kaynak yayını ve yedi hosted kontrol tamamlandı.** Kullanıcı [kurgunun](github-publication-plan.md) uygulanmasını, ilk yayının public olmasını ve mevcut hesabın sahipliğini onayladı. Kod 0.1.11 / mimari v0.18 kapsamı korunur; bu çalışma oyun içi yetenek eklemez.
+Tarih: 13 Eylül 2026. **İlk public kaynak yayını ve yedi hosted kontrol tamamlandı.** Kullanıcı [kurgunun](github-publication-plan.md) uygulanmasını, ilk yayının public olmasını ve mevcut hesabın sahipliğini onayladı. İlk yayın kanıtı kod 0.1.11 / mimari v0.18 kapsamındadır; sonraki sürümlerin aktarım ve CI kanıtı aşağıda ayrı tutulur.
 
 ## Depolar ve sahiplik
 
@@ -84,3 +84,31 @@ Her iki repo public, default branch `main`, merge yöntemi squash'tır. İki `ma
 Organizasyon profilindeki banner ve belge bağlantıları görünür, `saex` ana repo sabitlenmiştir. Organizasyon Discussions, `saex` tartışmalarına bağlandı. [Public geliştirme panosu](https://github.com/orgs/saex-platform/projects/1) beş Türkçe durum sütunu, yedi açık iş, D1/D2/D3 milestone'ları içerir; yeni eklenen iş Planlandı durumuna geçer. D1/D2/D3 otomatik tamamlandı sayılmaz. Avatar varlığı kaynaklarda hazırdır; organizasyona profil resmi yükleme adımı tarayıcının yerel dosya erişim iznini bekler.
 
 İsteğe bağlı N1 SDK hosted workflow'u tanımlıdır ve manuel çalışır; bu yayında hosted olarak çalıştırılmadı. Yukarıdaki kısa temiz checkout Debug/Release kanıtı kendi kapsamındadır. Oynanabilir release, installer, server deployment veya gerçek GTA başlangıcı bu kaynak yayınına dahil değildir.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+0.1.12 geliştirmesi Linux CI girişine proxy_policy --check ve portable policy corpus’unu ekler; Windows standart build aynı source gate’i ve x86 proxy fixture’ını kapsar. Bu yerel değişiklik yeni hosted workflow sonucu veya yayın/push kanıtı değildir. Önceki yayın ve CI kayıtlarının kapsamı korunur.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+0.1.13 kaynak değişimi Linux CI girişine startup-policy generation check ve portable negatif corpus’u ekler. Windows standart build yeni x86 startup suite’ini kapsar. Yerel sonuçlar [raporda](d1-startup-call.md) tutulur; yeni hosted çalışma/push veya yayın kanıtı değildir. Önceki yayın/CI kayıtları korunur.
+
+## Kod 0.1.13 kaynak birleştirmesi
+
+0.1.12 ve 0.1.13 geliştirmesini içeren yerel `aede99f` commit’i, yayımlanmış `a0562ef` tabanıyla ayrı `feature/startup-call-observation` dalında birleştirildi. Önceki yerel commit tam Git bundle ve güvenlik dalıyla korundu. Yalnız ek belge bölümleri çakıştı; iki sürümün kayıtları korundu, kaynak dosyaları ve hash’e bağlı sözleşme byte’ları değiştirilmedi. Yayın mevcut PR ve yedi zorunlu kontrol akışını kullanır; bu birleştirme tek başına yeni hosted başarı kanıtı değildir.
+
+### Kod 0.1.13 GitHub doğrulaması
+
+[PR #9](https://github.com/saex-platform/saex/pull/9) kaynak commit’i `bd98c4a7746888c89c919312d8ea6de95bcd461c` için yedi zorunlu kontrol geçti: [Build](https://github.com/saex-platform/saex/actions/runs/34749019782), [Documentation and source safety](https://github.com/saex-platform/saex/actions/runs/34749019756).
+
+| GitHub hosted kontrolü | Native suite | Managed/entegrasyon | Python |
+|---|---|---|---|
+| Windows x64 Debug | 6/6 | 79/79 | 60/60 |
+| Windows x64 Release | 6/6 | 79/79 | 60/60 |
+| Windows x86 Debug | 11/11 | 79/79 | 85/85 |
+| Windows x86 Release | 11/11 | 79/79 | 85/85 |
+| Linux x64 Debug / Ubuntu 24.04 | 4/4 | 79/79 | 51/51 |
+
+Ayrı Documentation kontrolü gerçek `a0562ef` PR tabanına göre 46 değişmiş yol, 91 Markdown, 1254 yerel bağlantı, 6 JSON örneği ve 13 tooling testinde geçti; Secret scan başarılıdır. Ana çalışma klasöründeki x86 Debug birleştirme doğrulaması da 11 native suite/79 managed/85 Python ve aynı belge kapısıyla geçti. Altı commit’li yerel Git geçmişinde Gitleaks sıfır bulgu verdi. 229 tracked dosyada oyun/build binary’si ve çözümlenmemiş çakışma işareti bulunmadı; kaynak dosyaları `aede99f` ile aynıdır. Bu kanıtlar adı geçen kaynak commit’ine aittir; sonraki sonuç kaydı yalnız belgedir ve PR’ın güncel başı yine zorunlu kontrollerden geçer.
+
+N1 SDK hosted işi ve gerçek GTA bu aktarımda çalıştırılmadı. Önceki gerçek GTA raporları kendi artifact kimlikleriyle korunur; proxy/startup wrapper gövdesi, dinamik SAEX DLL yüklemesi ve D1/D2 ürün kapıları bu CI sonucuyla kapanmaz.

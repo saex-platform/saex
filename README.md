@@ -9,7 +9,7 @@
 
 SAEX; dünya, oyun kuralları, içerik ve arayüzlerini tanımlayabilmek için geliştirilen modüler bir platformdur. C++20 çekirdek ve C#/.NET 10 araçları üzerine kuruludur.
 
-**D1 geliştirme aşamasında · Kod 0.1.11 · Mimari v0.18**
+**D1 geliştirme aşamasında · Kod 0.1.13 · Mimari v0.20**
 
 Çekirdek temeli ve doğrulama araçları mevcuttur. Oynanabilir multiplayer istemcisi/sunucusu, production SDK ve launcher henüz yayımlanmadı. [Uygulama durumu](docs/development/status.md), kodlanmış ve doğrulanmış kapsamı ayrı gösterir.
 
@@ -66,3 +66,9 @@ docs/        Mimari, geliştirme, araştırma ve kanıt belgeleri
 SAEX'e ait kaynaklar **[MIT](LICENSE)** lisanslıdır. [Üçüncü taraf bildirimleri](THIRD_PARTY_NOTICES.md) ayrıca geçerlidir. GTA oyun dosyaları değiştirilmez veya dağıtılmaz. Bu proje Rockstar Games ile bağlantılı değildir.
 
 [Mimari sürüm geçmişi ve önceki kapsam açıklamaları](docs/development/readme-history-v0.18.md) · [GitHub yayın kaydı](docs/development/github-publication.md)
+
+## Kod 0.1.12
+
+[Proxy dönüş sınırı](docs/development/d1-proxy-return.md) uygulanmıştır; test ve gerçek GTA kanıtı ilgili raporda ayrı tutulur. N2/D1 ve oynanabilir multiplayer kapsamı açık kalır.
+
+[0.1.13 startup çağrı sınırı](docs/development/d1-startup-call.md), entry sonrası çağrı zamanını ve sınırlı image örneklerini doğrular; dinamik yükleme/gerçek SAEX bootstrap ve N2/D1 açık kalır.

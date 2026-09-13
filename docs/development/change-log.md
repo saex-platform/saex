@@ -1,5 +1,23 @@
 # Kaynak ve belge değişiklik kaydı
 
+## 2026-09-13 — 0.1.13 hosted yayın kanıtı
+
+`bd98c4a` kaynakları için PR #9’daki beş Windows/Linux build, doküman ve sır taramasının tamamı geçti. Windows x64 6 native/79 managed/60 Python, x86 11 native/79 managed/85 Python; Linux 4 native/79 managed/51 Python. Yerel x86 Debug birleştirme koşusu ve altı commit’li geçmişin Gitleaks taraması da geçti. Status ve yayın raporu güncellendi; bu sonuç kaydı yalnız belgedir. Kaynak/ABI/otorite, raw hash girdileri ve önceki gerçek GTA kanıtının sınırı değişmedi; N1 hosted ve GTA yeniden çalıştırılmadı.
+
+## 2026-09-13 — 0.1.13 kaynaklarının yayın tabanıyla birleştirilmesi
+
+0.1.12/0.1.13 kaynakları, önceki public yayın ve hosted CI düzeltmeleriyle birleştirildi. Çakışan belge ekleri iki tarafın kanıtını korur; kaynak/ABI/otorite ve raw hash girdileri bu birleştirmede değişmedi. Yerel başlangıç commit’i güvenlik dalı ve tam Git bundle ile korundu. Yeni yayın PR ve mevcut yedi zorunlu kontrol üzerinden ilerler; sonuç [yayın raporunda](github-publication.md) ayrı kaydedilir.
+
+## Kod 0.1.13 / mimari v0.20 — 13 Eylül 2026
+
+Ayrı run_to_startup_call/--observe-startup-call ile orijinal entry’den sonraki ilk proxy IAT çağrısı tutulur. DR0 fonksiyon başlangıcına taşınır, DR1 aynı main-thread’in IAT yazımlarını gözler. CALL biçimi/slot, stack parametre alanı, target byte kararlılığı ve dört sınırlı image örneği raporlanır. Eski entry/proxy durakları korunur; startupObservation eski modlarda null olur. Strict startup-policy source’u proxy ve observed profile digest’ine bağlıdır; yeni DLL pini veya otomatik native izin eklenmedi. Dokuz fixture, 19 senaryo + canary positive control + 12 warm, yedi policy ve iki CLI testi eklendi. Özel CRT entry denemesi unresolved CRT sembolleriyle başarısız oldu; normal CRT entry seçilerek düzeltildi. Ortak fixture PE helper taşındı; production parser/SDK/ABI/otorite değişmedi. Public C++ trace/API kullanıcıları birlikte yeniden derlenir; bootstrap C ABI 1 aynı, kaldırılan ürün özelliği/kalıcı migration yoktur. ADR-48, sahip belgeleri, status/roadmap/component-map ve Windows/Linux test girişleri güncellendi. [Doğrulama ve sınırlar](d1-startup-call.md). Son standart sonuç: x86 Debug/Release 11 native suite + 79 managed + 85 Python; x64 Debug/Release 6 suite + 79 managed + 60 Python geçti. Gerçek private GTA 12/12 startup hit, dört original/legacy regresyonla 16/16 confirmed exit; 16 input dosyası değişmedi. Linux/hosted/N1 bu kesit için yeniden doğrulanmadı.
+
+
+## Kod 0.1.12 / mimari v0.19 — 13 Eylül 2026
+
+Ayrı run_to_proxy_return/--observe-proxy-return, exact entry→proxy dönüş durağı, runtime thunk/return slot/aktif mapping ve entry/IAT doğrulaması eklendi. Yeni compiled proxy-policy entry digest ve game-root modül hash’ine bağlıdır; otomatik izin/pin genişlemesi yoktur. Sekiz own EXE/DLL fixture varyantı, 19 native senaryo/12 warm çevrim, yedi policy ve iki CLI testi eklendi. İlk Debug stack overflow büyük trace geçicileri kaldırılarak giderildi; yığın limiti artırılmadı. Eski CLI’lar durma sınırlarını korur; additive proxyObservation eski modlarda null olur. Public C++ observer tipi değiştiğinden çağıranlar birlikte yeniden derlenir; bootstrap C ABI 1 ve N1/GNS kararları aynı kalır. Kaldırılan özellik veya kalıcı veri migration’ı yoktur. ADR-47, normatif owner’lar, status/roadmap/component-map ve Windows/Linux test girişleri birlikte güncellendi. [Kanıt ve sınırlar](d1-proxy-return.md). Son doğrulama: Windows x86 Debug/Release 10 native suite + 79 managed + 76 Python; x64 Debug/Release 6 suite + 79 managed + 53 Python geçti. Gerçek private GTA 12/12 proxy dönüşü ve üç original/legacy regresyonda 15/15 confirmed exit; 16 girdi dosyası değişmedi. Linux/hosted/N1 yeniden doğrulaması bu kayıt kapsamında değildir.
+
+
 Her kayıt davranış, kaynak, doküman, test ve kalan sınırı birlikte taşır. [Durum](status.md) · [İş akışı](workflow.md)
 
 ## 2026-09-13 — Public yayın doğrulaması ve korumalı katkı akışı

@@ -4,6 +4,8 @@
 #include "saex/engine/loader_observation.hpp"
 #include "saex/engine/loader_policy.generated.hpp"
 #include "saex/engine/entry_policy.generated.hpp"
+#include "saex/engine/proxy_policy.generated.hpp"
+#include "saex/engine/startup_policy.generated.hpp"
 #include "saex/engine/observed_profile.generated.hpp"
 #include "saex/engine/windows_file_observation.hpp"
 #include "saex/engine/launch_context.hpp"
@@ -32,10 +34,10 @@ std::string json_path(std::wstring_view value) {
     return result + '"';
 }
 void print(const saex::engine::LoaderTrace& trace, std::uint32_t pid, std::string_view engine_hash,
-    bool reviewed, std::string_view failed_module, const saex::engine::LaunchContext* context, bool entry_mode) {
+    bool reviewed, std::string_view failed_module, const saex::engine::LaunchContext* context, bool entry_mode, bool proxy_mode, bool startup_mode) {
     const auto policy = reviewed ? saex::engine::reviewed_loader_policy_id : "windows-loader-three-file-observation-v1";
     const auto digest = reviewed ? saex::engine::reviewed_loader_policy_digest : "";
-    std::cout << std::boolalpha << "{\"scope\":\"" << (entry_mode ? "bounded-entry-boundary-observation" : "bounded-loader-mapping-observation")
+    std::cout << std::boolalpha << "{\"scope\":\"" << (startup_mode ? "bounded-startup-call-observation" : proxy_mode ? "bounded-proxy-return-observation" : entry_mode ? "bounded-entry-boundary-observation" : "bounded-loader-mapping-observation")
         << "\",\"schemaVersion\":1,\"canAttach\":false,"
         << "\"initializationVerified\":false,\"policy\":\"" << policy << "\",\"policySourceDigest\":\"" << digest
         << "\",\"failedPolicyModule\":\"" << failed_module << "\",\"engineSha256\":\"" << engine_hash
@@ -64,6 +66,38 @@ void print(const saex::engine::LoaderTrace& trace, std::uint32_t pid, std::strin
             << ",\"bytesRead\":" << trace.entry_bytes_read << ",\"bytesMatch\":" << trace.entry_bytes_match
             << ",\"beforeHex\":\"" << hex(trace.entry_before) << "\",\"afterHex\":\"" << hex(trace.entry_after) << "\"}";
     } else std::cout << "null";
+    std::cout << ",\"proxyObservation\":";
+    if (proxy_mode) {
+        std::cout << "{\"executionPolicy\":\"" << saex::engine::reviewed_proxy_policy_id
+            << "\",\"executionPolicySourceDigest\":\"" << saex::engine::reviewed_proxy_policy_digest
+            << "\",\"proxyExecutionAllowed\":true,\"validated\":" << trace.proxy_validated
+            << ",\"breakpointArmed\":" << trace.proxy_breakpoint_armed << ",\"continued\":" << trace.proxy_continued
+            << ",\"returnReached\":" << trace.proxy_return_reached << ",\"entryRestored\":" << trace.proxy_entry_restored
+            << ",\"iatVerified\":" << trace.proxy_iat_verified << ",\"moduleBase\":" << trace.proxy_base
+            << ",\"mappingId\":" << trace.proxy_mapping_id << ",\"returnAddress\":" << trace.proxy_return_address
+            << ",\"iatRva\":" << saex::engine::reviewed_proxy_spec.iat_rva << ",\"iatBefore\":" << trace.proxy_iat_before
+            << ",\"iatAfter\":" << trace.proxy_iat_after << ",\"entryAfterHex\":\"" << hex(trace.proxy_entry_after) << "\"}";
+    } else std::cout << "null";
+    std::cout << ",\"startupObservation\":";
+    if (startup_mode) {
+        std::cout << "{\"executionPolicy\":\"" << saex::engine::reviewed_startup_policy_id
+            << "\",\"executionPolicySourceDigest\":\"" << saex::engine::reviewed_startup_policy_digest
+            << "\",\"entryExecutionAllowed\":true,\"breakpointArmed\":" << trace.startup_breakpoint_armed
+            << ",\"continued\":" << trace.startup_continued << ",\"reached\":" << trace.startup_reached
+            << ",\"iatWriteObserved\":" << trace.startup_iat_write_observed << ",\"targetStable\":" << trace.startup_target_stable
+            << ",\"callsiteVerified\":" << trace.startup_callsite_verified << ",\"argumentValid\":" << trace.startup_argument_valid
+            << ",\"address\":" << trace.startup_address << ",\"returnAddress\":" << trace.startup_return_address
+            << ",\"argumentAddress\":" << trace.startup_argument_address << ",\"targetBeforeHex\":\"" << hex(trace.startup_target_before)
+            << "\",\"targetAfterHex\":\"" << hex(trace.startup_target_after) << "\",\"samples\":[";
+        for (std::uint32_t i = 0; i < trace.startup_sample_count; ++i) {
+            if (i) std::cout << ',';
+            const auto& sample = trace.startup_samples[i];
+            std::cout << "{\"rva\":" << sample.rva << ",\"length\":" << sample.length << ",\"read\":" << sample.read
+                << ",\"match\":" << sample.match << ",\"beforeHex\":\"" << hex(sample.before).substr(0, sample.length * 2)
+                << "\",\"afterHex\":\"" << hex(sample.after).substr(0, sample.length * 2) << "\"}";
+        }
+        std::cout << "]}";
+    } else std::cout << "null";
     std::cout << ",\"modules\":[";
     for (std::uint32_t i = 0; i < trace.module_count; ++i) {
         if (i) std::cout << ',';
@@ -79,11 +113,13 @@ void print(const saex::engine::LoaderTrace& trace, std::uint32_t pid, std::strin
 }
 }
 int wmain(int argc, wchar_t** argv) {
-    const bool entry_mode = argc == 4 && std::wstring_view(argv[1]) == L"--observe-entry-boundary";
+    const bool startup_mode = argc == 4 && std::wstring_view(argv[1]) == L"--observe-startup-call";
+    const bool proxy_mode = startup_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-proxy-return");
+    const bool entry_mode = proxy_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-entry-boundary");
     const bool controlled = entry_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-context-loader");
     if (!controlled && (argc != 3 || (std::wstring_view(argv[1]) != L"--observe-loader" && std::wstring_view(argv[1]) != L"--observe-reviewed-loader"))) {
         std::cerr << "Usage: saex_engine_loader_probe --observe-loader|--observe-reviewed-loader <gta_sa.exe>\n"
-            << "       saex_engine_loader_probe --observe-context-loader|--observe-entry-boundary <gta_sa.exe> <absolute-working-directory>\n"; return 2;
+            << "       saex_engine_loader_probe --observe-context-loader|--observe-entry-boundary|--observe-proxy-return|--observe-startup-call <gta_sa.exe> <absolute-working-directory>\n"; return 2;
     }
     using namespace saex::engine;
     const bool reviewed = controlled || std::wstring_view(argv[1]) == L"--observe-reviewed-loader";
@@ -91,7 +127,7 @@ int wmain(int argc, wchar_t** argv) {
     bool exit_confirmed{};
     std::unique_ptr<LaunchContext> context;
     const auto emit = [&](const LoaderTrace& trace, std::uint32_t child_pid, std::string_view hash, std::string_view failed = {}) {
-        print(trace, child_pid, hash, reviewed, failed, context.get(), entry_mode);
+        print(trace, child_pid, hash, reviewed, failed, context.get(), entry_mode, proxy_mode, startup_mode);
     };
     try {
         if (controlled) {
@@ -140,6 +176,12 @@ int wmain(int argc, wchar_t** argv) {
             }
             pins = basic_pins;
         }
+        auto proxy = reviewed_proxy_spec;
+        if (proxy_mode) {
+            for (const auto pin : pins)
+                if (std::string_view(pin->identity().name.data()) == reviewed_proxy_module) proxy.module = pin;
+            if (!proxy.module) { LoaderTrace result{}; result.reason = "proxy_policy_module_missing"; emit(result, 0, hash); return 1; }
+        }
         LoaderTrace trace{};
         {
             SuspendedImage child(executable_path.c_str(), executable.layout().image_size, context.get());
@@ -151,13 +193,16 @@ int wmain(int argc, wchar_t** argv) {
                 const auto check = check_mapped_observation(child, executable.bytes(), executable.layout(), observed_profile);
                 if (check != ProfileResult::matched_observation) reason = profile_result_name(check);
             }
-            if (reason.empty()) trace = entry_mode ? LoaderObservation::run_to_entry(child, executable.handle(), pins, entry)
+            if (reason.empty()) trace = startup_mode ? LoaderObservation::run_to_startup_call(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec)
+                : proxy_mode ? LoaderObservation::run_to_proxy_return(child, executable.handle(), pins, entry, proxy)
+                : entry_mode ? LoaderObservation::run_to_entry(child, executable.handle(), pins, entry)
                 : LoaderObservation::run(child, executable.handle(), pins);
             else { trace.reason = reason; trace.exit_confirmed = child.created() && child.stop(); }
             exit_confirmed = trace.exit_confirmed;
         } // Cleanup and all borrowed handles remain valid before output allocation/IO.
         emit(trace, pid, hash);
-        const bool complete = entry_mode ? (trace.entry_reached && trace.entry_bytes_read) : trace.breakpoint_candidate;
+        const bool complete = startup_mode ? trace.reason == "startup_call_verified" : proxy_mode ? trace.reason == "proxy_return_verified"
+            : entry_mode ? (trace.entry_reached && trace.entry_bytes_read) : trace.breakpoint_candidate;
         return complete && trace.exit_confirmed ? 3 : 1;
     } catch (const std::exception&) {
         LoaderTrace result{}; result.reason = "loader_probe_exception"; result.exit_confirmed = exit_confirmed;

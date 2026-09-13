@@ -104,3 +104,11 @@ entry-policy.json içindeki basePolicySha256 bu değişmeyen JSON’un exact SHA
 ### Hosted corpus tamamlaması
 
 İkinci hosted turda bütün native suite'ler geçti; ortak Python loader CLI corpus'undaki cwd string eşitliği kısa/uzun Windows adı nedeniyle hata verdi. Test artık pathlib.samefile ile aynı dizin kimliğini doğrular. Engine unknown-fingerprint reddi, environment redaction, childCreated=false, entry/loader policy ve lifecycle sınırları aynen kalır; önceki GTA artifact sonuçları yeni test kanıtı sayılmaz.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[Proxy execution recipe](d1-proxy-return.md), mevcut mapping JSON’unu değiştirmeden entry digest üzerinden ona bağlanır. Yeni modül/pin veya override eklenmez; mevcut game-root vorbisfile.dll hash’i ve incelenmiş RVA’lar source’ta sabittir. PreparedLoaderPolicy 23 dosyayı child öncesi tutar; mapping kabulü tek başına proxy yürütme izni olmaz.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[Startup execution source](d1-startup-call.md) proxy→entry→mapping source digest zincirine ve observed profile digest’ine bağlanır. Mapping listesi/origin/hash değişmedi; 23 dosya child öncesi doğrulanır. Dinamik vorbishooked/ASI yolu henüz yürütülmez, yeni DLL keşfi veya otomatik pin ekleme bulunmaz.

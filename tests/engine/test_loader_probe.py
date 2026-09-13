@@ -69,7 +69,9 @@ class LoaderProbeTests(unittest.TestCase):
     def test_explicit_opt_in(self):
         for args in ([], ["gta_sa.exe"], ["--attach", "gta_sa.exe"], ["--observe-loader"], ["--observe-loader", "file", "--allow-all"],
                      ["--observe-context-loader", "file"], ["--observe-context-loader", "file", "cwd", "extra"],
-                     ["--observe-entry-boundary", "file"], ["--observe-entry-boundary", "file", "cwd", "extra"]):
+                     ["--observe-entry-boundary", "file"], ["--observe-entry-boundary", "file", "cwd", "extra"],
+                     ["--observe-proxy-return", "file"], ["--observe-proxy-return", "file", "cwd", "extra"],
+                     ["--observe-startup-call", "file"], ["--observe-startup-call", "file", "cwd", "extra"]):
             result = subprocess.run([PROBE, *args], capture_output=True, timeout=10, check=False)
             self.assertEqual(result.returncode, 2)
             self.assertEqual(result.stdout, b"")
@@ -96,6 +98,53 @@ class LoaderProbeTests(unittest.TestCase):
         self.assertEqual(output['reason'], 'launch_directory_input')
         self.assertFalse(output['childCreated'])
         self.assertFalse(output['entryObservation']['initialBreakpointContinued'])
+
+    def test_proxy_unknown_engine_does_not_create_child(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'unknown.exe'; path.write_bytes(fixture())
+            result = subprocess.run([PROBE, '--observe-proxy-return', str(path), directory], capture_output=True, timeout=10)
+            self.assertEqual(result.returncode, 1)
+            output = json.loads(result.stdout)
+            self.assertEqual(output['scope'], 'bounded-proxy-return-observation')
+            self.assertEqual(output['reason'], 'unknown_fingerprint')
+            for key in ['childCreated', 'canAttach', 'initializationVerified', 'loaderAdvanced']:
+                self.assertFalse(output[key])
+            for key in ['validated', 'breakpointArmed', 'continued', 'returnReached', 'entryRestored', 'iatVerified']:
+                self.assertFalse(output['proxyObservation'][key])
+            self.assertRegex(output['proxyObservation']['executionPolicySourceDigest'], r'^[0-9a-f]{64}$')
+
+    def test_proxy_requires_explicit_context(self):
+        result = subprocess.run([PROBE, '--observe-proxy-return', 'unused.exe', 'relative'], capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 1)
+        output = json.loads(result.stdout)
+        self.assertEqual(output['reason'], 'launch_directory_input')
+        self.assertFalse(output['childCreated'])
+        self.assertFalse(output['proxyObservation']['continued'])
+
+    def test_startup_unknown_engine_stays_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'unknown.exe'; path.write_bytes(fixture())
+            result = subprocess.run([PROBE, '--observe-startup-call', str(path), directory], capture_output=True, timeout=10)
+            self.assertEqual(result.returncode, 1)
+            output = json.loads(result.stdout)
+            self.assertEqual(output['scope'], 'bounded-startup-call-observation')
+            self.assertEqual(output['reason'], 'unknown_fingerprint')
+            self.assertFalse(output['childCreated'])
+            self.assertFalse(output['canAttach'])
+            self.assertFalse(output['initializationVerified'])
+            startup = output['startupObservation']
+            for key in ['breakpointArmed','continued','reached','iatWriteObserved','targetStable','callsiteVerified','argumentValid']:
+                self.assertFalse(startup[key])
+            self.assertEqual(startup['samples'], [])
+            self.assertRegex(startup['executionPolicySourceDigest'], r'^[0-9a-f]{64}$')
+
+    def test_startup_invalid_context_before_child(self):
+        result = subprocess.run([PROBE, '--observe-startup-call', 'unused.exe', 'relative'], capture_output=True, timeout=10)
+        self.assertEqual(result.returncode, 1)
+        output = json.loads(result.stdout)
+        self.assertEqual(output['reason'], 'launch_directory_input')
+        self.assertFalse(output['childCreated'])
+        self.assertFalse(output['startupObservation']['continued'])
 
     def test_context_rejects_invalid_directory_before_child(self):
         with tempfile.TemporaryDirectory() as directory:

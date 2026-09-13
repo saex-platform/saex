@@ -104,3 +104,11 @@ Environment digest bütün private koşularda `3725a091ed77f875b48ab336a81623284
 ### Hosted corpus tamamlaması
 
 İkinci hosted turda bütün native suite'ler geçti; ortak Python loader CLI corpus'undaki cwd string eşitliği kısa/uzun Windows adı nedeniyle hata verdi. Test artık pathlib.samefile ile aynı dizin kimliğini doğrular. Engine unknown-fingerprint reddi, environment redaction, childCreated=false, entry/loader policy ve lifecycle sınırları aynen kalır; önceki GTA artifact sonuçları yeni test kanıtı sayılmaz.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+[Yeni proxy-return modu](d1-proxy-return.md) yalnız yeni API/CLI ve executionPolicy ile ilk entry hitini geçebilir. Mevcut run_to_entry ve --observe-entry-boundary burada tarif edilen ilk hitte bitmeye devam eder. Yeni mod ilk entry_before/entry_after alanlarını korur, restorasyonu ayrı proxy_entry_after alanında verir. CREATE_PROCESS’te erken DR0 kurulumu değişmez; yeni ikinci hedef call thunk’ının sonundaki JMP’dir.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[0.1.13 startup-call](d1-startup-call.md) ilk entry görüntüsünü ve erken CREATE_PROCESS DR0 kurulumunu yeniden kullanır. run_to_entry bu ek izin olmadan ilk hitte durur. Üçüncü modun entryExecutionAllowed bayrağı gerçekleşmiş başlangıç kanıtı değildir; continued ancak ikinci duraktan başarılı ContinueDebugEvent sonrası true olur.

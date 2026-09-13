@@ -94,3 +94,11 @@ Bootstrap reason fallback artık açık uint32_t dönüşümü kullanır; C ABI 
 ### Hosted corpus tamamlaması
 
 Bootstrap session corpus artık geçersiz reason 0/999/UINT32_MAX için exact INTERNAL_ERROR değerini ve bilinen ret kodlarının korunmasını ayrıca sınar. Önceki test yalnız terminal ret durumunu ölçüyordu; bu ek assertion ABI/fallback değerini doğrudan kanıtlar. Production davranışı ve layout değişmez.
+
+## Kod 0.1.12 — Proxy dönüş sınırı
+
+0.1.12’de [proxy recipe](../development/d1-proxy-return.md) ayrı build-time JSON sözleşmesidir: strict duplicate/key/type/size/RVA/alignment denetimi, entry source digest ve mevcut game-root module hash bağı. Runtime JSON yüklenmez; source değişikliği açık üretim ve --check gerektirir. Bu yerel gözlem tarifi production IPC/SDK/resource sözleşmesi veya yeni C ABI değildir.
+
+## Kod 0.1.13 — Startup çağrı sınırı
+
+[Startup policy](../development/d1-startup-call.md) strict build-time JSON’dur: exact proxy/profile digest, stage, x86-ff15-iat call form, 68-byte same-stack argument, dört sample üst sınırı ve zorunlu IAT watch. Boundary değerleri runtime seçeneklere dönüşmez; source değişikliği generator --check ve test ister. Core IPC, grants, resource veya bootstrap C ABI 1 değişmez.
