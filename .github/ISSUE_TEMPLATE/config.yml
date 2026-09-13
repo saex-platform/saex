@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Güvenlik açığını özel bildir
+    url: https://github.com/saex-platform/saex/security/advisories/new
+    about: Hassas ayrıntıları public issue'ya yazmayın.
+  - name: Sorular ve tartışmalar
+    url: https://github.com/saex-platform/saex/discussions
+    about: Kullanım, kurulum ve mimari sorularını burada paylaşın.

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "ids": [
+    "WorldId", "WorldEpoch", "EntityId", "Generation", "SessionId",
+    "ResourceEpoch", "OwnerEpoch", "ClockDomainId", "SimulationTick",
+    "StateRevision", "CatalogRevision", "Sequence"
+  ],
+  "entityRefFields": ["WorldId", "WorldEpoch", "EntityId", "Generation"],
+  "fixture": { "version": 1, "magic": 1480933715, "maxPayloadBytes": 32 }
+}

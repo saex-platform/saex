@@ -1,0 +1,9 @@
+/out/
+**/bin/
+**/obj/
+/.vs/
+/.idea/
+__pycache__/
+*.user
+/CMakeUserPresets.json
+/artifacts/local/

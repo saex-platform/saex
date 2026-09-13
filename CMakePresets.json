@@ -1,0 +1,34 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "windows-x64",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/out/windows-x64",
+      "cacheVariables": { "BUILD_TESTING": "ON" }
+    },
+    {
+      "name": "windows-x86",
+      "inherits": "windows-x64",
+      "architecture": "Win32",
+      "binaryDir": "${sourceDir}/out/windows-x86"
+    },
+    {
+      "name": "linux-x64",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/linux-x64",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug", "BUILD_TESTING": "ON" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "windows-x64", "configurePreset": "windows-x64", "configuration": "Debug" },
+    { "name": "windows-x86", "configurePreset": "windows-x86", "configuration": "Debug" },
+    { "name": "linux-x64", "configurePreset": "linux-x64" }
+  ],
+  "testPresets": [
+    { "name": "windows-x64", "configurePreset": "windows-x64", "configuration": "Debug", "output": { "outputOnFailure": true } },
+    { "name": "windows-x86", "configurePreset": "windows-x86", "configuration": "Debug", "output": { "outputOnFailure": true } },
+    { "name": "linux-x64", "configurePreset": "linux-x64", "output": { "outputOnFailure": true } }
+  ]
+}

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../Saex.Contracts/Saex.Contracts.csproj" /></ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="../../contracts/engine/observed-profile.json" LogicalName="Saex.ObservedEngineProfile" />
+  </ItemGroup>
+</Project>

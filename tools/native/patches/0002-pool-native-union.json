@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "target": "plugin_sa/game_sa/CPool.h",
+  "beforeSha256": "dc878fbc73907e1b71c3621f5681bc2eae52abe2050ff92078586890c8514961",
+  "afterSha256": "dc2988f3ac6032a78b1e453e4d4feea77760b5997ed2caa3d820615fb166d717",
+  "replacements": [
+    {
+      "old": "union tPoolObjectFlags {\n    struct {\n        unsigned char nId : 7;\n        bool bEmpty : 1;\n    };\nprivate:\n    unsigned char nValue;\npublic:\n    unsigned char IntValue() { return nValue; }\n};\n\n",
+      "new": "// SAEX N1: preserve native anonymous bit-field ABI; scope C4201 to this union only.\n#pragma warning(push)\n#pragma warning(disable: 4201)\nunion tPoolObjectFlags {\n    struct {\n        unsigned char nId : 7;\n        bool bEmpty : 1;\n    };\nprivate:\n    unsigned char nValue;\npublic:\n    unsigned char IntValue() { return nValue; }\n};\n\n#pragma warning(pop)\n\n"
+    }
+  ]
+}

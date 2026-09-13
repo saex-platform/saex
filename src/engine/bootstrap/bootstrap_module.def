@@ -1,0 +1,5 @@
+LIBRARY saex_bootstrap
+EXPORTS
+    SaexBootstrapInitialize
+    SaexBootstrapQuery
+    SaexBootstrapStop

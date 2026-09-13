@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "worldId": "harbor.foundation",
+  "resources": [
+    {
+      "id": "saex.foundation",
+      "artifactDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+      "dependencies": [], "provides": ["world.state"], "requires": [], "mutates": ["entity.identity"]
+    },
+    {
+      "id": "sample.harbor",
+      "artifactDigest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "dependencies": ["saex.foundation"], "provides": [], "requires": ["world.state"], "mutates": ["harbor.policy"]
+    }
+  ],
+  "assets": [
+    { "id": "sample:crate/collision", "artifactDigest": "2222222222222222222222222222222222222222222222222222222222222222", "dependencies": [], "gameplayCritical": true, "optionalDownload": false },
+    { "id": "sample:crate/prefab", "artifactDigest": "3333333333333333333333333333333333333333333333333333333333333333", "dependencies": ["sample:crate/collision"], "gameplayCritical": true, "optionalDownload": false }
+  ],
+  "requiredCapabilities": ["fixture.entity-ref"],
+  "availableCapabilities": ["fixture.entity-ref"],
+  "recovery": {
+    "maxActorOperations": 32, "maxResourceOperations": 128, "maxWorldOperations": 1024,
+    "maxProcessOperations": 4096, "maxQueuedBytes": 8388608, "maxBaselineBytes": 8388608,
+    "syncTimeoutMilliseconds": 30000, "maxSyncRestarts": 2, "maxWorkerRestarts": 3
+  }
+}

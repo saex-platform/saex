@@ -1,0 +1,31 @@
+name: Native SDK opt-in
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sdk:
+    name: Pinned SDK x86 ${{ matrix.configuration }}
+    runs-on: windows-2022
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Exact CMake
+        run: python -m pip install cmake==4.3.3
+      - name: Acquire, verify and build locked SDK
+        shell: pwsh
+        env:
+          SAEX_CONFIGURATION: ${{ matrix.configuration }}
+        run: ./tools/native/build-sdk.ps1 -Acquire -Configuration $env:SAEX_CONFIGURATION

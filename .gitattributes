@@ -1,0 +1,7 @@
+* text=auto eol=lf
+# Profiles, locks and patches are hashed as exact bytes; never normalize them.
+contracts/engine/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+tools/native/patches/*.json -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+*.png binary
+*.jpg binary
+*.zip binary

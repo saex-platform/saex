@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="380" viewBox="0 0 1280 380" role="img" aria-labelledby="title desc">
+  <title id="title">SAEX — San Andreas Extended</title>
+  <desc id="desc">GTA: San Andreas üzerinde kendi dünyanı ve oyun deneyimini geliştir.</desc>
+  <rect width="1280" height="380" rx="20" fill="#101b22"/>
+  <path d="M1050 0v380M1170 0v380M930 0v380M870 70h410M870 190h410M870 310h410" stroke="#24353c" stroke-width="1"/>
+  <path d="M176 110h-46v160h46m100-160h46v160h-46" fill="none" stroke="#d5eee3" stroke-width="12"/>
+  <path d="M188 140l76 100m0-100l-76 100" fill="none" stroke="#b8f36d" stroke-width="25"/>
+  <text x="390" y="184" fill="#f0f5ef" font-family="Segoe UI,Arial,sans-serif" font-weight="700" font-size="100" letter-spacing="5">SAEX</text>
+  <text x="396" y="231" fill="#b8f36d" font-family="Segoe UI,Arial,sans-serif" font-size="25" letter-spacing="4">SAN ANDREAS EXTENDED</text>
+  <text x="396" y="290" fill="#a1b7bd" font-family="Segoe UI,Arial,sans-serif" font-size="18">Kendi dünyanı ve oyun deneyimini geliştir.</text>
+</svg>

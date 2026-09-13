@@ -1,0 +1,323 @@
+{
+  "always": [
+    "docs/development/status.md",
+    "docs/development/change-log.md"
+  ],
+  "components": [
+    {
+      "patterns": [
+        "include/saex/engine/loader_observation.hpp",
+        "src/engine/loader/loader_observation.cpp",
+        "src/engine/loader/loader_probe.cpp",
+        "tests/engine/entry*",
+        "tests/engine/test_loader_probe.py",
+        "include/saex/engine/entry_policy.generated.hpp",
+        "contracts/engine/entry-policy.json",
+        "tools/entry_policy.py",
+        "tests/engine/test_entry_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-entry-boundary.md",
+        "docs/architecture/engine-adapter.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md",
+        "docs/platform/launcher-operations.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
+        "managed/Saex.Tools/PeLinkageInspector.cs",
+        "tests/managed/Saex.Foundation.Tests/LinkageTests.cs"
+      ],
+      "documents": [
+        "docs/development/d1-native-linkage.md",
+        "docs/architecture/engine-adapter.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/loader_mapping_ledger.hpp",
+        "include/saex/engine/loader_observation.hpp",
+        "src/engine/loader/loader_mapping_ledger.cpp",
+        "src/engine/loader/loader_observation.cpp",
+        "src/engine/loader/loader_probe.cpp",
+        "tests/engine/loader_mapping_tests.cpp",
+        "tests/engine/loader_observation_tests.cpp",
+        "tests/engine/test_loader_probe.py"
+      ],
+      "documents": [
+        "docs/development/d1-loader-lifecycle.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/platform/launcher-operations.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/launch_context.hpp",
+        "src/engine/observer/launch_context.cpp",
+        "src/engine/observer/suspended_image.cpp",
+        "src/engine/loader/loader_probe.cpp",
+        "tests/engine/launch_context*",
+        "tests/engine/loader_observation_tests.cpp",
+        "tests/engine/test_loader_probe.py"
+      ],
+      "documents": [
+        "docs/development/d1-launch-context.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/platform/launcher-operations.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/loader_policy*",
+        "src/engine/loader/loader_policy.cpp",
+        "src/engine/loader/loader_probe.cpp",
+        "contracts/engine/loader-policy.json",
+        "tools/loader_policy.py",
+        "tests/engine/test_loader_policy.py",
+        "tests/engine/loader_observation_tests.cpp",
+        "tests/engine/test_loader_probe.py"
+      ],
+      "documents": [
+        "docs/development/d1-loader-policy.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md",
+        "docs/platform/launcher-operations.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/loader_observation.hpp",
+        "src/engine/loader/*",
+        "tests/engine/loader*",
+        "tests/engine/test_loader_probe.py"
+      ],
+      "documents": [
+        "docs/development/d1-loader-observation.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/platform/launcher-operations.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
+        "managed/Saex.Tools/PeStartupInspector.cs",
+        "managed/Saex.Tools/NativeStartupInspector.cs",
+        "tests/managed/Saex.Foundation.Tests/StartupTests.cs"
+      ],
+      "documents": [
+        "docs/development/d1-native-startup.md",
+        "docs/architecture/engine-adapter.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/suspended_image.hpp",
+        "src/engine/observer/*",
+        "tests/engine/suspended*",
+        "tests/engine/test_process_probe.py",
+        "tests/engine/pe_fixture.py"
+      ],
+      "documents": [
+        "docs/development/d1-suspended-process.md",
+        "docs/architecture/native-sdk-integration.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/contracts/*",
+        "src/contracts/*",
+        "managed/Saex.Contracts/*",
+        "contracts/*",
+        "tools/ContractGen/*",
+        "src/tools/*"
+      ],
+      "documents": [
+        "docs/architecture/execution-contracts.md",
+        "docs/development/d1-foundation.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/core/control_clock*",
+        "src/core/control_clock*",
+        "include/saex/core/lease_authority*",
+        "src/core/lease_authority*"
+      ],
+      "documents": [
+        "docs/architecture/time-fencing.md",
+        "docs/networking/authority.md",
+        "docs/development/d1-foundation.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/core/bounded_inbox*",
+        "src/core/bounded_inbox*"
+      ],
+      "documents": [
+        "docs/architecture/execution-contracts.md",
+        "docs/development/d1-foundation.md"
+      ]
+    },
+    {
+      "patterns": [
+        "managed/Saex.Tools/WorldPlanValidator.cs",
+        "managed/Saex.Tools/CheckedJson.cs",
+        "samples/*"
+      ],
+      "documents": [
+        "docs/architecture/world-plans.md",
+        "docs/development/d1-foundation.md"
+      ]
+    },
+    {
+      "patterns": [
+        "managed/Saex.Tools/EngineInspector.cs"
+      ],
+      "documents": [
+        "docs/architecture/engine-adapter.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md",
+        "docs/development/d1-foundation.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/*",
+        "src/engine/*",
+        "contracts/engine/*"
+      ],
+      "documents": [
+        "docs/architecture/engine-adapter.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md"
+      ]
+    },
+    {
+      "patterns": [
+        "tools/native/*"
+      ],
+      "documents": [
+        "docs/development/workflow.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md"
+      ]
+    },
+    {
+      "patterns": [
+        "tests/engine/*"
+      ],
+      "documents": [
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md",
+        "docs/development/d1-engine-integration.md"
+      ]
+    },
+    {
+      "patterns": [
+        "managed/Saex.Tools/Program.cs",
+        "managed/Saex.Tools/*.csproj",
+        "tests/*"
+      ],
+      "documents": [
+        "docs/development/d1-foundation.md"
+      ]
+    },
+    {
+      "patterns": [
+        "tools/*.py",
+        "tools/*.ps1",
+        "CMake*",
+        "Directory.Build.props",
+        "global.json",
+        "NuGet.Config",
+        ".editorconfig",
+        ".gitignore",
+        "docs/development/component-map.json"
+      ],
+      "documents": [
+        "docs/development/workflow.md"
+      ]
+    },
+    {
+      "patterns": [
+        "src/engine/plugin_sdk/sdk_probe.cpp",
+        "contracts/engine/plugin-sdk.lock.json",
+        "tools/native/*",
+        "tests/engine/test_dependency.py",
+        "tests/engine/test_sdk_configure.py"
+      ],
+      "documents": [
+        "docs/development/d1-native-dependency.md"
+      ]
+    },
+    {
+      "patterns": [
+        "src/engine/bootstrap/*",
+        "include/saex/engine/*",
+        "contracts/engine/observed-profile.json",
+        "managed/Saex.Tools/EngineObservation.cs",
+        "managed/Saex.Tools/EngineInspector.cs",
+        "tools/engine_profiles.py",
+        "tests/engine/preflight_tests.cpp",
+        "tests/engine/test_engine_profiles.py",
+        "tests/engine/test_engine_probe.py"
+      ],
+      "documents": [
+        "docs/development/d1-engine-preflight.md",
+        "docs/architecture/engine-adapter.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/bootstrap*",
+        "include/saex/engine/windows_file_observation.hpp",
+        "src/engine/bootstrap/bootstrap*",
+        "src/engine/bootstrap/windows_file_observation.cpp",
+        "tests/engine/bootstrap*",
+        "tests/engine/test_bootstrap*",
+        "tools/check_bootstrap.py"
+      ],
+      "documents": [
+        "docs/development/d1-bootstrap-module.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md"
+      ]
+    },
+    {
+      "patterns": [
+        ".github/*",
+        ".gitattributes",
+        "LICENSE",
+        "docs/branding/*",
+        "tools/ci.py",
+        "tests/tooling/test_ci.py"
+      ],
+      "documents": [
+        "docs/development/github-publication.md",
+        "docs/development/workflow.md"
+      ]
+    }
+  ]
+}

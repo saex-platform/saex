@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "dependency": "Dryxio/plugin-sdk-sa",
+  "scope": "D1-N1-build-only",
+  "runtimeEligible": false,
+  "upstream": {
+    "url": "https://github.com/Dryxio/plugin-sdk-sa",
+    "commit": "b55e89b336a81448c1aa1a5b188431c9845ebaa9",
+    "archiveUrl": "https://codeload.github.com/Dryxio/plugin-sdk-sa/zip/b55e89b336a81448c1aa1a5b188431c9845ebaa9",
+    "archiveBytes": 12753675,
+    "archiveSha256": "3ff497b91744c189c38003e619ce5730b8998a634b4bef4c0d47ede996c758e9"
+  },
+  "sourceDirectory": "out/dependencies/plugin-sdk-sa/b55e89b336a81448c1aa1a5b188431c9845ebaa9",
+  "buildSourceDirectory": "out/dependencies/plugin-sdk-sa/b55e89b336a81448c1aa1a5b188431c9845ebaa9-n1-p1",
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 960,
+      "sha256": "c097c542f5f806378e28e3866af83ea1692ae1f0026bcf5bff4b6637254f22fc"
+    },
+    {
+      "path": "hooking/Hooking.Patterns.h",
+      "bytes": 6221,
+      "sha256": "ce50795e0276b478d5fc06c0ec7165bf4eea66255c518d1b13cf72f444526583"
+    },
+    {
+      "path": "hooking/LICENSE.md",
+      "bytes": 1074,
+      "sha256": "091ac0ecc643b3f4ee31cd722ee2eb36231240366526b48e6aa356578c29f718"
+    },
+    {
+      "path": "injector/assembly.hpp",
+      "bytes": 3193,
+      "sha256": "6244a93535d00018b7bbb35d4cb090a06e2633f2253936fe5021c94e2263b4bf"
+    },
+    {
+      "path": "injector/gvm/gvm.hpp",
+      "bytes": 7323,
+      "sha256": "92fc68d3ddcd2205e3a123ca6942ac0fbfd2674b7fae2d819bcb3d3d0c8dfef7"
+    },
+    {
+      "path": "injector/hooking.hpp",
+      "bytes": 28965,
+      "sha256": "fe4f2edcf907c3151de8d675ba7ffefdbf3b73d4965c010bfc4efd1a9d529014"
+    },
+    {
+      "path": "injector/injector.hpp",
+      "bytes": 26109,
+      "sha256": "3235c4286a83db3491b6774bba3fb1fe4336fd80334d1b925d6ca0c82bc10d0a"
+    },
+    {
+      "path": "injector/utility.hpp",
+      "bytes": 1573,
+      "sha256": "28fcbd58e588ba36c632d41b67be4fa608d070a310190036e7cd2c166c956a4f"
+    },
+    {
+      "path": "plugin_sa/game_sa/CPool.h",
+      "bytes": 5753,
+      "sha256": "dc878fbc73907e1b71c3621f5681bc2eae52abe2050ff92078586890c8514961"
+    },
+    {
+      "path": "safetyhook/LICENSE.txt",
+      "bytes": 1359,
+      "sha256": "36266a8fd073568394cb81cdb2b124f7fdae2c64c1a7ed09db34b4d22efa2951"
+    },
+    {
+      "path": "safetyhook/safetyhook.hpp",
+      "bytes": 38797,
+      "sha256": "b7985216e10a4f84fec0ebeac2b6a7a2fec07f8fc8e89d90b8b6ecc12f6b4bf8"
+    },
+    {
+      "path": "shared/ArgPicker.h",
+      "bytes": 4342,
+      "sha256": "3ffaeaf06896f9e25a131d3a464e59bafb53d81946b90ca22d9df56a69b82285"
+    },
+    {
+      "path": "shared/Base.h",
+      "bytes": 1922,
+      "sha256": "a79fbaa887908da7759e677b6fa80bc3e260abd342565628aa2f6b25c5c418b3"
+    },
+    {
+      "path": "shared/DynAddress.h",
+      "bytes": 730,
+      "sha256": "53283122546c05fae422879b25a7b293b2338c8663f4e017c79e29b17aab9cae"
+    },
+    {
+      "path": "shared/EventList.h",
+      "bytes": 11483,
+      "sha256": "6a124f25d0715b5e28948dc5c346bf5dd48b650cdeab914025206702ddacf699"
+    },
+    {
+      "path": "shared/GameVersion.h",
+      "bytes": 9248,
+      "sha256": "c09b358c6f42ceb6e566b3a94ea9b8de7d3fc183862aa581eb72b41cf7ae2b18"
+    },
+    {
+      "path": "shared/Maths.h",
+      "bytes": 551,
+      "sha256": "eb7b39b5cabe9db2e0e87976748c8f5297b2cd51ab934c13d416f111e66c5ed3"
+    },
+    {
+      "path": "shared/Pattern.h",
+      "bytes": 3356,
+      "sha256": "5ba9562737a5261349990ec86059e58a5116ed476e5363666ab6bc9d462afe54"
+    },
+    {
+      "path": "shared/PluginBase.cpp",
+      "bytes": 336,
+      "sha256": "1883fb172ddbaaf5ef0bbecdd9b8b190d7f6ad7fcac4f6ad187863514bcea935"
+    },
+    {
+      "path": "shared/PluginBase.h",
+      "bytes": 17394,
+      "sha256": "63b1aa137a9df5ec1c55624a34aca0579d9b3c498b0f0882e5637c686c3ae9a0"
+    },
+    {
+      "path": "shared/RefList.h",
+      "bytes": 6202,
+      "sha256": "d30a1316c0011720092b2e49a6a61b937da36a65e542fff27dc8b62f9ca36044"
+    },
+    {
+      "path": "shared/Types.h",
+      "bytes": 497,
+      "sha256": "ca8f3d0e4ae2cfb8f551e67fd88a6ea9da1854f2ef33295732a5d31b409c7913"
+    },
+    {
+      "path": "shared/VersionsMacro.h",
+      "bytes": 610847,
+      "sha256": "f710ddd4b70d330a1b31317aa6de4f5b6d2647f566569fd8a33cef66e351982b"
+    }
+  ],
+  "sourceInventoryDigest": "68ae0550170492e70374d79f9a6b9737823d0fb3f164ed1672ae5bebd5358bee",
+  "patches": [
+    {
+      "path": "tools/native/patches/0001-injector-member-names.json",
+      "bytes": 6126,
+      "sha256": "bd21e154c16b51bacd49f7b11a0a5147f8d183695ae2ae53568d25ed11ce9201"
+    },
+    {
+      "path": "tools/native/patches/0002-pool-native-union.json",
+      "bytes": 898,
+      "sha256": "5b78d6551922c249a8bb3081931b6c36eaec83d38add34972772be7133c429e8"
+    }
+  ],
+  "buildSourceInventoryDigest": "a393bada756ff618e2a9d7f98fe2b9e6cdea1ea5ba4f23efd9c130a312c4ced1",
+  "recipeFiles": [
+    {
+      "path": "tools/native/CMakeLists.txt",
+      "bytes": 3682,
+      "sha256": "234929c7d6e63689fb4a068bbe3a59a42f00d6eca6062eddc4aebce025f4c2b0"
+    },
+    {
+      "path": "tools/native/dependency.py",
+      "bytes": 11445,
+      "sha256": "f60a04488345ab9da6070d76444a597c725211c6b0f25821e4c6a103eeda4d19"
+    },
+    {
+      "path": "tools/native/build-sdk.ps1",
+      "bytes": 3228,
+      "sha256": "30aea737de64463ef487648e3918eb1f19421008934b60694e56b0e15b44bb33"
+    },
+    {
+      "path": "src/engine/plugin_sdk/sdk_probe.cpp",
+      "bytes": 659,
+      "sha256": "f139b073d533434e875c5f6c95783538f094492d054a16faf7f15aac9c196270"
+    },
+    {
+      "path": "tests/engine/test_dependency.py",
+      "bytes": 6555,
+      "sha256": "349466b59453334e50cf917e364dba2f89128e6d40f668f05db369f05da780f3"
+    },
+    {
+      "path": "tests/engine/test_sdk_configure.py",
+      "bytes": 1679,
+      "sha256": "8c9602ab54c6129220ae5d7911eff0fa692f87019acf97c7c299b92582ae4a25"
+    }
+  ],
+  "recipeDigest": "7470a16b6754d19c9985a4e70ae368f79267ec3ac3c4fa36aad6b1117888ac9b",
+  "toolchain": {
+    "architecture": "x86",
+    "cmake": "4.3.3",
+    "generator": "Visual Studio 17 2022",
+    "compiler": "MSVC",
+    "compilerVersion": "19.44.35228.0",
+    "windowsSdk": "10.0.26100.0",
+    "languageStandard": 23,
+    "msvcStandardFlag": "/std:c++latest",
+    "crt": {
+      "Debug": "MDd",
+      "Release": "MD"
+    },
+    "packing": 8,
+    "callingConvention": "cdecl",
+    "defines": [
+      "GTASA",
+      "PLUGIN_SGV_10US",
+      "RW"
+    ],
+    "warnings": [
+      "/W4",
+      "/WX"
+    ],
+    "conformance": "/permissive-"
+  },
+  "noticeInventory": [
+    {
+      "path": "LICENSE",
+      "coverage": "Plugin-SDK shared and GTA-SA source; retain each source banner"
+    },
+    {
+      "path": "injector/injector.hpp",
+      "coverage": "Inline LINK/2012 Zlib notice; injector files retain their own headers"
+    },
+    {
+      "path": "hooking/LICENSE.md",
+      "coverage": "hooking/Hooking.Patterns.h"
+    },
+    {
+      "path": "safetyhook/LICENSE.txt",
+      "coverage": "safetyhook/safetyhook.hpp; header dependency only, implementation not linked"
+    }
+  ],
+  "excluded": [
+    "GTA executable and assets",
+    "upstream installers and examples",
+    "GameVersion.cpp, DynAddress.cpp and native-address source units",
+    "RenderWare/DXSDK inputs",
+    "SafetyHook and pattern implementation libraries"
+  ]
+}

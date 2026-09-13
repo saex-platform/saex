@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.observed.f01a00ce950fa40c",
+  "observationOnly": true,
+  "fileBytes": 14383616,
+  "sha256": "f01a00ce950fa40ca1ed59df0e789848c6edcf6405456274965885d0929343ac",
+  "layout": {
+    "timestamp": 1114702282,
+    "imageBase": 4194304,
+    "entryRva": 4343152,
+    "imageSize": 18313216,
+    "headersSize": 1024,
+    "sectionAlignment": 4096,
+    "fileAlignment": 512,
+    "characteristics": 303,
+    "dllCharacteristics": 0,
+    "sections": [
+      {
+        "name": ".text",
+        "virtualSize": 4546560,
+        "rva": 4096,
+        "rawSize": 4546048,
+        "rawOffset": 1024,
+        "characteristics": 1610612768
+      },
+      {
+        "name": "_rwcseg",
+        "virtualSize": 4096,
+        "rva": 4550656,
+        "rawSize": 1536,
+        "rawOffset": 4547072,
+        "characteristics": 1610612768
+      },
+      {
+        "name": ".rdata",
+        "virtualSize": 311296,
+        "rva": 4554752,
+        "rawSize": 308224,
+        "rawOffset": 4548608,
+        "characteristics": 1073741888
+      },
+      {
+        "name": ".data",
+        "virtualSize": 4169728,
+        "rva": 4866048,
+        "rawSize": 262144,
+        "rawOffset": 4856832,
+        "characteristics": 3221225536
+      },
+      {
+        "name": "_TEXT_HA",
+        "virtualSize": 69632,
+        "rva": 9035776,
+        "rawSize": 68608,
+        "rawOffset": 5118976,
+        "characteristics": 3221225536
+      },
+      {
+        "name": "_rwdseg",
+        "virtualSize": 4096,
+        "rva": 9105408,
+        "rawSize": 512,
+        "rawOffset": 5187584,
+        "characteristics": 3221225536
+      },
+      {
+        "name": ".rsrc",
+        "virtualSize": 4096,
+        "rva": 9109504,
+        "rawSize": 1536,
+        "rawOffset": 5188096,
+        "characteristics": 1073741888
+      },
+      {
+        "name": ".text",
+        "virtualSize": 6594560,
+        "rva": 9113600,
+        "rawSize": 6593536,
+        "rawOffset": 5189632,
+        "characteristics": 3758096416
+      },
+      {
+        "name": ".init",
+        "virtualSize": 24576,
+        "rva": 15708160,
+        "rawSize": 23040,
+        "rawOffset": 11783168,
+        "characteristics": 3758096416
+      },
+      {
+        "name": ".data",
+        "virtualSize": 2445312,
+        "rva": 15732736,
+        "rawSize": 2442240,
+        "rawOffset": 11806208,
+        "characteristics": 3758096448
+      },
+      {
+        "name": ".HOODLUM",
+        "virtualSize": 135168,
+        "rva": 18178048,
+        "rawSize": 135168,
+        "rawOffset": 14248448,
+        "characteristics": 3758096416
+      }
+    ]
+  },
+  "anchors": [
+    {
+      "id": "version-marker",
+      "rva": 4096,
+      "sectionIndex": 0,
+      "bytes": "e97b191601",
+      "evidenceSource": "https://github.com/Dryxio/plugin-sdk-sa/blob/b55e89b336a81448c1aa1a5b188431c9845ebaa9/shared/GameVersion.cpp",
+      "evidenceKind": "disk-bytes-and-upstream-address-only",
+      "runtimeVerified": false,
+      "diskRelativeTargetRva": 18229632
+    },
+    {
+      "id": "game-process-call",
+      "rva": 1304961,
+      "sectionIndex": 0,
+      "bytes": "e85ad5ffff",
+      "evidenceSource": "https://github.com/Dryxio/plugin-sdk-sa/blob/b55e89b336a81448c1aa1a5b188431c9845ebaa9/shared/Events.h",
+      "evidenceKind": "disk-bytes-and-upstream-address-only",
+      "runtimeVerified": false,
+      "diskRelativeTargetRva": 1294048
+    },
+    {
+      "id": "init-game-call",
+      "rva": 3443963,
+      "sectionIndex": 0,
+      "bytes": "e88058dfff",
+      "evidenceSource": "https://github.com/Dryxio/plugin-sdk-sa/blob/b55e89b336a81448c1aa1a5b188431c9845ebaa9/shared/Events.h",
+      "evidenceKind": "disk-bytes-and-upstream-address-only",
+      "runtimeVerified": false,
+      "diskRelativeTargetRva": 1303936
+    },
+    {
+      "id": "shutdown-rw-call",
+      "rva": 1300752,
+      "sectionIndex": 0,
+      "bytes": "e86be2ffff",
+      "evidenceSource": "https://github.com/Dryxio/plugin-sdk-sa/blob/b55e89b336a81448c1aa1a5b188431c9845ebaa9/shared/Events.h",
+      "evidenceKind": "disk-bytes-and-upstream-address-only",
+      "runtimeVerified": false,
+      "diskRelativeTargetRva": 1293184
+    }
+  ],
+  "evidence": {
+    "date": "2026-09-13",
+    "versionHint": "hoodlum-marker-matches-sdk",
+    "profileStatus": "observed-not-runtime-verified",
+    "limitations": [
+      "No game process, unpack/initialization or live hook evidence",
+      "Disk call instruction does not establish calling convention or safe callback phase",
+      "Duplicate section names require index/RVA identity",
+      "No game bytes beyond short diagnostic anchors are distributed"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+name: Özellik önerisi
+description: Somut kullanım ihtiyacı ve kabul ölçütüyle bir geliştirme önerin.
+title: '[Feature]: '
+labels: ['type:feature']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Çözülmesini istediğiniz problem
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Önerilen davranış ve örnek kullanım
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Kabul ölçütleri ve sınırlar
+      description: Başarı ve ret senaryolarını, bilinen D1/D2 bağımlılıklarını yazın.
+    validations:
+      required: true

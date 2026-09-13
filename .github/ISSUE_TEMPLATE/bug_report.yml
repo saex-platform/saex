@@ -1,0 +1,40 @@
+name: Hata bildirimi
+description: Yeniden üretilebilir bir kaynak, araç veya derleme hatası bildirin.
+title: '[Bug]: '
+labels: ['type:bug']
+body:
+  - type: markdown
+    attributes:
+      value: Güvenlik açıklarını özel bildirim kanalından iletin. Token, kişisel log veya GTA dosyası yüklemeyin.
+  - type: input
+    id: version
+    attributes:
+      label: Commit veya sürüm
+      placeholder: Commit SHA
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Platform ve derleme
+      placeholder: Windows / x86 / Debug / MSVC ve .NET sürümleri
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Yeniden üretim
+      description: Minimum komutlar veya sentetik fixture ile adımları açıklayın.
+    validations:
+      required: true
+  - type: textarea
+    id: expected_actual
+    attributes:
+      label: Beklenen ve gözlenen sonuç
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Temizlenmiş çıktı ve ilgili AC/R maddesi
+      description: Test sonucu, hata kodu veya ilgili belge bağlantısı. Oyun binary'si eklemeyin.
