@@ -112,3 +112,81 @@ Organizasyon profilindeki banner ve belge bağlantıları görünür, `saex` ana
 Ayrı Documentation kontrolü gerçek `a0562ef` PR tabanına göre 46 değişmiş yol, 91 Markdown, 1254 yerel bağlantı, 6 JSON örneği ve 13 tooling testinde geçti; Secret scan başarılıdır. Ana çalışma klasöründeki x86 Debug birleştirme doğrulaması da 11 native suite/79 managed/85 Python ve aynı belge kapısıyla geçti. Altı commit’li yerel Git geçmişinde Gitleaks sıfır bulgu verdi. 229 tracked dosyada oyun/build binary’si ve çözümlenmemiş çakışma işareti bulunmadı; kaynak dosyaları `aede99f` ile aynıdır. Bu kanıtlar adı geçen kaynak commit’ine aittir; sonraki sonuç kaydı yalnız belgedir ve PR’ın güncel başı yine zorunlu kontrollerden geçer.
 
 N1 SDK hosted işi ve gerçek GTA bu aktarımda çalıştırılmadı. Önceki gerçek GTA raporları kendi artifact kimlikleriyle korunur; proxy/startup wrapper gövdesi, dinamik SAEX DLL yüklemesi ve D1/D2 ürün kapıları bu CI sonucuyla kapanmaz.
+
+## Kod 0.1.14 — Codec dönüş kesiti
+
+0.1.14 codec kaynak/test/generator ekleri yerel geliştirmedir. tools/ci.py portable akışı yeni recipe üretim/ret testlerini içerir; önceki 0.1.13 hosted commit sonucu bu yeni değişikliğin GitHub doğrulaması sayılmaz. Remote/push/release işlemi bu kesitte yapılmaz. [Sözleşme ve doğrulama](d1-codec-return.md).
+
+## Kod 0.1.15 — Codec fonksiyon bağları
+
+tools/ci.py portable generator/ret corpusuna binding policy eklendi. 0.1.15 yerel kaynak/test değişikliğidir; önceki hosted commit kanıtı bu sürümü kapsamaz. Bu geliştirme adımında remote/push/release işlemi yürütülmedi. [Sözleşme ve kanıt](d1-codec-bindings.md).
+
+## Kod 0.1.16 — ASI bootstrap yükleme
+
+[ASI yükleme sözleşmesi](d1-asi-bootstrap-load.md), iki ek call/return durağı ve boş tarama korumasını tanımlar. Yeni mod, build auditinden geçen aynı SAEX DLL bitlerini özel klasörde `.asi` adıyla yüklemeyi denetler; Release 28/Debug 31 exact pin, tam yol kontrolü ve owned child cleanup uygulanır. Önceki CLI durakları ve C ABI 1 korunur; `asiObservation` eski modlarda null olur. Initialize/Query/Stop çağrıları bu kesitte çalışmaz; N2/D1/D2 açık kalır. Test ve gerçek GTA kanıtı ilgili raporda ayrı izlenir.
+
+## Kod 0.1.17 — Kontrollü bootstrap yaşam döngüsü
+
+[Ayrı yaşam döngüsü sözleşmesi ve kanıtı](d1-bootstrap-lifecycle.md): aynı build'in üç denetlenmiş export'u sekiz sabit çağrıyla, ASI dönüşünden sonra çalıştırılır. Yığın veri yazımı ve EIP/ESP yönlendirmesi ayrı izindir; eski komutların durakları korunur. C ABI 1, engine profili, GNS/HTTPS ve otorite değişmedi. Dört yerel Windows akışı, 24 test senaryosu + 12 tekrar ve gerçek GTA 12/12 koşuda 96/96 dönüş geçti. N2/N3 ve oynanabilir D2 açık; geçmiş sürüm başlıkları o kesitin kanıtını anlatır.
+
+Export girişleri 20 byte'tır; PE32 HIGHLOW alanları metadata'dan tam dört byte olarak normalize edilir. Kısmi/çakışan fixup ve bilinmeyen tip reddedilir. Hiçbir prefix byte'ı karşılaştırmadan çıkarılmaz; C ABI 1 aynı kalır.
+
+0.1.17 sonuçları yereldir; bu görevde push, PR, deployment veya hosted CI çalıştırılmadı. Önceki yayın kayıtlarının kapsamı genişletilmez.
+
+## Kod 0.1.18 bağlantısı
+
+0.1.18 frame-target kodu ve CI tanımı yerel geliştirme kapsamındadır. Bu değişiklik için remote/push, hosted CI veya binary yayın işlemi yapılmadı; önceki hosted sonuçlar yeni kaynak kanıtı olarak kullanılmaz. [Aday ve doğrulama raporu](d1-frame-target.md).
+
+## Kod 0.1.19 bağlantısı
+
+0.1.19 yerel geliştirmedir; CI tanımına yeni policy/test eklendi. Bu çalışma remote/push/hosted CI veya binary yayını yapmaz; geçmiş hosted sonuçlar yeni kaynak doğrulaması değildir. [Sözleşme ve kanıt](d1-startup-return.md).
+
+## Kod 0.1.19 — Bağımsız image koruma deneyi
+
+Image-protection aracının 17 taşınabilir testi tools/build.ps1 ve tools/ci.py Linux akışına bağlandı. Bu değişiklik için hosted workflow çalıştırılmadı veya kaynak yayımlanmadı; yerel ölçüm hosted kanıt sayılmaz. [Sözleşme ve kanıt](d1-image-protection.md).
+
+## Kod 0.1.20 bağlantısı
+
+Yerel 0.1.20 CRT startup kaynak/test girişleri eklendi. Bu geliştirmede GitHub yayını veya hosted CI çalıştırılmadı; geçmiş yayın kanıtı yeni Windows/GTA kesitine aktarılmaz. [Sözleşme ve kanıt](d1-crt-startup.md).
+
+## Kod 0.1.21 bağlantısı
+
+Ayrı `--observe-application-entry` modu başlatıcıların doğal dönüşünü, ikinci startup çağrısını ve uygulamanın ilk komutundan önce giriş yığınını denetler. Önceki CRT komutu başlatıcı CALL önünde durur; eski kanıtlar kendi artifact kapsamındadır. Yeni izin ve güncel doğrulama [uygulama giriş sözleşmesinde](d1-application-entry.md) izlenir. C ABI 1 korunur; initialized dünya, doğal frame/N3 ve D1/D2 kapıları açık kalır.
+
+## Kod 0.1.22 bağlantısı
+
+Ayrı platform-startup modu uygulama prologue'unu ilerletir ve sistem ayarı çağrısından önce durur. Dört argüman, yığın/register ve pinned API hedefi doğrulanır; host ayarı değişmez, eski CLI sınırları korunur. [Sözleşme ve sonuç](d1-platform-startup.md). C ABI 1/GNS/otorite aynı; sistem ayarı uyarlaması, pencere/renderer, doğal frame ve N2/N3/D1/D2 kapıları açık kalır.
+
+## Kod 0.1.23 bağlantısı
+
+Tek exact platform çağrısı için ayrı süreç içi bağlam uyarlaması eklendi: sentetik FALSE, last-error/yığın/register koruma ve bağlam geri alma; API çalıştırılmaz. Önceki doğal sınır komutları korunur. [Sözleşme ve sonuç](d1-platform-suppression.md). C ABI 1/GNS/otorite aynı; instance/pencere/renderer ve N2/N3/D1/D2 kapıları açık.
+
+## Kod 0.1.31 kaynak eşitlemesi — 14 Eylül 2026
+
+GitHub `main` tabanı `81ffade` (kod 0.1.13), yerel kaynak sürümü kod 0.1.31 / mimari v0.38'dir. Kullanıcı biriken bütün kaynakların GitHub'a aktarılmasını istedi. 0.1.14–0.1.31 arasındaki codec/ASI yükleme, C ABI yaşam döngüsü, startup/uygulama başlangıcı ve CRT cwd/SEH/kilit gözlemleri; fixture, strict policy/generator, negatif test, mimari/ADR ve kanıt belgeleri birlikte yayın kapsamındadır. Güncel banner ve README de aynı kaynak anlık görüntüsüne dahildir.
+
+İlk envanter 394 dosya / 2.944.954 byte'tır. Değişiklikten önce bütün kaynak byte'ları ZIP ve SHA-256 manifest'iyle, mevcut Git geçmişi tam bundle ile korundu. Oyun/build binary'si, özel laboratuvar kopyası ve yerel çıktı aktarılmaz. Engine policy JSON'larının exact byte/hash sözleşmesi korunur. Bu yayın ek ürün davranışı veya yeni native izin tanımlamaz; geçmiş gerçek GTA kanıtları kendi rapor ve artifact kimlikleriyle sınırlıdır.
+
+Yayın kısa ömürlü dal → PR → yedi zorunlu kontrol → squash merge akışını izler. Kaynaklar temiz checkout'ta yeniden derlenir; yerel ve hosted sonuçlar ayrı kaydedilir. Önceki 0.1.13 CI başarısı yeni 0.1.31 kaynağının başarı kanıtı sayılmaz. N1 SDK, gerçek GTA ve oynanabilir binary release bu kaynak aktarımının test/dağıtım adımı değildir.
+
+### İlk hosted koşu ve test ortamı düzeltmesi
+
+[PR #10](https://github.com/saex-platform/saex/pull/10) için `432ac47130541672d9755fe97f5da3fa44380e62` kaynak anlık görüntüsü gönderildi. Temiz yerel Windows x86 Debug tam akışı geçti. [Build 34800439726](https://github.com/saex-platform/saex/actions/runs/34800439726) Linux x64 ve iki Windows x64 işinde geçti; iki Windows x86 işi 13 native grubun `startup_return_precondition_shape` reddiyle başarısız oldu. [Documentation ve Secret scan](https://github.com/saex-platform/saex/actions/runs/34800439729) geçti.
+
+Ortak [test reçetesi](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği), fixture sistem export alanlarını host PE metadata'sından kuracak şekilde düzeltildi. Üretim JSON/generated policy dosyaları korunur. Yerel ve hosted tekrar kayıtları aşağıdadır; en son commit'in kabul/birleştirme durumu [PR #10](https://github.com/saex-platform/saex/pull/10) üzerinde tutulur.
+
+`7654a09` için temiz yerel x86 Debug tam akışı **41 native/79 managed/254 Python** ile geçti. [İkinci hosted build](https://github.com/saex-platform/saex/actions/runs/34802108937) beş kontrolün ardından x86 işlerinde `system unrelocated export contract` verdi. Exact prefix test reçeteleri için HIGHLOW host adres normalizasyonu eklendi; üretim kodu ve policy dosyaları yine değişmedi.
+
+[Üçüncü hosted koşuda](https://github.com/saex-platform/saex/actions/runs/34802632385) önceki startup zinciri geçti; dokuz x86 grup Server 2022'nin farklı GetLastError komut biçiminde reddedildi. Yerelde son adres normalizasyonu ile 41/41 native grup geçti. x86 işleri, GitHub'ın [Windows Server 2025 görüntüsüne](https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md) taşındı; x64 Server 2022 işleri korundu. Hiçbir test/required check kaldırılmadı, üretim kontrolü gevşetilmedi. Yeni runner sonucu PR #10 kontrollerinde ayrıca izlenir.
+
+Windows 2025 etiketinin ilk [koşusu](https://github.com/saex-platform/saex/actions/runs/34803139723), VS 2022 bulunmadığı için configure aşamasında durdu. Runner kaydı `windows-2025-vs2026`, CMake 4.4.3 ve VS 2026 içeriyordu. Etiket açıkça seçildi; foundation script'ine VS 2026 generator + kurulu v143 toolset seçeneği eklendi. Varsayılan yerel VS 2022 ve ayrı native SDK kilitleri korunur.
+
+### Kaynak teslim envanteri ve kabul kaydı
+
+İlk 394 dosyanın tamamı PR #10 kaynağında mevcuttur; yeni test yardımcısıyla 395 dosya teslim edilir. Manifest karşılaştırması eksik dosya veya beklenmeyen fark göstermedi; 24 engine JSON dosyasının exact byte/hash değeri korundu. Kaynak ve Git geçmişi Gitleaks taramalarında bulgu vermedi. Doküman kapısı 110 Markdown, 1833 yerel bağlantı ve 6 JSON örneğini doğruladı.
+
+Yerel temiz checkout'ta ilk fixture düzeltmesi 41 native/79 managed/254 Python ile tam akışı geçti; son adres normalizasyonu 41/41 native grupta tekrar doğrulandı. Son hosted commit için beş build, Documentation ve Secret scan sonuçları [PR kontrollerindedir](https://github.com/saex-platform/saex/pull/10/checks); korumalı main'e kabul ve squash commit kimliği [birleştirme kaydındadır](https://github.com/saex-platform/saex/pull/10). Tarihsel başarısız koşular üstte tutulur; bunlar son commit'in sonucu yerine kullanılamaz.
+
+Organizasyon profili banner'ı [.github PR #1](https://github.com/saex-platform/.github/pull/1) ile ana kaynak deposunun canonical SVG'sine bağlandı; yinelenen profil görseli artık gösterilmez. Yayın sırasında yeniden başlayan cwd-query geliştirmesi bu 0.1.31 anlık görüntüsünden ayrıdır ve kaynak çalışma alanında korunur. Bu rapor yeni GTA çalıştırması veya oynanabilir binary release iddiası taşımaz.
+
+VS 2026/v143 configure aşaması [sonraki koşuda](https://github.com/saex-platform/saex/actions/runs/34803447972) geçti; Python keşfi iki executable yolunu birleştirdiği için FindPython3 reddetti. Foundation script PATH önceliğindeki ilk Application sonucunu seçer; WindowsApps alias'ı ikinci yol olarak CMake'e eklenmez.

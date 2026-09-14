@@ -33,11 +33,13 @@ def audit(data, link_map):
     require(number(pe + 20, "H") >= 224 and number(optional + 92) == 16, "artifact_directories")
     table = optional + number(pe + 20, "H")
     sections = []
+    executable_sections = []
     for i in range(count):
         p = table + i * 40
         size, rva, raw_size, raw = (number(p + off) for off in [8, 12, 16, 20])
         require(raw + raw_size <= len(data), "section_bounds")
         sections.append((rva, raw_size, raw))
+        if number(p + 36) & 0x20000000: executable_sections.append((rva, raw_size))
     def offset(rva, length):
         matches = [raw + rva - start for start, size, raw in sections
                    if start <= rva and rva + length <= start + size]
@@ -72,14 +74,45 @@ def audit(data, link_map):
     require(rnum(exports_rva + 20) == 3 and rnum(exports_rva + 24) == 3, "export_count")
     functions, names, ordinals = (rnum(exports_rva + n) for n in [28, 32, 36])
     exports = []
+    export_entries = {}
     for i in range(3):
         exports.append(string(rnum(names + 4 * i)))
         ordinal = rnum(ordinals + 2 * i, "H")
         require(ordinal < 3, "export_ordinal")
         target = rnum(functions + 4 * ordinal)
         require(not exports_rva <= target < exports_rva + exports_size, "forwarded_export")
-        offset(target, 1)
+        require(any(start <= target and target + 20 <= start + size for start, size in executable_sections),
+                "export_not_executable")
+        require(all(abs(target - item["rva"]) >= 20 for item in export_entries.values()), "export_target_overlap")
+        at = offset(target, 20)
+        export_entries[exports[-1]] = {"rva": target, "prefixHex": data[at:at+20].hex(), "highlowOffsets": []}
     require(set(exports) == EXPORTS, "unexpected_exports")
+    # Only exact PE32 HIGHLOW fixups wholly inside a prefix can be normalized.
+    reloc_rva, reloc_size = directory(5)
+    require(0 < reloc_size <= 1024 * 1024, "relocation_directory_size")
+    consumed = 0
+    relocation_targets = []
+    while consumed < reloc_size:
+        require(reloc_size - consumed >= 8, "relocation_header")
+        page, size = rnum(reloc_rva + consumed), rnum(reloc_rva + consumed + 4)
+        require(size >= 8 and size % 4 == 0 and size <= reloc_size - consumed and page % 4096 == 0, "relocation_block")
+        for i in range(8, size, 2):
+            value = rnum(reloc_rva + consumed + i, "H")
+            kind, target = value >> 12, page + (value & 4095)
+            if kind == 0: continue
+            require(kind == 3, "unsupported_relocation")
+            require(target <= number(optional + 56) - 4, "relocation_target")
+            relocation_targets.append(target)
+            for entry in export_entries.values():
+                if target + 4 <= entry['rva'] or target >= entry['rva'] + 20: continue
+                require(entry['rva'] <= target and target + 4 <= entry['rva'] + 20, 'export_prefix_partial_relocation')
+                entry['highlowOffsets'].append(target - entry['rva'])
+        consumed += size
+    ordered = sorted(relocation_targets)
+    require(all(b >= a + 4 for a,b in zip(ordered,ordered[1:])), 'relocation_target_overlap')
+    preferred_base = number(optional + 28)
+    require(preferred_base > 0 and preferred_base % 65536 == 0, 'preferred_image_base')
+    for entry in export_entries.values(): entry['highlowOffsets'].sort()
     require(0 < len(link_map) <= 2 * 1024 * 1024, "map_size")
     require("_DllMain@12" in link_map and "bootstrap_module.obj" in link_map and "bootstrap_session.obj" in link_map,
             "map_missing_bootstrap_objects")
@@ -100,7 +133,8 @@ def audit(data, link_map):
     require(not re.search(r"plugin[_-]?sdk|PluginBase\.obj|safetyhook|injector", link_map, re.I), "vendor_object_in_bootstrap")
     return {"scope": "bootstrap-artifact-audit", "sha256": hashlib.sha256(data).hexdigest(),
             "mapSha256": hashlib.sha256(link_map.encode("utf-8")).hexdigest(),
-            "imports": sorted(imports), "exports": sorted(exports), "tlsDirectory": False,
+            "imports": sorted(imports), "exports": sorted(exports), "exportEntries": export_entries,
+            "preferredImageBase": preferred_base, "tlsDirectory": False,
             "crtBuckets": sorted(buckets), "canAttach": False}
 
 

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.game-prelude-v1",
+  "stage": "before-file-manager-call",
+  "routingPolicySha256": "d2794efb7784cb53b20d693533f5ab67c6f05a8fbd4c2d77264942910c408f66",
+  "reviewDocument": "docs/development/d1-game-prelude.md",
+  "empty": {
+    "callRva": 1293136,
+    "targetRva": 3339184,
+    "callHex": "e85b381f00",
+    "targetPrefixHex": "c3909090909090909090909090909090"
+  },
+  "localisation": {
+    "callRva": 1293141,
+    "targetRva": 1495424,
+    "callHex": "e826160300",
+    "targetPrefixHex": "32c0c605ecb7b90001a2edb7b900a2ee"
+  },
+  "flagsRva": 7976940,
+  "localisationBodyHex": "32c0c605ecb7b90001a2edb7b900a2eeb7b900c3",
+  "stopPrefixHex": "e891cbffff6a05e80ab0ecff83c404e8"
+}

@@ -141,3 +141,45 @@ Portable bootstrap session fallback türü GCC -Werror uyumu için uint32_t olar
 ## Kod 0.1.13 — Startup çağrı sınırı
 
 [Üçüncü runtime durak](d1-startup-call.md) observed profile’ın dört anchor’ını yeniden okur. Girdi 1–4 adet, 1–16 byte uzunluk, geçerli RVA, çakışmama ve create-time expected byte eşitliği ister. Runtime değişim tanısal match=false; okunamama incomplete ret. Profile JSON/engine hash ve dört anchor değiştirilmedi; initialized profile veya canAttach onayı oluşmaz.
+
+## Kod 0.1.14 — Codec dönüş kesiti
+
+Dosya profili, preferred base ve dört anchor kapısı codec modunda da child ilerlemeden korunur. Ek codec pinleri bu engine profilinin destek/initialization yetkisini değiştirmez. [Sözleşme ve doğrulama](d1-codec-return.md).
+
+## Kod 0.1.15 — Codec fonksiyon bağları
+
+Binding modu da exact engine/profile/base/image kapılarını korur. Derlenmiş codec export RVA tarifleri engine profilini desteklenen/initialized profile yükseltmez. [Sözleşme ve kanıt](d1-codec-bindings.md).
+
+## Kod 0.1.16 — ASI bootstrap yükleme
+
+[ASI yükleme sözleşmesi](d1-asi-bootstrap-load.md), iki ek call/return durağı ve boş tarama korumasını tanımlar. Yeni mod, build auditinden geçen aynı SAEX DLL bitlerini özel klasörde `.asi` adıyla yüklemeyi denetler; Release 28/Debug 31 exact pin, tam yol kontrolü ve owned child cleanup uygulanır. Önceki CLI durakları ve C ABI 1 korunur; `asiObservation` eski modlarda null olur. Initialize/Query/Stop çağrıları bu kesitte çalışmaz; N2/D1/D2 açık kalır. Test ve gerçek GTA kanıtı ilgili raporda ayrı izlenir.
+
+## Kod 0.1.17 — Kontrollü bootstrap yaşam döngüsü
+
+[Ayrı yaşam döngüsü sözleşmesi ve kanıtı](d1-bootstrap-lifecycle.md): aynı build'in üç denetlenmiş export'u sekiz sabit çağrıyla, ASI dönüşünden sonra çalıştırılır. Yığın veri yazımı ve EIP/ESP yönlendirmesi ayrı izindir; eski komutların durakları korunur. C ABI 1, engine profili, GNS/HTTPS ve otorite değişmedi. Dört yerel Windows akışı, 24 test senaryosu + 12 tekrar ve gerçek GTA 12/12 koşuda 96/96 dönüş geçti. N2/N3 ve oynanabilir D2 açık; geçmiş sürüm başlıkları o kesitin kanıtını anlatır.
+
+Export girişleri 20 byte'tır; PE32 HIGHLOW alanları metadata'dan tam dört byte olarak normalize edilir. Kısmi/çakışan fixup ve bilinmeyen tip reddedilir. Hiçbir prefix byte'ı karşılaştırmadan çıkarılmaz; C ABI 1 aynı kalır.
+
+## Kod 0.1.18 bağlantısı
+
+Exact disk profilindeki game-process-call ile CGame::Process adayının runtime bayt örnekleri ayrı rapora taşındı. Disk gözlem JSONundaki runtimeVerified=false geçmiş kapsamı korunur; yeni sonuç otomatik attach onayı değildir. [Aday ve doğrulama raporu](d1-frame-target.md).
+
+## Kod 0.1.19 bağlantısı
+
+0.1.19, aynı profil/pin ve owned child kapıları üzerinde ayrı doğal startup-return deneyi ekler. Mevcut durak davranışı korunur; koruma çağrısı ve dönüş ABI kanıtı yeni raporda izlenir. D1/N2/N3 ve oynanabilir multiplayer kapıları açık kalır. [Sözleşme ve kanıt](d1-startup-return.md).
+
+## Kod 0.1.20 bağlantısı
+
+Ayrı CRT startup modu I/O hazırlığının doğal dönüşünü ve initializer CALL önünü denetler. Önceki modların durakları korunur; crtStartupObservation eski modlarda null olur. C ABI 1, GNS/HTTPS ve otorite değişmez; initialized motor/N3/D2 açık kalır. [Sözleşme ve kanıt](d1-crt-startup.md).
+
+## Kod 0.1.21 bağlantısı
+
+Yeni uygulama giriş API/CLI ve fixture/policy/portable testleri, mevcut preflight ve owned child kapılarından sonra ayrı izinle çalışır. Eski terminal sınırlar ve C ABI 1 korunur; yeni sonuçlar [uygulama giriş raporunda](d1-application-entry.md) izlenir. N2/N3 ve D1/D2 açık kalır.
+
+## Kod 0.1.22 bağlantısı
+
+Ayrı platform-startup modu uygulama prologue'unu ilerletir ve sistem ayarı çağrısından önce durur. Dört argüman, yığın/register ve pinned API hedefi doğrulanır; host ayarı değişmez, eski CLI sınırları korunur. [Sözleşme ve sonuç](d1-platform-startup.md). C ABI 1/GNS/otorite aynı; sistem ayarı uyarlaması, pencere/renderer, doğal frame ve N2/N3/D1/D2 kapıları açık kalır.
+
+## Kod 0.1.23 bağlantısı
+
+Tek exact platform çağrısı için ayrı süreç içi bağlam uyarlaması eklendi: sentetik FALSE, last-error/yığın/register koruma ve bağlam geri alma; API çalıştırılmaz. Önceki doğal sınır komutları korunur. [Sözleşme ve sonuç](d1-platform-suppression.md). C ABI 1/GNS/otorite aynı; instance/pencere/renderer ve N2/N3/D1/D2 kapıları açık.

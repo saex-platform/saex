@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.windows-26200.asi-return-v1",
+  "stage": "single-asi-return-boundary",
+  "bindingPolicySha256": "92856899cf2250668e1b644d9ec2c111b01e72eba46643bb4631285ee3de84eb",
+  "callRva": 6724,
+  "endRva": 6747,
+  "returnHex": "463bf775b38b8564fdffff8bb560fdff",
+  "endHex": "85c07444908d48ff8b855cfdffff03ce",
+  "artifactName": "saex_bootstrap.asi",
+  "reviewDocument": "docs/development/d1-asi-bootstrap-load.md",
+  "commonModules": [
+    {
+      "name": "bcrypt.dll",
+      "bytes": 114240,
+      "sha256": "d713ce8ccada35dcdc921184842a7316911c5151a44864cbfb3d02c7136d5ec0"
+    }
+  ],
+  "debugModules": [
+    {
+      "name": "msvcp140d.dll",
+      "bytes": 739408,
+      "sha256": "5588cb0546bffe357e864e2df9bf919dfe41f4d08dee14962467cbf803880b4f"
+    },
+    {
+      "name": "vcruntime140d.dll",
+      "bytes": 131688,
+      "sha256": "061444aba60e5ec1b5bdb86633caaba8b05743b2fd5a4e4e8b9d8e1346b7e4b7"
+    },
+    {
+      "name": "ucrtbased.dll",
+      "bytes": 1691480,
+      "sha256": "82a69bf9ec26a3fd3aea55b2d4c1b8a664c996520ae1319e98ea6050b868665d"
+    }
+  ]
+}

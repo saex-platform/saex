@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.cwd-seh-v1",
+  "stage": "after-seh-before-lock",
+  "managerPolicySha256": "0e65b724069c440804e61d3aad88fa781ff490ffd757a7928c62c318e63cc2a4",
+  "reviewDocument": "docs/development/d1-cwd-seh.md",
+  "wrapper": {
+    "callRva": 1279739,
+    "targetRva": 4419217,
+    "callHex": "e891e72f00",
+    "targetPrefixHex": "6a0c6818df8800e84318ffff6a07e81a"
+  },
+  "prologue": {
+    "callRva": 4419224,
+    "targetRva": 4359904,
+    "callHex": "e84318ffff",
+    "targetPrefixHex": "68a45e820064a100000000508b442410"
+  },
+  "scopeRva": 4775704,
+  "handlerRva": 4349604,
+  "cleanupRva": 4419278,
+  "prologueBodyHex": "68a45e820064a100000000508b442410896c24108d6c24102be05356578b45f88965e8508b45fcc745fcffffffff8945f88d45f064a300000000c3",
+  "scopeHex": "ffffffff00000000ce6e8300",
+  "stopPrefixHex": "6a07e81a3fffff598365fc00ff750cff"
+}

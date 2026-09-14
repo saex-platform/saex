@@ -143,3 +143,105 @@ ADR-46 ek uygulama kararı: initialization izni ayrı entry-policy.json'dan derl
 ## ADR-48 — İlk startup çağrısını gövde çalışmadan gözle
 
 [0.1.13](../development/d1-startup-call.md) ayrı compiled startup stage ile proxy dönüşünü ilerletir. Üçüncü DR0 hedefi önceki doğrulanmış IAT adresidir; main-thread DR1 aynı dört byte slotta write watch tutar. DR6/DR7/context kimliği doğrulanır; write watch yazımdan sonra terminal trap’tir, önleme/sandbox sayılmaz. İlk fonksiyon hitinde target byte’ları, aktif proxy mapping/IAT, main EXE’de FF15 çağıran ve stack allocation içinde 68-byte output parametre aralığı doğrulanır. Dört anchor örneği değişmiş olsa da okunmuş gözlem olarak raporlanabilir; unpack/initialized profile türetilmez. Gövdeye devam edilmeden owned child kapatılır. Eski modlar aynı kalır; yeni DLL/load/ASI/ABI işlemi henüz açılmaz. Call form, sample/argument kapsamı, farklı thread, breakpoint slotları, dynamic load veya sonraki dönüş sınırına geçiş yeni policy/ADR/AC-90 kanıtı gerektirir. Bootstrap C ABI 1 ve GNS/HTTPS seçimi korunur.
+
+## ADR-49 — İlk dinamik codec çağrısı için ayrı dönüş izni
+
+Durum: kabul edilen geliştirme deneyi, kod 0.1.14/mimari v0.21. Önceki üçüncü startup durağı korunur. Yeni compiled recipe startup parent digest'ine bağlı exact üç codec dosyasını pinler; LoadLibraryA dönüşündeki MOV EDI,EAX öncesinde DR0 durur. Root handle ile yeni aktif mapping kimlikleri eşleşmeden complete sonucu üretilemez. DLL initializer çalışması açık izindir; codec export/ASI/SAEX bootstrap için yetki vermez. Mevcut C++ observer trace/API yeniden derleme ister; bootstrap C ABI 1 ve otorite değişmez. Eski pin listelerini genişletmek yerine yeni modun 26 pin listesi kullanılır; bilinmeyen DLL otomatik kabul edilmez. Sonuçlar [codec sözleşmesinde](../development/d1-codec-return.md), AC-90/R-01 alt testleri [senaryolarda](../validation/scenarios.md); N2/D1 açık kalır.
+
+## ADR-50 — Codec pointer bağlarını ayrı beşinci durakta doğrula
+
+Kabul edilen geliştirme deneyi, 0.1.15/v0.22. Compiled binding policy önceki codec source digest'ine bağlı, aynı 26 pini kullanır. Dördüncü durakta boş slotlar ve bounded direct-export target örnekleri alınır; beşinci durakta exact root+RVA eşitliği ve kararlılık gerekir. Root/dependency unload veya yeni DLL bu izni terminal bitirir. Eski modların durakları ve C ABI 1 aynı kalır; public C++ observer birlikte derlenir. Forwarder/ASI/export invocation/gerçek SAEX bootstrap yeni kanıt ister; bu sonuç engine initialization veya sandbox değildir. [Normatif ayrıntı](../development/d1-codec-bindings.md), [AC-90 alt corpus](../validation/scenarios.md); N2/D1 açık.
+
+## ADR-51 — Tek ASI dönüşü ve build artifact kimliği
+
+Durum: kabul edilmiş geliştirme deneyi, 13 Eylül 2026. Önceki binding iznini genişletmeden ayrı ASI call/return API'si seçildi. Exact wrapper call operand'ı ve stack tam yolu yükleme öncesi; fresh active root/EAX, stdcall stack dönüşü ve önceki codec bağları yükleme sonrası denetlenir. DR2 boş taramada cleanup/whole-image VirtualProtect öncesinde durur. Dinamik artifact hash'i elle kaynak JSON'una taşınmaz: CMake aynı configuration DLL/map auditinden generated pin üretir, probe bu çıktıya bağımlıdır. CLI'ya arbitrary hash/DLL/PID yükleme seçeneği eklenmez. Release/Debug exact CRT pinleri ayrı; bağımlılık keşfi izin üretmez. Bu yaklaşım build/source güveni varsayar; imza, sandbox veya bütün loader lock davranışının kanıtı değildir. C ABI 1 aynı kalır, Initialize DllMain içine taşınmaz. Public C++ API/trace değiştiğinden caller yeniden derlenir; kalıcı migration yoktur. [Sözleşme, alternatiflerin sınırı ve kabul](../development/d1-asi-bootstrap-load.md). Gerçek C ABI invoker sonraki kesittir; N2 bütünü açık kalır.
+
+## ADR-52 — Bootstrap çağrısını ayrı ve terminal deneyle doğrula
+
+[Yeni sözleşme ve doğrulama kaydı](../development/d1-bootstrap-lifecycle.md) ayrı `--observe-bootstrap-lifecycle` iznini tanımlar. ASI dönüşünden sonra aynı build'in audited üç C ABI export'u sekiz sabit çağrıyla çalıştırılır; bounded stack veri yazımı, EIP/ESP yönlendirmesi, status/canary/cdecl kontrolü ve terminal child cleanup uygulanır. Önceki modların durakları korunur; C ABI 1, GNS/HTTPS, engine profile ve otorite değişmez. Bu alt kesit N2/D1 veya playable D2'yi kapatmaz. Dört yerel Windows akışı ve gerçek GTA 12/12 koşuda 96/96 C ABI dönüşü doğrulandı; engine fazı/N3 ve D1/D2 açık.
+
+DllMain worker thread ve wrapper kod yaması tercih edilmedi: başlatma, sahip olunan debug-held main thread üzerinde LoadLibrary dönüşünden sonra yapılır. Deneme sonunda child öldürüldüğünden gameplay devamı veya tam register/FPU restorasyonu iddia edilmez. RVA/prologue kaynağı incelenmiş build artifact'idir; keyfî native adres kabul edilmez.
+
+0.1.17 Release incelemesi: export prefix 20 byte olarak sabitlendi; yalnız PE32 HIGHLOW kayıtlarına göre preferred/actual base farkı uygulanarak tüm byte'lar karşılaştırılır. Kısmi/çakışan fixup, bilinmeyen relocation tipi ve bozuk blok reddedilir; byte maskeleme/atlama yapılmaz. [Kanıt ve sınır](../development/d1-bootstrap-lifecycle.md); C ABI 1 aynı, C++ recipe yeniden üretilir.
+
+## ADR-53 — Frame adayını bayt kanıtından çağrılabilir capability'ye otomatik yükseltmeme
+
+Karar: exact profil ve bootstrap zincirine bağlı ayrı read-only frame-target reçetesi üç mevcut durakta örneklenir. Olumlu sonuç yalnız bu anlarda CALL ve hedef önekinin beklenen değerlerini doğrular. SDK event imzası, faz/thread gözlemi ve doğal call/return ABI kanıtı birbirinden ayrıdır; canAttach=false ve runtimeVerified=false korunur. Eski CLI sınırları değişmez. Alternatif olan adres eşleşmesinden doğrudan hook kurma reddedildi: başlatılmamış subsystem ve yanlış callback fazı riski çözülmemiştir. C ABI 1/otorite değişikliği yok, C++ observer yeniden derlenir. [Sözleşme ve kabul senaryoları](../development/d1-frame-target.md).
+
+## Kod 0.1.19 bağlantısı
+
+0.1.19, aynı profil/pin ve owned child kapıları üzerinde ayrı doğal startup-return deneyi ekler. Mevcut durak davranışı korunur; koruma çağrısı ve dönüş ABI kanıtı yeni raporda izlenir. D1/N2/N3 ve oynanabilir multiplayer kapıları açık kalır. [Sözleşme ve kanıt](../development/d1-startup-return.md).
+
+## ADR-54 — Doğal startup dönüşü için ayrı yürütme izni
+
+Karar: ASI dönüşünden sonra explicit startup-return modu; loaderın exact EXE imageına VirtualProtect çağrısını önkoşul/dönüş/sayfa kontrolleriyle, ardından doğal GetStartupInfoA dönüşünü gözler. Zorlanmış sekiz bootstrap çağrısından sonra kaydedilmemiş FPU/caller state ile devam alternatifi kullanılmaz; yeni dal export çağırmaz ve observer stack/EIP yazmaz. Aynı ASI için ikinci call dahi durdurulur. Bütün-image RWX bu tarihsel loader davranışının deney iznidir, üretim koruma politikası değildir. Frame hook/oynanabilir capability açılmaz; eski CLI ve C ABI 1 korunur, C++ observer yeniden derlenir. [Ayrıntı ve kabul](../development/d1-startup-return.md).
+
+## Kod 0.1.20 bağlantısı
+
+0.1.20 ayrı CRT başlangıç sınırı ekler: doğal I/O dönüşü ve statik başlatıcı çağrısından önce tablo/çağrı/yığın denetimi. Önceki gözlem durakları ve C ABI 1 korunur; motor initialization, renderer, doğal frame ve multiplayer kanıtı açılmaz. [Sözleşme ve kanıt](../development/d1-crt-startup.md).
+
+## ADR-55 — Statik başlatıcıları ayrı yürütme kapısında tutma
+
+Karar: doğal startup dönüşünden sonra I/O hazırlığı dönüşü ve initializer CALL önünde durulur; üç çağrı adayı ve sıfır slotlar dahil bounded tablolar karşılaştırılır. 1674 nonzero slotun bulunması gövdelerinin güvenli veya initialized motorun hazır olduğu anlamına gelmez. Bütün tabloyu denetimsiz çalıştırıp uygulama girişine atlama alternatifi seçilmedi. Sonraki çalışmada initializer callback/dinamik DLL, pencere ve dosya izinleri ayrı incelenir. C ABI 1 aynı, C++ observer yeniden derlenir. [Sözleşme](../development/d1-crt-startup.md).
+
+## Kod 0.1.21 bağlantısı
+
+Ayrı `--observe-application-entry` modu başlatıcıların doğal dönüşünü, ikinci startup çağrısını ve uygulamanın ilk komutundan önce giriş yığınını denetler. Önceki CRT komutu başlatıcı CALL önünde durur; eski kanıtlar kendi artifact kapsamındadır. Yeni izin ve güncel doğrulama [uygulama giriş sözleşmesinde](../development/d1-application-entry.md) izlenir. C ABI 1 korunur; initialized dünya, doğal frame/N3 ve D1/D2 kapıları açık kalır.
+
+## ADR-56 — Başlatıcıların doğal dönüşünden uygulama girişine ayrı izin
+
+Karar: CRT sınırı terminal davranışını korur; yeni opt-in modu native initializer dispatcher'ını doğal CALL/RET ile çalıştırır. Her callback için tekil ABI/yan etki doğrulaması iddia edilmez. İkinci GetStartupInfoA için wrapper once bayrağı ve bütün prefix doğrulanarak tekrar ASI taraması atlanır; DR2 ikinci ASI koruması korunur. Dört WinMain argümanı ve giriş yığını gözlenir, ilk uygulama komutu çalıştırılmaz. EIP atlatma/forced bootstrap sonrasında devam seçilmedi. N2/N3 açık; C ABI 1 değişmez, observer yeniden derlenir. [Sözleşme ve negatif kabul](../development/d1-application-entry.md).
+
+## Kod 0.1.22 bağlantısı
+
+Ayrı platform-startup modu uygulama prologue'unu ilerletir ve sistem ayarı çağrısından önce durur. Dört argüman, yığın/register ve pinned API hedefi doğrulanır; host ayarı değişmez, eski CLI sınırları korunur. [Sözleşme ve sonuç](../development/d1-platform-startup.md). C ABI 1/GNS/otorite aynı; sistem ayarı uyarlaması, pencere/renderer, doğal frame ve N2/N3/D1/D2 kapıları açık kalır.
+
+## ADR-57 — Host sistem ayarını başlangıç ilerlemesinden ayırma
+
+Exact uygulamanın ilk çağrısı SystemParametersInfoA ile foreground timeout ayarını değiştirmeyi ister. Karar: yeni opt-in prologue modu CALL önünde durur; complete byte/IAT/export, 152-byte stack ve dört argümanı doğrular. Global ayarı değiştirip sonra geri alma; çöküş, eşzamanlı kullanıcı değişimi ve pencere bildirimi nedeniyle bu kesitin parçası değildir. Sonraki kesitte exact çağrıya özgü process-local uyarlama için ABI/last-error/rollback kanıtı gerekir; burada henüz uygulanmadı. C ABI 1/otorite değişmez. [Sözleşme ve kaynak](../development/d1-platform-startup.md).
+
+## Kod 0.1.23 bağlantısı
+
+Tek exact platform çağrısı için ayrı süreç içi bağlam uyarlaması eklendi: sentetik FALSE, last-error/yığın/register koruma ve bağlam geri alma; API çalıştırılmaz. Önceki doğal sınır komutları korunur. [Sözleşme ve sonuç](../development/d1-platform-suppression.md). C ABI 1/GNS/otorite aynı; instance/pencere/renderer ve N2/N3/D1/D2 kapıları açık.
+
+## ADR-58 — Exact platform isteğinde sentetik dönüşün açık kimliği
+
+İlk SystemParametersInfoA isteği yeni opt-in modunda bağlam işlemiyle bastırılır. Sonuç FALSE ve last-error korunumu SAEX sözleşmesidir; doğal API dönüşü/Windows başarısızlık emülasyonu iddiası değildir. Exact IAT/export ve FS-reader kanıtı önkoşuldur. Kısmi write/readback hatasında aynı durakta rollback denenir; devam sonrası bilinmeyen fazda yalnız child sonlandırılır. Başarıda return-site breakpoint ve restore readback gerekir; bu duraktan oyun sürdürülmez. Genel hook, disk patch veya bootstrap ABI genişletmesi seçilmedi. [Sözleşme](../development/d1-platform-suppression.md).
+
+0.1.23 bağlam geri alması uygulama register/segment/flag ve breakpoint adres/izinlerini kapsar. EFLAGS sabit bit 1 normalize edilir; DR6 olay nedeni restore sırasında sıfırlanır. RF, return-site breakpoint olayından ayrı değerlendirilir. Bu özel ayrımlar dışındaki context farkı ret üretir; [ayrıntı](../development/d1-platform-suppression.md).
+
+## ADR-59 — Instance nesnesini doğal oluşturma, pencere kolunu kapalı tutma
+
+Yeni bounded observer modu yalnız hash’i sabit named-event helper’ını yürütür. NULL handle başarı sayılmaz; handle türü ve isimle açılan event kimliği karşılaştırılır. Mevcut instance 183 sonucunda pencere arama/öne getirme kolundan önce durulur. Yeni event için exact profil last-error 0 ve doğal helper EAX=0/ESP/nonvolatile dönüşü ister. Host ayarı önceki sentetik sözleşmeyle bastırılır, ancak gerçek API yürüdükten sonra eski CALL bağlamı restore edilmez. Önceki restore modunun tam verified alanı bu modda false, bağımsız suppressionBoundaryValidated alanı true olur. Oturum ortak namespace etkisi, aynı isimde başka tür çakışması ve son handle ömrü açıkça kaydedilir; production çoklu-instance yeteneği çıkarılmaz. [Sözleşme](../development/d1-instance-startup.md).
+
+## ADR-60 — Olay dağıtıcısı ile uygulama işleyicisini ayrı yürütme kapıları yapmak
+
+Karar: instance sonrası `[24,nullptr]` çağrısı, dağıtıcı entry ve dağıtıcının 12-byte prologue aktarımı doğal olarak sınanır. AppEventHandler CALL çalıştırılmaz. Yerel executable bu işleyicide kaynak örneğinden farklı bir JMP içerdiği için sembol adı/prefix eşitliği initializer çalıştırma yetkisi değildir. İki CALL bağı ve branch/prologue exact; üç yığın şekli ve register değişimi portable doğrulayıcıya bağlıdır. Caller durumu ve named event kimliği korunur. Önceki mod sınırı değişmez; C++ observer yeniden derlenir, C ABI 1/otorite aynı. [Sözleşme ve sonraki araştırma](../development/d1-event-dispatch.md).
+
+## ADR-61 — Executable yönlendirmesini ve indirect olay seçimini bağımsız doğrulamak
+
+Karar: 0x53EC1F detour kodu yalnız yerel exact executable incelemesiyle tanımlanır. Event 24, 39-byte index tablosundan 5 değerini, 11 hedefli tablodan 0x53EC2B initializer CALL adresini seçer. Entry/detour/JMP/initializer CALL durakları arasında yalnız incelenmiş register işlemleri, bellek okumaları ve doğal CALL/branch çalışır. İlk initializer CALL yürütülmez. Bütün tablonun relocation kimliği, seçilen index/target, caller yığını ve parent kapıları yeniden denetlenir. Unselected tablo girdileri yürütme yetkisi değildir; başka event kullanımı ayrı inceleme/policy gerektirir. C++ observer yeniden derlenir, C ABI 1/otorite değişmez. Önceki terminal korunur; N2/N3 kapıları kapanmaz. [Sözleşme](../development/d1-application-routing.md).
+
+## ADR-62 — İlk native veri yazımını sınırlı helper sözleşmesiyle gözlemek
+
+Karar: CGame::InitialiseOnceBeforeRW içine doğal CALL sonrası yalnız 0x72F3B0 RET ve 0x56D180 yerelleştirme gövdesi yürütülür. Gövdenin üç absolute adresi relocation ile bağlanır; flags penceresi writable MEM_IMAGE olmalıdır. Beş durakta dönüş/stack/register/flags, caller ve last-error denetlenir. İlk dört durakta veri penceresi aynı; son durakta yalnız üç bayrak [1,0,0] olur. Observer oyun veri belleğini yazmaz veya eski değerlerle rollback yapmaz; owned child sonlandırılır. Bu doğal bellek yan etkisi initializer tamamlanması, memory manager kapasitesi veya production attach kanıtı değildir. Önceki terminal korunur; C++ observer yeniden derlenir, C ABI 1/otorite değişmez. [Sözleşme](../development/d1-game-prelude.md).
+
+## ADR-63 — Cwd yürütmesini buffer ve CRT dönüş kapısından ayırmak
+
+Karar: CFileMgr::Initialise içine doğal giriş ve üç PUSH yürütülür; CRT cwd CALL önünde durulur. Exact 51-byte gövde, root/suffix operandları, parent zinciri, iki ABI frame ve 136-byte writable image penceresi doğrulanır. Sonraki lock/SEH/OS/copy çağrıları bu izin kapsamına girmez. Yerel kod CRT dönüşünü kontrol etmeden NUL tarar ve iki-byte suffix yazar; gelecekte başarılı dönüş, en geç offset 126 NUL ve ANSI byte sınırı sağlanmadan döngü açılmaz. Önceki terminal korunur, C++ observer yeniden derlenir; C ABI 1/otorite aynı kalır. [Sözleşme](../development/d1-file-manager-entry.md).
+
+## ADR-64 — CRT SEH kaydını doğrulamak, handler yürütmesini ayrı tutmak
+
+Karar: Cwd wrapper ve tam 59-byte SEH prologue doğal yürütülür; FS:[0] yeni stack kaydına bağlandığında üç durakla kanıtlanır. 80-byte yığın, 28-byte NT_TIB, önceki ilk kayıt, caller ve buffer korunur. TIB adresi mevcut x86 FS/Self kanıtından gelir; internal layout genel Windows API sözleşmesi sayılmaz. Handler/cleanup, lock ve cwd OS yolu çalıştırılmaz; beklenmeyen exception child kapanışıyla sonuçlanır. Doğal kayıt yazımı unwind veya cwd dönüş kanıtı değildir; eski TEB/context rollback yapılmaz. C++ observer yeniden derlenir, C ABI 1/otorite aynı. [Sözleşme](../development/d1-cwd-seh.md).
+
+## ADR-65 — CRT kilit kaydını seçmek ve kilit almayı ayrı doğrulamak
+
+Karar: lock(7) selector doğal yürütülür; slot karşılaştırmasından sonra JNE önünde durulur. Boş/dolu slot iki dalı da açmadan aynı doğrulama sınırını kullanır. 100-byte stack, 16-byte slot, SEH/NT_TIB ve dış caller korunur. Pointer opaque tutulur; slotPresent kilit nesnesi/başlatma veya acquire kanıtı değildir. Böylece önceden okunan bir pointera dayanarak yarış sırasında başka dala kaçma izni verilmez. Mevcut/lazy dal, OS target ve kritik bölüm sahipliği sonraki sözleşmedir. Yeni observer yazımı yalnız DR0; eski mod ve C ABI 1/otorite aynı. [Sözleşme](../development/d1-cwd-lock.md).
+
+## ADR-66 — Mevcut CRT kritik bölümünde doğal acquire ve sahiplik readback
+
+Karar: boşta ve mevcut slot dalından admitted ntdll EnterCriticalSection hedefi doğal çağrılır; beş checkpoint ve kritik bölümün 24-byte before/after durumu ile ana thread sahipliği doğrulanır. EAX VOID API için başarı sinyali değildir. Heap ve aynı GTA image içindeki writable nesneler kabul edilir; başka image, stack/TIB, geçersiz/held/semaphore nesnesi ret verir. Internal LockCount -1/-2 beklentisi bu OS pinine özeldir. Windows iç yardımcılarının tamamı denetlendi iddiası yoktur; gerçek fonksiyon sözleşmesi ve pinned implementation kullanılır. Kilit tutulurken yalnız bütün owned child kapatılır; gameplay devamı/unlock/SEH unwind izni yoktur. C++ trace değişir, C ABI 1/otorite aynı. [Sözleşme](../development/d1-cwd-acquire.md).
+
+## 14 Eylül 2026 — Windows fixture taşınabilirliği
+
+Startup-return ve devamındaki fixture zinciri, sistem DLL reçetelerini test makinesinin diskte tutulan PE dosyalarından çıkarır. Ortak okuyucu ve negatif doğrulamalar [test kapsamı notunda](../development/d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği) açıklanır; üretim policy/hash kuralları ve bu belgedeki gerçek GTA kanıtının sınırları aynıdır.

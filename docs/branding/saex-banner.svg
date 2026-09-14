@@ -1,11 +1,59 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="380" viewBox="0 0 1280 380" role="img" aria-labelledby="title desc">
   <title id="title">SAEX — San Andreas Extended</title>
-  <desc id="desc">GTA: San Andreas üzerinde kendi dünyanı ve oyun deneyimini geliştir.</desc>
-  <rect width="1280" height="380" rx="20" fill="#101b22"/>
-  <path d="M1050 0v380M1170 0v380M930 0v380M870 70h410M870 190h410M870 310h410" stroke="#24353c" stroke-width="1"/>
-  <path d="M176 110h-46v160h46m100-160h46v160h-46" fill="none" stroke="#d5eee3" stroke-width="12"/>
-  <path d="M188 140l76 100m0-100l-76 100" fill="none" stroke="#b8f36d" stroke-width="25"/>
-  <text x="390" y="184" fill="#f0f5ef" font-family="Segoe UI,Arial,sans-serif" font-weight="700" font-size="100" letter-spacing="5">SAEX</text>
-  <text x="396" y="231" fill="#b8f36d" font-family="Segoe UI,Arial,sans-serif" font-size="25" letter-spacing="4">SAN ANDREAS EXTENDED</text>
-  <text x="396" y="290" fill="#a1b7bd" font-family="Segoe UI,Arial,sans-serif" font-size="18">Kendi dünyanı ve oyun deneyimini geliştir.</text>
+  <desc id="desc">SAEX. Kendi dünyanı kur. Oyun deneyimini yeniden tanımla. Koyu yeşil zemin üzerinde geometrik beyaz ve lime marka yazısı, soyut harita çizgileri ve köşeli X amblemi.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="0.5">
+      <stop stop-color="#0b1418"/>
+      <stop offset="0.58" stop-color="#0b171b"/>
+      <stop offset="1" stop-color="#19332d"/>
+    </linearGradient>
+    <linearGradient id="emblem" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#d5ff91"/>
+      <stop offset="1" stop-color="#a6e65b"/>
+    </linearGradient>
+  </defs>
+  <g id="background-field">
+    <rect width="1280" height="380" fill="url(#background)"/>
+    <path d="M840 0h440v380H675z" fill="#244437" opacity="0.18"/>
+    <path d="M853 0 688 380" fill="none" stroke="#aeea74" stroke-opacity="0.12"/>
+    <path d="M0 379h1280" stroke="#b8f36d" stroke-opacity="0.18"/>
+  </g>
+  <g id="district-map" fill="none" stroke="#6f9c80" stroke-width="1" opacity="0.2">
+    <path d="M768 0v84h88v64h-86v84h64v76h-67v72M919 0v48h-33v61h-63M990 0v61h79v40h72v56h139M1110 0v33h93v71h77M1280 213h-98v62h-99v105M1209 380V315h71M918 380v-51h72v-57h-70v-58h-65"/>
+    <path d="M792 12h39v48h-39zM936 13h34v30h-34zM1130 12h52v10h-52zM1231 18h37v63h-37zM1231 123h37v70h-37zM1105 297h56v67h-56zM793 333h105v31H793zM791 172h43v34h-43z"/>
+    <path d="m737 380 163-96 237-137 143-83M891 0l66 37 245 142 78 46" stroke-width="2"/>
+  </g>
+  <g id="brand-heading" fill="#b8f36d">
+    <path d="M72 49h6l6 8 6-8h6l-9 12 9 12h-6l-6-8-6 8h-6l9-12z"/>
+    <text x="112" y="67" font-family="Arial,Helvetica,sans-serif" font-size="16" letter-spacing="3.5">SAN ANDREAS EXTENDED</text>
+  </g>
+  <g id="saex-wordmark" transform="translate(72 111)" fill="#f0f4e9" aria-label="SAEX">
+    <path id="letter-s" d="M22 0h96v28H33v24h63l22 22v38l-22 22H0v-28h85V81H22L0 59V22z"/>
+    <path id="letter-a" transform="translate(137)" fill-rule="evenodd" d="M0 134 47 0h43l47 134h-34l-9-29H42l-9 29zm51-57h34L68 26z"/>
+    <path id="letter-e" transform="translate(295)" d="M0 0h116v28H33v24h66v27H33v27h83v28H0z"/>
+    <path id="letter-x" transform="translate(432)" d="M0 0h39l33 43 33-43h39L91 67l53 67h-40L72 91l-32 43H0l52-67z" fill="#b8f36d"/>
+  </g>
+  <g id="brand-message" font-family="Arial,Helvetica,sans-serif">
+    <text x="72" y="294" fill="#e8ede5" font-size="24">Kendi dünyanı kur.</text>
+    <text x="72" y="324" fill="#9bb0ac" font-size="17">Oyun deneyimini yeniden tanımla.</text>
+  </g>
+  <g id="world-emblem">
+    <path d="m1028 64 201 116v28l-201 116-201-116v-28z" fill="#081512" opacity="0.55"/>
+    <path d="m1028 57 201 116-201 116-201-116z" fill="#152b25" stroke="#60846a" stroke-opacity="0.6"/>
+    <path d="m1028 79 163 94-163 94-163-94z" fill="none" stroke="#7b9b77" stroke-opacity="0.18"/>
+    <path d="m827 173v27l201 116 201-116v-27M1028 289v27" fill="none" stroke="#5a7c5e" stroke-opacity="0.45"/>
+    <path d="M908 111h-27v126h27m240-126h27v126h-27" fill="none" stroke="#cfe4cb" stroke-width="5"/>
+    <path d="M953 109h42l33 43 33-43h42l-54 70 54 70h-42l-33-43-33 43h-42l54-70z" fill="#365f2b"/>
+    <path d="M953 99h42l33 43 33-43h42l-54 70 54 70h-42l-33-43-33 43h-42l54-70z" fill="url(#emblem)"/>
+    <path d="M953 99h42l33 43 33-43h42" fill="none" stroke="#e8ffba" stroke-width="1.5"/>
+    <g fill="#b8f36d">
+      <circle cx="827" cy="173" r="3"/>
+      <circle cx="1229" cy="173" r="3"/>
+      <circle cx="1028" cy="316" r="3"/>
+    </g>
+    <path d="M1028 23v12m-6-6h12M1251 302v12m-6-6h12M795 276v12m-6-6h12" stroke="#a8c19c" stroke-opacity="0.5"/>
+  </g>
+  <g id="edge-details" fill="none" stroke="#b8f36d" stroke-width="2">
+    <path d="M23 44V23h21M1236 357h21v-21" opacity="0.65"/>
+  </g>
 </svg>

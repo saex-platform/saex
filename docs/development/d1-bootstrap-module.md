@@ -2,6 +2,8 @@
 
 Tarih: 13 Eylül 2026. Mimari v0.10 / kod 0.1.3. Durum: **x86 DLL ve oyun dışı lifecycle/ret alt kümesi uygulandı**. [Durum](status.md) · [N2 önceki dosya gözlemi](d1-engine-preflight.md) · [Uygulama sırası](d1-engine-integration.md) · [Native sözleşme](../architecture/native-sdk-integration.md) · [ADR-38](../decisions/architecture-decisions.md)
 
+**Güncelleme 0.1.17:** Gerçek GTA'da üç C ABI export'u sekiz çağrıyla, 12/12 koşuda doğrulandı. [Güncel kanıt](d1-bootstrap-lifecycle.md). Aşağıdaki 0.1.3 ilk teslim açıklamaları tarihseldir; C ABI 1 ve DLL davranışı değişmedi. N2 engine fazı/symbol ABI ve N3 açıktır.
+
 ## Amaç ve kapsam
 
 `saex_bootstrap.dll`, Plugin-SDK linklemeyen ilk yüklenebilir Windows x86 modülüdür. DLL'nin yüklenmesi GTA dosyası okuma veya hook kaydı başlatmaz. Açık `Initialize` çağrısı, DLL'nin **bulunduğu process'in ana executable'ını** OS'den bulur ve salt okunur denetler. Çağıran farklı dosya yolu, PID, image base, hook adresi veya doğrulama bayrağı veremez.
@@ -110,3 +112,37 @@ GitHub Linux GCC derlemesi, uint32_t reason ile enum fallback arasındaki örtü
 ### Hosted corpus tamamlaması
 
 Bootstrap session corpus artık geçersiz reason 0/999/UINT32_MAX için exact INTERNAL_ERROR değerini ve bilinen ret kodlarının korunmasını ayrıca sınar. Önceki test yalnız terminal ret durumunu ölçüyordu; bu ek assertion ABI/fallback değerini doğrudan kanıtlar. Production davranışı ve layout değişmez.
+
+## Kod 0.1.16 — ASI bootstrap yükleme
+
+[ASI yükleme sözleşmesi](d1-asi-bootstrap-load.md), iki ek call/return durağı ve boş tarama korumasını tanımlar. Yeni mod, build auditinden geçen aynı SAEX DLL bitlerini özel klasörde `.asi` adıyla yüklemeyi denetler; Release 28/Debug 31 exact pin, tam yol kontrolü ve owned child cleanup uygulanır. Önceki CLI durakları ve C ABI 1 korunur; `asiObservation` eski modlarda null olur. Initialize/Query/Stop çağrıları bu kesitte çalışmaz; N2/D1/D2 açık kalır. Test ve gerçek GTA kanıtı ilgili raporda ayrı izlenir.
+
+## Kod 0.1.17 — Kontrollü bootstrap yaşam döngüsü
+
+[Ayrı yaşam döngüsü sözleşmesi ve kanıtı](d1-bootstrap-lifecycle.md): aynı build'in üç denetlenmiş export'u sekiz sabit çağrıyla, ASI dönüşünden sonra çalıştırılır. Yığın veri yazımı ve EIP/ESP yönlendirmesi ayrı izindir; eski komutların durakları korunur. C ABI 1, engine profili, GNS/HTTPS ve otorite değişmedi. Dört yerel Windows akışı, 24 test senaryosu + 12 tekrar ve gerçek GTA 12/12 koşuda 96/96 dönüş geçti. N2/N3 ve oynanabilir D2 açık; geçmiş sürüm başlıkları o kesitin kanıtını anlatır.
+
+Export girişleri 20 byte'tır; PE32 HIGHLOW alanları metadata'dan tam dört byte olarak normalize edilir. Kısmi/çakışan fixup ve bilinmeyen tip reddedilir. Hiçbir prefix byte'ı karşılaştırmadan çıkarılmaz; C ABI 1 aynı kalır.
+
+## Kod 0.1.18 bağlantısı
+
+0.1.18 frame aday denetimi dış observer içinde kalır; DLL Initialize/Query/Stop, status boyutu ve observed_unverified sınırı değişmedi. Terminal bootstrap durumundan GTA gameplay devam ettirilmez. [Aday ve doğrulama raporu](d1-frame-target.md).
+
+## Kod 0.1.19 bağlantısı
+
+0.1.19, aynı profil/pin ve owned child kapıları üzerinde ayrı doğal startup-return deneyi ekler. Mevcut durak davranışı korunur; koruma çağrısı ve dönüş ABI kanıtı yeni raporda izlenir. D1/N2/N3 ve oynanabilir multiplayer kapıları açık kalır. [Sözleşme ve kanıt](d1-startup-return.md).
+
+## Kod 0.1.20 bağlantısı
+
+Ayrı CRT startup modu I/O hazırlığının doğal dönüşünü ve initializer CALL önünü denetler. Önceki modların durakları korunur; crtStartupObservation eski modlarda null olur. C ABI 1, GNS/HTTPS ve otorite değişmez; initialized motor/N3/D2 açık kalır. [Sözleşme ve kanıt](d1-crt-startup.md).
+
+## Kod 0.1.21 bağlantısı
+
+Ayrı `--observe-application-entry` modu başlatıcıların doğal dönüşünü, ikinci startup çağrısını ve uygulamanın ilk komutundan önce giriş yığınını denetler. Önceki CRT komutu başlatıcı CALL önünde durur; eski kanıtlar kendi artifact kapsamındadır. Yeni izin ve güncel doğrulama [uygulama giriş sözleşmesinde](d1-application-entry.md) izlenir. C ABI 1 korunur; initialized dünya, doğal frame/N3 ve D1/D2 kapıları açık kalır.
+
+## Kod 0.1.22 bağlantısı
+
+Ayrı platform-startup modu uygulama prologue'unu ilerletir ve sistem ayarı çağrısından önce durur. Dört argüman, yığın/register ve pinned API hedefi doğrulanır; host ayarı değişmez, eski CLI sınırları korunur. [Sözleşme ve sonuç](d1-platform-startup.md). C ABI 1/GNS/otorite aynı; sistem ayarı uyarlaması, pencere/renderer, doğal frame ve N2/N3/D1/D2 kapıları açık kalır.
+
+## Kod 0.1.23 bağlantısı
+
+Tek exact platform çağrısı için ayrı süreç içi bağlam uyarlaması eklendi: sentetik FALSE, last-error/yığın/register koruma ve bağlam geri alma; API çalıştırılmaz. Önceki doğal sınır komutları korunur. [Sözleşme ve sonuç](d1-platform-suppression.md). C ABI 1/GNS/otorite aynı; instance/pencere/renderer ve N2/N3/D1/D2 kapıları açık.

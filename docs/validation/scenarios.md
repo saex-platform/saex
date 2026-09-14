@@ -232,3 +232,101 @@ AC-90’a [proxy-return alt corpus’u](../development/d1-proxy-return.md) eklen
 ## Kod 0.1.13 — Startup çağrı sınırı
 
 AC-90’a [startup-call corpus’u](../development/d1-startup-call.md) eklendi: dokuz EXE varyantı, 19 senaryo, gözlemcisiz canary pozitif kontrolü ve 12 warm çevrim. Null parametre/register call, aynı IAT değerini yeniden yazma, target mutation, okunamayan/değişen sample, fault/stall ve spec/owner/budget/legacy retleri sınanır. Okunmuş ama değişmiş örnek başarıyla raporlanabilir; okunamayan örnek complete değildir. Yedi policy ve iki CLI testi bu alt kapıya bağlıdır; AC-90/R-01/D1 bütünü kapanmaz.
+
+## Kod 0.1.14 — Codec dönüş kesiti
+
+AC-90/R-01 alt corpus: normal dinamik load/return; DllMain FALSE, fault/stall; unpinned transitive DLL; preloaded/wrong/missing root; shape drift; budget, owner recovery, legacy stop ve terminal reuse. Canary kontrolü dördüncü durak sonrasının çalışmadığını sınar. Bu alt testler bütün AC/R kaydını kapatmaz. [Sözleşme ve doğrulama](../development/d1-codec-return.md).
+
+## Kod 0.1.15 — Codec fonksiyon bağları
+
+AC-90/R-01 alt corpus beşinci durak için null/yanlış hedef, code/stop drift, mapping unload, yeni DLL, fault/stall, prefilled slot, invalid/duplicate spec, owner/terminal/budget ve legacy stop senaryolarını kapsar. Export ve stop sonrası iki canary, bağlama ile fonksiyon çalıştırmayı ayırır; ana AC/R açık kalır. [Sözleşme ve kanıt](../development/d1-codec-bindings.md).
+
+## Kod 0.1.16 — ASI bootstrap yükleme
+
+[ASI yükleme sözleşmesi](../development/d1-asi-bootstrap-load.md), iki ek call/return durağı ve boş tarama korumasını tanımlar. Yeni mod, build auditinden geçen aynı SAEX DLL bitlerini özel klasörde `.asi` adıyla yüklemeyi denetler; Release 28/Debug 31 exact pin, tam yol kontrolü ve owned child cleanup uygulanır. Önceki CLI durakları ve C ABI 1 korunur; `asiObservation` eski modlarda null olur. Initialize/Query/Stop çağrıları bu kesitte çalışmaz; N2/D1/D2 açık kalır. Test ve gerçek GTA kanıtı ilgili raporda ayrı izlenir.
+
+AC-90/R-01b ASI load alt kanıtı: 27 own senaryo ve 12 warm; gerçek GTA 12/12 pozitif, altı legacy durak, üç child-öncesi ret, original AcLayers ret ve disabled-ASI DR2 ret geçti. Oluşturulan 20 process’in tamamı kapandı; 44 girdi korunmuştur. Bu sonuç R-01a/01c, bütün AC-90 veya N2/D1’i kapatmaz.
+
+## Kod 0.1.17 — Kontrollü bootstrap yaşam döngüsü
+
+[Ayrı yaşam döngüsü sözleşmesi ve kanıtı](../development/d1-bootstrap-lifecycle.md): aynı build'in üç denetlenmiş export'u sekiz sabit çağrıyla, ASI dönüşünden sonra çalıştırılır. Yığın veri yazımı ve EIP/ESP yönlendirmesi ayrı izindir; eski komutların durakları korunur. C ABI 1, engine profili, GNS/HTTPS ve otorite değişmedi. Dört yerel Windows akışı, 24 test senaryosu + 12 tekrar ve gerçek GTA 12/12 koşuda 96/96 dönüş geçti. N2/N3 ve oynanabilir D2 açık; geçmiş sürüm başlıkları o kesitin kanıtını anlatır.
+
+Export girişleri 20 byte'tır; PE32 HIGHLOW alanları metadata'dan tam dört byte olarak normalize edilir. Kısmi/çakışan fixup ve bilinmeyen tip reddedilir. Hiçbir prefix byte'ı karşılaştırmadan çıkarılmaz; C ABI 1 aynı kalır.
+
+## Kod 0.1.18 bağlantısı
+
+AC-90/R-01 için sınırlı ek örnekleme: üç faz eşleşmesi, bozuk recipe/target, non-executable bellek ve ASI/terminal hedef değişimi. AC-91 doğal frame callback/thread/ABI kapsamı bu testlerle kapanmaz. [Aday ve doğrulama raporu](../development/d1-frame-target.md).
+
+## Kod 0.1.19 bağlantısı
+
+AC-90/N2 için doğal startup alt senaryosu eklendi: ikinci ASI çağrısı, yanlış image boyutu/koruma bayrağı/çıktı adresi, dönüş register bozulması, frame drift, fault/stall ve eski mod sınırı. AC-91 frame kancası bu senaryolarla kapanmaz. [Sözleşme ve kanıt](../development/d1-startup-return.md).
+
+## Kod 0.1.19 — Bağımsız image koruma deneyi
+
+N2 koruma yardımcı senaryoları: 17 taşınabilir testte bozuk PE/x64/DLL, image/region taşması, boşluk/ilerlememe/kota, yanlış allocation/state/type, guard/salt okunur/ek modifier, yanlış eski koruma, kayıp özel kopya geçişi, girdi değişimi ve query/kapanış hatası retleri. Gerçek Windows ölçümü ayrı; AC-90/91 ve D1/D2 kapanmaz. [Sözleşme ve kanıt](../development/d1-image-protection.md).
+
+## Kod 0.1.20 bağlantısı
+
+Ayrı CRT startup modu I/O hazırlığının doğal dönüşünü ve initializer CALL önünü denetler. Önceki modların durakları korunur; crtStartupObservation eski modlarda null olur. C ABI 1, GNS/HTTPS ve otorite değişmez; initialized motor/N3/D2 açık kalır. [Sözleşme ve kanıt](../development/d1-crt-startup.md).
+
+## Kod 0.1.21 bağlantısı
+
+Ayrı `--observe-application-entry` modu başlatıcıların doğal dönüşünü, ikinci startup çağrısını ve uygulamanın ilk komutundan önce giriş yığınını denetler. Önceki CRT komutu başlatıcı CALL önünde durur; eski kanıtlar kendi artifact kapsamındadır. Yeni izin ve güncel doğrulama [uygulama giriş sözleşmesinde](../development/d1-application-entry.md) izlenir. C ABI 1 korunur; initialized dünya, doğal frame/N3 ve D1/D2 kapıları açık kalır.
+
+### AC-90 alt senaryosu — uygulama giriş sınırı (0.1.21)
+
+Başlatıcı crash/hang/EAX hatası, register/table/frame/once drift, hatalı ikinci startup argümanı, instance/show/komut satırı, bozuk spec/parent/prefix, kota ve yanlış owner reddedilir. Olumlu durumda initializer ve ikinci startup döner, doğru dört argümanla hedefin ilk komutuna ulaşılır; ilk komuttaki canary çalışmaz. Eski CRT modunda initializer canary de çalışmaz. Her owned child kapanır; warm çevrimlerde handle sayısı sabit kalır. Fixture sonucu gerçek GTA kanıtının yerine geçmez, AC-90 tamamını veya AC-91'i kapatmaz. [Sonuçlar](../development/d1-application-entry.md).
+
+## Kod 0.1.22 bağlantısı
+
+Ayrı platform-startup modu uygulama prologue'unu ilerletir ve sistem ayarı çağrısından önce durur. Dört argüman, yığın/register ve pinned API hedefi doğrulanır; host ayarı değişmez, eski CLI sınırları korunur. [Sözleşme ve sonuç](../development/d1-platform-startup.md). C ABI 1/GNS/otorite aynı; sistem ayarı uyarlaması, pencere/renderer, doğal frame ve N2/N3/D1/D2 kapıları açık kalır.
+
+### AC-90 alt senaryosu — platform startup sınırı (0.1.22)
+
+Prologue ilerler; ilk host-setting CALL yürütülmeden dört argüman, saved EBX/local flag, orijinal giriş frame'i, ESI/EDI/EBP/TF/DF ve user32 export kimliği eşleşir. Hatalı stack/argüman/IAT/target/spec, exception ve kota/owner retleri child çıkışıyla biter. Özel test DLL'sindeki API canary'si gözlemli koşuda çalışmaz, gözlemsiz kontrol koşusunda çalışır; hiçbir fixture host ayarını değiştiren API'yi çağırmaz. Eski application modu ilk komuttan önce kalır; bu alt test N2/AC-90 veya N3/AC-91 bütününü kapatmaz. [Kanıt](../development/d1-platform-startup.md).
+
+## Kod 0.1.23 bağlantısı
+
+Tek exact platform çağrısı için ayrı süreç içi bağlam uyarlaması eklendi: sentetik FALSE, last-error/yığın/register koruma ve bağlam geri alma; API çalıştırılmaz. Önceki doğal sınır komutları korunur. [Sözleşme ve sonuç](../development/d1-platform-suppression.md). C ABI 1/GNS/otorite aynı; instance/pencere/renderer ve N2/N3/D1/D2 kapıları açık.
+
+### AC-90 alt senaryo — Platform isteğini bastırma
+
+Exact CALL dört argümanla doğrulanır; yalnız yeni mod bağlamı değiştirir. Partial write/readback/rollback arızası başarı üretmez; yanlış GetLastError/TEB/IAT yazma öncesi reddedilir. Pozitifte sentetik EAX=0, ESP+16, last-error ve 172-byte yığın korunur; dönüş durağından önce hiçbir sonraki komut çalışmaz, başlangıç bağlamı geri okunarak restore edilir ve child çıkar. Eski platform modu CALL önünde kalır. [Fixture/gerçek GTA sınırı](../development/d1-platform-suppression.md). Bu alt sonuç AC-90/AC-91 veya D1'i topluca kapatmaz.
+
+0.1.23 bağlam geri alması uygulama register/segment/flag ve breakpoint adres/izinlerini kapsar. EFLAGS sabit bit 1 normalize edilir; DR6 olay nedeni restore sırasında sıfırlanır. RF, return-site breakpoint olayından ayrı değerlendirilir. Bu özel ayrımlar dışındaki context farkı ret üretir; [ayrıntı](../development/d1-platform-suppression.md).
+
+### AC-90 alt senaryo — Named event instance kontrolü
+
+Yeni event doğal CALL/GetLastError/helper RET ile doğrulanır. Mevcut nonsignaled manual-reset event açılırsa 183 ve aynı nesne kimliği doğrulanır, event sinyali değişmez, pencere koluna girilmez. Aynı isimde mutex varsa NULL/error 6 ret verir. Yanlış helper/ad/operand/thunk/target, owner ve event kotası başarı sayılmaz. Pencere canary positive control ret sınırının duyarlılığını kanıtlar; warm döngülerde handle sayısı korunur. Eski suppression modu eski CALL bağlamını restore eder; yeni mod sadece geçerli suppression ara durağını onaylar ve API sonrası restore etmez. Her koşuda owned child exit ayrıca istenir. [Fixture ve GTA kanıtı](../development/d1-instance-startup.md); bu alt kesit AC-90/AC-91/N2/N3/D1/D2 bütününü kapatmaz.
+
+### AC-90 alt senaryo — Initialize olayının dağıtıcıya aktarımı
+
+Pozitifte caller CALL, dispatcher entry ve application CALL öncesi duraklarının üçü aynı thread üzerinde `[24,nullptr]` aktarımını ve doğal yığın/return register davranışını kanıtlar. Yanlış branch/prologue/rel32/prefix, argüman/dönüş adresi/yığın/register, owner ve kota başarı sayılmaz. Existing-instance daha erken ret verir; eski instance modu yeni sınırı açmaz. Application canary sensitivity kontrolü ve warm handle eşitliği istenir. [Portable/fixture/GTA ayrımı](../development/d1-event-dispatch.md); bu alt test uygulama işleyicisi, renderer, AC-90/AC-91 bütünü veya D1 kapısını kapatmaz.
+
+### AC-90 alt senaryo — AppEventHandler initialize dalının seçimi
+
+Pozitifte dört durak, C−32 stack ve EAX 0→24→5→5 geçişi aynı thread üzerinde doğrulanır. Parent, detour/absolute operand/rel32, 39 index/11 hedef, seçilen 5. slot, initializer prefix, stack/return/argüman/register farklılığı reddedilir. Eski event-dispatch modu kendi terminalinde durur; existing instance daha erken ret verir. Initializer canary sensitivity kontrolü, yanlış owner, event kotası ve 12 warm handle eşitliği istenir. [Portable/fixture/GTA sonuç ayrımı](../development/d1-application-routing.md); initializer gövdesi/dönüşü, renderer, AC-90/AC-91 bütünü veya D1 kapısı kapanmaz.
+
+### AC-90 alt senaryo — İlk iki oyun initializer yardımcısının dönüşü
+
+Pozitifte initializer entry, boş helper entry/dönüşü, localisation entry/dönüşü beş durakta görülür; caller/return stack ve register'lar eşleşir. Veri penceresi ilk dört durakta korunur; beşincide yalnız flags [1,0,0] değişimi kabul edilir. Guard byte, EAX/flags/stack/register, yanlış hedef/absolute operand/RET/stop prefix, owner ve kota negatifleri gerekir. Eski routing terminali korunur; existing-instance erken ret verir. File-manager canary sensitivity ve 12 warm handle çevrimi zorunludur. [Fixture ve GTA kanıtları](../development/d1-game-prelude.md); bu kesit CFileMgr, initializer dönüşü, renderer veya AC-90/N2/D1 bütününü kapatmaz.
+
+### AC-90 alt senaryo — Dosya yöneticisi girişi ve cwd parametreleri
+
+Pozitifte CFileMgr entry ve CRT CALL öncesi iki durak, buffer/128 parametreleri, EDI kaydı ve iki nested return doğrulanır. 136-byte root/guard penceresi ve önceki localisation penceresi korunur. Yanlış root/cwd/suffix/rel32/parent, değiştirilmiş body/prefix, writable olmayan buffer, register/flags/stack, kota ve owner negatifleri gerekir. Eski prelude sınırı, existing-instance ret, cwd canary sensitivity ve 12 warm handle çevrimi korunur. [Fixture ve GTA kaydı](../development/d1-file-manager-entry.md). Gelecek CRT dönüş kapısı NULL, NUL bulunmaması, 126/127-byte eşikleri ve kod sayfası uyuşmazlığını sınayacak; bu turda bu gelecek davranışlar uygulanmış sayılmaz. AC-90/N2/D1 bütünü açık.
+
+### AC-90 alt senaryo — CRT SEH kayıt kurulumu
+
+Pozitifte wrapper entry, SEH prologue entry ve prologue dönüşü izlenir; son FS:[0] yeni kaydı, kayıt da önceki head/handler/scope ve 0xFFFFFFFF durumunu taşır. NT_TIB kalan altı word, önceki kayıt, lower guard/unused locals/caller, root buffer ve localisation korunur. Yanlış pointer/rel32/body/scope, TIB head/stack sınırı, register/flags ve stack/TIB word drift negatifleri; eski manager terminali, mevcut event, owner/kota, canary ve 12 warm handle çevrimi gerekir. [Fixture/GTA kanıtı](../development/d1-cwd-seh.md). Bu kesit handler/exception dispatch, SEH sökümü, lock veya cwd dönüşünü ve AC-90/N2/D1 bütününü kapatmaz.
+
+### AC-90 alt senaryo — CRT lock(7) kayıt seçimi
+
+Dolu opaque ve boş slotlu iki fixture selector girişi/CMP sonrası terminaline ulaşır; JNE yürütülmez. Stack argüman 7, dönüş/EBP/ESI, EAX/ESI adresleme, CMP flags, slot penceresi ve SEH/caller/buffer korunur. Salt okunur slot, yanlış code/operand/rel32/stop, TIB ve her stack word/register/flags drift negatifleri; eski SEH modu, owner/event kotası, event çakışması, post-comparison canary ve 12 warm çevrim gerekir. [Test ve GTA kanıtı](../development/d1-cwd-lock.md). SlotPresent kilit alma kanıtı değildir; acquire/lazy/OS/cwd/SEH unwind, AC-90 bütünü ve D1/D2 açık kalır.
+
+### AC-90 alt senaryo — CRT mevcut kilidi alma ve dönüş
+
+Pozitifte mevcut dal, Win32 CALL/entry/return ve selector RET izlenir; recursion 0→1, owner 0→child main thread, pinned LockCount -1→-2 ve metadata korunumu gerekir. Heap ve game-image fixture ayrı sınanır. Boş/tutulmuş/salt okunur/geçersiz nesne, yanlış IAT/prefix/spec, volatile/nonvolatile ABI/flags, eski lock modu, owner/kota/event, iki canary ve 12 warm çevrim kapsanır. 84-byte caller, TIB/önceki SEH kaydı, buffer ve named event korunur. [Test/GTA kanıtı](../development/d1-cwd-acquire.md). Acquire readback tam cwd/unlock/unwind veya AC-90/D1 tamamlanması değildir.
+
+## 14 Eylül 2026 — Windows fixture taşınabilirliği
+
+Startup-return ve devamındaki fixture zinciri, sistem DLL reçetelerini test makinesinin diskte tutulan PE dosyalarından çıkarır. Ortak okuyucu ve negatif doğrulamalar [test kapsamı notunda](../development/d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği) açıklanır; üretim policy/hash kuralları ve bu belgedeki gerçek GTA kanıtının sınırları aynıdır.

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.file-manager-entry-v1",
+  "stage": "before-cwd-call",
+  "preludePolicySha256": "eee50036b97098d00b2c3be58df01fa3724c04123884a3fdc4a75e4305ccab4d",
+  "reviewDocument": "docs/development/d1-file-manager-entry.md",
+  "manager": {
+    "callRva": 1293146,
+    "targetRva": 1279728,
+    "callHex": "e891cbffff",
+    "targetPrefixHex": "57688000000068e01ab700e891e72f00"
+  },
+  "cwdRva": 4419217,
+  "bufferRva": 7805664,
+  "suffixRva": 4562812,
+  "bodyHex": "57688000000068e01ab700e891e72f00bfe01ab70083c4084f8da424000000008a47014784c075f866a17c9f85006689075fc3",
+  "returnPrefixHex": "6a05e80ab0ecff83c404e822620000b0"
+}

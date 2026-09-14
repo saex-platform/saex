@@ -50,15 +50,16 @@ def linux():
         raise ValueError('Linux CI requires Linux')
     docs()
     run('dotnet', 'run', '--project', 'tools/ContractGen', '--', '.', '--check')
-    for generator in ('engine_profiles', 'loader_policy', 'entry_policy', 'proxy_policy', 'startup_policy'):
+    for generator in ('engine_profiles', 'loader_policy', 'entry_policy', 'proxy_policy', 'startup_policy', 'codec_policy', 'binding_policy', 'asi_policy', 'bootstrap_lifecycle_policy', 'frame_target_policy', 'startup_return_policy', 'crt_startup_policy', 'application_entry_policy', 'platform_startup_policy', 'platform_suppression_policy', 'instance_startup_policy', 'event_dispatch_policy', 'application_routing_policy', 'game_prelude_policy', 'file_manager_entry_policy', 'cwd_seh_policy', 'cwd_lock_policy', 'cwd_acquire_policy'):
         run(sys.executable, f'tools/{generator}.py', '--check')
     run('cmake', '--preset', 'linux-x64')
     run('cmake', '--build', '--preset', 'linux-x64', '--parallel', '2')
     run('ctest', '--preset', 'linux-x64')
     run('dotnet', 'run', '--project', 'tests/managed/Saex.Foundation.Tests', '--', '.',
         'out/linux-x64/saex_contract_probe')
-    for suite in ('test_engine_profiles', 'test_loader_policy', 'test_entry_policy', 'test_proxy_policy', 'test_startup_policy'):
+    for suite in ('test_engine_profiles', 'test_loader_policy', 'test_entry_policy', 'test_proxy_policy', 'test_startup_policy', 'test_codec_policy', 'test_binding_policy', 'test_asi_policy', 'test_bootstrap_lifecycle_policy', 'test_frame_target_policy', 'test_startup_return_policy', 'test_crt_startup_policy', 'test_application_entry_policy', 'test_platform_startup_policy', 'test_platform_suppression_policy', 'test_instance_startup_policy', 'test_event_dispatch_policy', 'test_application_routing_policy', 'test_game_prelude_policy', 'test_file_manager_entry_policy', 'test_cwd_seh_policy', 'test_cwd_lock_policy', 'test_cwd_acquire_policy'):
         run(sys.executable, f'tests/engine/{suite}.py')
+    run(sys.executable, 'tests/engine/test_image_protection_probe.py')
     print('SAEX portable Linux core verified; Windows/GTA runtime is outside this job.')
 
 

@@ -181,6 +181,18 @@ int wmain(int argc, wchar_t** argv) {
             reject_policy(bad, executable.identity().sha256, "loader_policy_file_unavailable");
             bad = specs; bad[3].name = "../fixture.dll";
             reject_policy(bad, executable.identity().sha256, "loader_policy_spec");
+            bad = specs; bad[3].name = "saex_bootstrap.asi";
+            reject_policy(bad, executable.identity().sha256, "loader_policy_spec");
+            PreparedLoaderPolicy asi_missing(bad, executable.identity().sha256, executable.identity().sha256, game, system, true);
+            require(asi_missing.error() == "loader_policy_file_unavailable" && asi_missing.failed_module() == "saex_bootstrap.asi", "ASI filename opt-in not applied");
+            for (auto name : {"other.asi", "../saex_bootstrap.asi", "SAEX_BOOTSTRAP.asi"}) {
+                bad = specs; bad[3].name = name;
+                PreparedLoaderPolicy denied(bad, executable.identity().sha256, executable.identity().sha256, game, system, true);
+                require(denied.error() == "loader_policy_spec", "ASI name scope expanded");
+            }
+            bad = specs; bad[3].name = "saex_bootstrap.asi"; bad[3].origin = LoaderOrigin::system_x86;
+            PreparedLoaderPolicy asi_system(bad, executable.identity().sha256, executable.identity().sha256, game, system, true);
+            require(asi_system.error() == "loader_policy_spec", "ASI system origin allowed");
             bad = specs; bad[3].name = bad[0].name;
             reject_policy(bad, executable.identity().sha256, "loader_policy_duplicate");
             bad = specs; bad[3].origin = static_cast<LoaderOrigin>(99);

@@ -15,7 +15,8 @@ struct LoaderPinSpec {
 class PreparedLoaderPolicy final {
 public:
     PreparedLoaderPolicy(std::span<const LoaderPinSpec> specs, const Sha256& expected_engine,
-        const Sha256& actual_engine, std::wstring_view game_directory, std::wstring_view system_directory);
+        const Sha256& actual_engine, std::wstring_view game_directory, std::wstring_view system_directory,
+        bool allow_bootstrap_asi = false);
     [[nodiscard]] std::string_view error() const noexcept { return error_; }
     [[nodiscard]] std::string_view failed_module() const noexcept { return failed_module_; }
     [[nodiscard]] std::span<const LoaderFile* const> pins() const noexcept {

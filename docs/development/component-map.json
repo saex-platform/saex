@@ -6,6 +6,341 @@
   "components": [
     {
       "patterns": [
+        "include/saex/engine/cwd_acquire*",
+        "src/engine/loader/cwd_acquire.cpp",
+        "contracts/engine/cwd-acquire-policy.json",
+        "tools/cwd_acquire_policy.py",
+        "tests/engine/cwd_acquire*",
+        "tests/engine/test_cwd_acquire_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-cwd-acquire.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/cwd_lock*",
+        "src/engine/loader/cwd_lock.cpp",
+        "contracts/engine/cwd-lock-policy.json",
+        "tools/cwd_lock_policy.py",
+        "tests/engine/cwd_lock*",
+        "tests/engine/test_cwd_lock_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-cwd-lock.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/cwd_seh*",
+        "src/engine/loader/cwd_seh.cpp",
+        "contracts/engine/cwd-seh-policy.json",
+        "tools/cwd_seh_policy.py",
+        "tests/engine/cwd_seh*",
+        "tests/engine/test_cwd_seh_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-cwd-seh.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/file_manager_entry*",
+        "src/engine/loader/file_manager_entry.cpp",
+        "contracts/engine/file-manager-entry-policy.json",
+        "tools/file_manager_entry_policy.py",
+        "tests/engine/file_manager_entry*",
+        "tests/engine/test_file_manager_entry_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-file-manager-entry.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/game_prelude*",
+        "src/engine/loader/game_prelude.cpp",
+        "contracts/engine/game-prelude-policy.json",
+        "tools/game_prelude_policy.py",
+        "tests/engine/game_prelude*",
+        "tests/engine/test_game_prelude_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-game-prelude.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/application_routing*",
+        "src/engine/loader/application_routing.cpp",
+        "contracts/engine/application-routing-policy.json",
+        "tools/application_routing_policy.py",
+        "tests/engine/application_routing*",
+        "tests/engine/test_application_routing_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-application-routing.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/event_dispatch*",
+        "src/engine/loader/event_dispatch.cpp",
+        "contracts/engine/event-dispatch-policy.json",
+        "tools/event_dispatch_policy.py",
+        "tests/engine/event_dispatch*",
+        "tests/engine/test_event_dispatch_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-event-dispatch.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/instance_startup*",
+        "src/engine/loader/instance_startup.cpp",
+        "contracts/engine/instance-startup-policy.json",
+        "tools/instance_startup_policy.py",
+        "tests/engine/instance_startup*",
+        "tests/engine/test_instance_startup_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-instance-startup.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/platform_suppression*",
+        "src/engine/loader/platform_suppression.cpp",
+        "contracts/engine/platform-suppression-policy.json",
+        "tools/platform_suppression_policy.py",
+        "tests/engine/platform_suppression*",
+        "tests/engine/test_platform_suppression_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-platform-suppression.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/platform_startup*",
+        "src/engine/loader/platform_startup.cpp",
+        "contracts/engine/platform-startup-policy.json",
+        "tools/platform_startup_policy.py",
+        "tests/engine/platform_startup*",
+        "tests/engine/test_platform_startup_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-platform-startup.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/application_entry*",
+        "src/engine/loader/application_entry.cpp",
+        "contracts/engine/application-entry-policy.json",
+        "tools/application_entry_policy.py",
+        "tests/engine/application_entry*",
+        "tests/engine/test_application_entry_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-application-entry.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/crt_startup*",
+        "src/engine/loader/crt_startup.cpp",
+        "contracts/engine/crt-startup-policy.json",
+        "tools/crt_startup_policy.py",
+        "tests/engine/crt_startup*",
+        "tests/engine/test_crt_startup_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-crt-startup.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/startup_return*",
+        "src/engine/loader/startup_return.cpp",
+        "src/engine/loader/loader_observation.cpp",
+        "src/engine/loader/loader_probe.cpp",
+        "contracts/engine/startup-return-policy.json",
+        "tools/startup_return_policy.py",
+        "tests/engine/startup_return*",
+        "tests/engine/test_startup_return_policy.py",
+        "tests/engine/startup_fixture.cpp",
+        "tests/engine/system_fixture_support.hpp"
+      ],
+      "documents": [
+        "docs/development/d1-startup-return.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/frame_target*",
+        "src/engine/loader/frame_target.cpp",
+        "src/engine/loader/loader_observation.cpp",
+        "src/engine/loader/loader_probe.cpp",
+        "contracts/engine/frame-target-policy.json",
+        "tools/frame_target_policy.py",
+        "tests/engine/*frame*",
+        "tests/engine/bootstrap_lifecycle*",
+        "tests/engine/startup_fixture.cpp"
+      ],
+      "documents": [
+        "docs/development/d1-frame-target.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/bootstrap_lifecycle*",
+        "src/engine/loader/*",
+        "include/saex/engine/loader_observation.hpp",
+        "contracts/engine/bootstrap-lifecycle-policy.json",
+        "tools/bootstrap_lifecycle_policy.py",
+        "tools/bootstrap_load_artifact.py",
+        "tools/check_bootstrap.py",
+        "tests/engine/bootstrap_lifecycle*",
+        "tests/engine/test_bootstrap*",
+        "CMakeLists.txt"
+      ],
+      "documents": [
+        "docs/development/d1-bootstrap-lifecycle.md",
+        "docs/development/d1-bootstrap-module.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md",
+        "docs/platform/launcher-operations.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/asi*",
+        "contracts/engine/asi-policy.json",
+        "tools/asi_policy.py",
+        "tools/bootstrap_load_artifact.py",
+        "tests/engine/asi*",
+        "tests/engine/test_asi_policy.py",
+        "tests/engine/test_bootstrap_load_artifact.py",
+        "include/saex/engine/loader_observation.hpp",
+        "src/engine/loader/*",
+        "CMakeLists.txt"
+      ],
+      "documents": [
+        "docs/development/d1-asi-bootstrap-load.md",
+        "docs/development/d1-bootstrap-module.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/platform/launcher-operations.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/binding*",
+        "contracts/engine/binding-policy.json",
+        "tools/binding_policy.py",
+        "tests/engine/binding*",
+        "tests/engine/test_binding_policy.py",
+        "include/saex/engine/loader_observation.hpp",
+        "src/engine/loader/loader_observation.cpp",
+        "src/engine/loader/loader_probe.cpp",
+        "tests/engine/test_loader_probe.py",
+        "tests/engine/codec_proxy.cpp",
+        "tests/engine/codec_fixture_dll.cpp"
+      ],
+      "documents": [
+        "docs/development/d1-codec-bindings.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md",
+        "docs/platform/launcher-operations.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/codec*",
+        "contracts/engine/codec-policy.json",
+        "tools/codec_policy.py",
+        "tests/engine/codec*",
+        "tests/engine/test_codec_policy.py",
+        "include/saex/engine/loader_observation.hpp",
+        "src/engine/loader/loader_observation.cpp",
+        "src/engine/loader/loader_probe.cpp",
+        "tests/engine/test_loader_probe.py"
+      ],
+      "documents": [
+        "docs/development/d1-codec-return.md",
+        "docs/architecture/engine-adapter.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/development/d1-engine-integration.md",
+        "docs/platform/launcher-operations.md",
+        "docs/validation/scenarios.md",
+        "docs/validation/conformance-contracts.md"
+      ]
+    },
+    {
+      "patterns": [
         "include/saex/engine/startup*",
         "contracts/engine/startup-policy.json",
         "tools/startup_policy.py",
@@ -362,6 +697,16 @@
       ],
       "documents": [
         "docs/development/github-publication.md",
+        "docs/development/workflow.md"
+      ]
+    },
+    {
+      "patterns": [
+        "tools/native/image_protection_probe.py",
+        "tests/engine/test_image_protection_probe.py"
+      ],
+      "documents": [
+        "docs/development/d1-image-protection.md",
         "docs/development/workflow.md"
       ]
     }

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.windows-26200.platform-startup-v1",
+  "stage": "before-system-parameter-call",
+  "applicationPolicySha256": "d683a244ece6bcfeffcb78f461daeb1232b6fd7a33c6e7f7055fdbdb8bd5bca9",
+  "reviewDocument": "docs/development/d1-platform-startup.md",
+  "prologueHex": "81ec84000000536a0233db53536801200000c644241701",
+  "callRva": 3442471,
+  "iatRva": 4555372,
+  "returnPrefixHex": "e8aee1ffff85c0750f536a18e82214ed",
+  "systemModule": {
+    "name": "user32.dll",
+    "bytes": 1916288,
+    "sha256": "b3cc6f999873061683021abd4aeea6551f0a56a642c6f90c77744e10488248d9"
+  },
+  "function": {
+    "rva": 746928,
+    "prefixHex": "6a1068f8e10b10e828c6faff8365e400e8ecd6f6",
+    "preferredBase": 268435456,
+    "highlowOffsets": [
+      3
+    ]
+  },
+  "arguments": [
+    8193,
+    0,
+    0,
+    2
+  ],
+  "stackBytes": 152
+}
