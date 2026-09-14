@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.frame-candidate-v1",
+  "stage": "read-only-frame-candidate",
+  "bootstrapPolicySha256": "cd6f7822e4916a1082ec502cc24e45915cefd0e78f5e17eb894655f17443948e",
+  "profileSourceSha256": "0653426a913c3fdef809ea9e6a614fca7d26498e66cb63148d7073fe8d965436",
+  "reviewDocument": "docs/development/d1-frame-target.md",
+  "callRva": 1304961,
+  "targetRva": 1294048,
+  "callHex": "e85ad5ffff",
+  "targetPrefixHex": "83ec0c535657e8e55e0000b97829b700",
+  "sourceEvidence": [
+    {"path": "shared/Events.h", "sha256": "cb9fe656b148c70a665e73b59b91318da68e6e373609042783ead4015002617e"},
+    {"path": "plugin_sa/game_sa/CGame.cpp", "sha256": "7a631ce16c491d8b66b8d4be79d61d57c4e1c887e0c51a95c1bd4229837f014b"},
+    {"path": "plugin_sa/game_sa/CGame.h", "sha256": "86dfdad46fb996a51c8e0453c01c0ab79c365f8bd4192417917db10d2545d8ce"}
+  ]
+}

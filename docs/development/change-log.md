@@ -1,5 +1,90 @@
 # Kaynak ve belge değişiklik kaydı
 
+## 14 Eylül 2026 — 0.1.14–0.1.31 kaynaklarının GitHub yayını
+
+Kullanıcının tüm birikmiş kaynakları yayımlama isteğiyle 0.1.31 / mimari v0.38 anlık görüntüsü hazırlandı. Kaynak/test/policy/generator, bütün sahip belgeleri ve güncel marka varlıkları tek PR kapsamındadır. Kaynak ZIP/manifest ve Git bundle yedekleri alındı; temiz checkout ve mevcut yedi hosted kontrol yayın kapısıdır. Bu kayıt yeni ürün davranışı, ABI/otorite değişimi veya migration eklemez. [Yayın raporu](github-publication.md) geçmiş gerçek GTA ve yeni kaynak CI kanıtını ayrı tutar.
+
+## Kod 0.1.31 / mimari v0.38 — 13 Eylül 2026
+
+CRT mevcut kilidi alma API/CLI, Windows target/nesne ve beş checkpoint sözleşmesi eklendi. Doğal API/selector dönüşü, thread sahipliği, slot/stack/SEH korunumu denetlenir; lazy/cwd/unlock açılmaz. İlk GTA keşfi heap varsayımında güvenli ret verdi; aynı GTA image için kontrollü destek ve fixture eklendi. C++ trace yeniden derlenir; C ABI 1/GNS/otorite aynı, dependency/kaldırma/kalıcı migration yoktur. ADR-66/AC-90, mimari, durum, roadmap ve CI güncellendi. [Doğrulama](d1-cwd-acquire.md) tamamlandı: x86 Debug/Release 41 native/79 managed/254 Python; x64 Debug/Release 19/79/184. Yeni 141 portable kontrol/17 senaryo/iki canary/12 warm, gerçek GTA 12/12 ve 40/40 matris, 37/37 child çıkışı ve 280/280 girdi korunumu geçti. İlk heap-only keşif reddi ve image desteği düzeltmesi raporda korunur. Linux/hosted/N1 tekrar koşulmadı.
+
+## Kod 0.1.30 / mimari v0.37 — 13 Eylül 2026
+
+CRT lock(7) selector API/CLI ve strict policy eklendi; iki doğal durakta register/CMP flags, slot, stack ve SEH korunumu doğrulanır. Boş/dolu kayıt desteklenir; JNE ve iki kilit yolu kapalıdır. C++ trace yeniden derlenir; C ABI 1/GNS/otorite aynı, dependency/kaldırma/kalıcı migration yoktur. ADR-65/AC-90, mimari, durum, roadmap ve CI birlikte güncellendi. [Doğrulama](d1-cwd-lock.md) tamamlandı: x86 Debug/Release 39 native/79 managed/247 Python; x64 Debug/Release 18/79/179. Yeni 332 portable kontrol/13 senaryo/iki canary/12 warm, gerçek GTA 12/12 ve 39/39 matris, 36/36 child çıkışı ve 265/265 girdi korunumu geçti. İlk fixture C2415 derleme reddi ve düzeltmesi raporda korunur. Linux/hosted/N1 tekrar koşulmadı.
+
+## Kod 0.1.29 / mimari v0.36 — 13 Eylül 2026
+
+Cwd SEH API/CLI, strict policy zinciri, üç doğal durak, 59-byte prologue/12-byte scope, NT_TIB ve stack kayıt readback eklendi. Kilit/OS/copy kapalı, önceki manager terminali korunur. C++ trace yeniden derlenir; C ABI 1/GNS/otorite aynı, dependency/kaldırma/kalıcı migration yoktur. ADR-64/AC-90, mimari, durum, roadmap ve CI birlikte güncellendi. [Doğrulama](d1-cwd-seh.md) tamamlandı: x86 Debug/Release 37 native/79 managed/240 Python; x64 Debug/Release 17/79/174. Yeni 210 portable kontrol/11 senaryo/canary/12 warm, gerçek GTA 12/12 ve 38/38 matris, 35/35 child çıkışı ve 250/250 girdi korunumu geçti. İlk fixture C4733 derleme reddi ve portable PF beklentisi hatası raporda korunur. Linux/hosted/N1 tekrar koşulmadı.
+
+## Kod 0.1.28 / mimari v0.35 — 13 Eylül 2026
+
+File manager entry API/CLI, strict policy zinciri, iki doğal durak, buffer/maxlen ABI ve 136-byte readback eklendi. Cwd CALL kapalı, önceki prelude terminali korunur. Tam 51-byte gövde/suffix örneklemesi ve CRT araştırması, gelecekteki 126-byte metin/suffix sınırı belgelendi. C++ trace yeniden derlenir; C ABI 1/GNS/otorite aynı, dependency/kaldırma/kalıcı migration yoktur. ADR-63/AC-90, mimari, durum, yol haritası ve CI birlikte güncellendi. [Doğrulama](d1-file-manager-entry.md) tamamlandı: x86 Debug/Release 35 native/79 managed/233 Python; x64 Debug/Release 16/79/169. Yeni 99 portable kontrol/12 senaryo/canary/12 warm, gerçek GTA 12/12 ve 37/37 matris, 34/34 child çıkışı ve 235/235 girdi korunumu geçti. İlk read-only fixture varsayımı düzeltildi ve başarısız koşu korundu. Linux/hosted/N1 tekrar koşulmadı.
+
+## Kod 0.1.27 / mimari v0.34 — 13 Eylül 2026
+
+Game prelude API/CLI ve strict policy zinciri, iki doğal helper çağrısı, beş durak ve üç veri yazımının readback denetimi eklendi. Eski routing terminali korundu; C++ trace/API yeniden derlenir, C ABI 1/GNS/otorite aynı. Kaldırılan özellik/dependency/kalıcı migration yoktur. Mimari, durum, ADR-62, AC-90, roadmap ve Windows/portable CI eşlemeleri birlikte güncellendi. [Doğrulama](d1-game-prelude.md) tamamlandı: x86 Debug/Release 33 native/79 managed/226 Python; x64 Debug/Release 15/79/164. Yeni 215 portable kontrol/11 senaryo/canary/12 warm, gerçek GTA 12/12 ve 36/36 matris, 33/33 child çıkışı ve 220/220 girdi korunumu geçti. İlk fixture RET kodlama uyuşmazlığı düzeltildi ve raporlandı. Linux/hosted/N1 tekrar koşulmadı.
+
+## Kod 0.1.26 / mimari v0.33 — 13 Eylül 2026
+
+Application routing API/CLI, strict parent policy, executable detour ve iki tablo için relocated operand doğrulaması, dört doğal durak ve negatif testler eklendi. İlk oyun initializer CALL önünde durulur. Önceki event-dispatch terminali korunur; üst modun JSON CALL izni gerçek kapsamı gösterir. C++ observer yeniden derlenir; C ABI 1/GNS/otorite aynı, kaldırılan özellik/dependency/migration yoktur. Mimari, durum, ADR-61, AC-90, roadmap ve build eşlemeleri birlikte güncellendi. [Doğrulama](d1-application-routing.md) tamamlandı: x86 Debug/Release 31 native/79 managed/219 Python; x64 Debug/Release 14/79/159. Yeni 167 portable kontrol/11 senaryo/canary/12 warm, gerçek GTA 12/12 ve 35/35 matris, 32/32 child çıkışı ve 205/205 girdi korunumu geçti. İlk fixture derleme hataları ve düzeltmeleri raporda tutuldu. Linux/hosted/N1 tekrar koşulmadı.
+
+## Kod 0.1.25 / mimari v0.32 — 13 Eylül 2026
+
+Olay dağıtıcısı API/CLI, strict parent policy, üç doğal durak, portable frame doğrulayıcısı ve negatif testler eklendi. Uygulama olay işleyicisi CALL önünde durulur; 21-byte işleyici örneği yürütme yetkisi değildir. Mevcut instance terminali ve C ABI 1/GNS/otorite korundu; C++ observer yeniden derlenir, kaldırılan özellik/migration yoktur. Mimari, durum, ADR-60, AC-90, roadmap ve build/CI eşlemeleri birlikte güncellendi. [Doğrulama](d1-event-dispatch.md) tamamlandı: x86 Debug/Release 29 native/79 managed/212 Python; x64 Debug/Release 13/79/154. Yeni 81 portable kontrol/11 senaryo/canary/12 warm, gerçek GTA 12/12 ve 34/34 matris, 31/31 child çıkışı ve 190/190 girdi korunumu geçti. Linux/hosted/N1 tekrar koşulmadı.
+
+## Kod 0.1.24 / mimari v0.31 — 13 Eylül 2026
+
+Named-event instance API/CLI, strict parent policy, tam helper/argüman/aktif sistem hedefi denetimi, event kimlik karşılaştırması ve doğal dönüş kesiti eklendi. NULL handle ve mevcut event fail-closed; pencere kolu DR3 ile korunur. Yeni devam modu eski suppression terminalini değiştirmez; gerçek API sonrası restore yapılmaz. Portable/fixture/policy/CLI negatif testleri build/CI akışına bağlandı; mimari sözleşme, ADR-59, AC-90 alt senaryo, durum ve roadmap birlikte güncellendi. Kaldırılan özellik/migration yok; C++ observer yeniden derlenir, C ABI 1/GNS/otorite aynı. [Kanıt ve ilk hata düzeltmeleri](d1-instance-startup.md). Dört Windows akışı geçti: x86 27/79/205, x64 12/79/149 native/managed/Python. 129 portable kontrol/15 senaryo/canary/12 warm, gerçek GTA 12/12 ve 33/33 matris, 30/30 child çıkışı ve 175/175 girdi korunumu doğrulandı. Linux/hosted/N1 tekrar çalıştırılmadı.
+
+## Kod 0.1.23 / mimari v0.30 — 13 Eylül 2026
+
+Ayrı platform-suppression API/CLI ve strict policy, context transaction/rollback, exact GetLastError export/FS okuması ve negatif testleri eklendi. EIP/ESP/EAX sentetik dönüşü yalnız doğrulanmış owned child CALL'unda açılır; kod/IAT/yığın belleği ve orijinal oyun dosyaları değişmez. Eski mod sınırları ve C ABI 1 korunur. [Kanıt ve sınır](d1-platform-suppression.md). Dört Windows akışı geçti (x86 25/79/196; x64 11/79/142); 44 portable kontrol/20 senaryo/canary/12 warm, gerçek GTA 12/12 ve 30/30 matris, 27/27 child çıkışı ve 160/160 girdi korunumu. İlk derleme/Debug stack/EFLAGS/DR6 hataları ve düzeltmeleri raporda korunur. Linux/hosted/N1 SDK tekrar koşulmadı. Kaldırılan özellik yok; observer yeniden derlenir.
+
+## Kod 0.1.22 / mimari v0.29 — 13 Eylül 2026
+
+İlk uygulama prologue'undan host sistem ayarı CALL önüne ayrı API/CLI, strict policy ve pinned user32 export reçetesi eklendi. Negatif yığın/register/argüman/IAT ve pozitif canary kontrolü, portable/policy/CLI testleri build akışına bağlandı. İlk çağrının sistem genelindeki foreground ayarını değiştirme isteği kaynak incelemesiyle belirlendi; çağrı çalıştırılmaz. C ABI/GNS/otorite ve eski duraklar korunur; kaldırılan özellik/kalıcı migration yok, C++ observer yeniden derlenir. [Sonuç ve sınır](d1-platform-startup.md). Dört Windows akışı geçti: x86 23/79/188, x64 10/79/136 native/managed/Python. 20 portable kontrol, 17 senaryo/canary/12 warm; gerçek GTA 12/12 ve 29/29 matris, 26/26 child çıkışı, 145/145 hash korunumu doğrulandı. Body yürütme sonucu yeni CLI'da false/true/null ile kanıt düzeyini ayırır; eski CLI boolean davranışı korunur. Linux/hosted/N1 SDK tekrar koşulmadı.
+
+## Kod 0.1.21 / mimari v0.28 — 13 Eylül 2026
+
+Doğal başlatıcı dönüşü, ikinci startup ABI ve uygulama giriş çerçevesi için ayrı API/CLI/reçete eklendi. Wrapper'ın tek tarama bayrağı, 101-byte dispatcher ve mevcut tablolar/adaylar her yeni durakta doğrulanır. Negatif fixture, portable/policy/CLI testleri ve build/CI eşlemesi birlikte güncellendi; [sonuç ve kalan sınır](d1-application-entry.md). Eski CLI durakları/C ABI 1/GNS/otorite değişmez; kaldırılan özellik veya kalıcı migration yok, C++ observer yeniden derlenir. Dört Windows akışı geçti: x86 Debug/Release 21 native/79 managed/179 Python; x64 Debug/Release 9/79/129. 24 portable kontrol, 23 x86 senaryo + 12 warm; gerçek GTA 12/12 giriş, 28/28 matris, 25/25 child çıkışı, 130/130 girdi korunumu. CLI dispatcher büyük sonuçlar için tek dönüş slotu kullanır; Debug yığın taşması giderildi. Linux/hosted/N1 SDK tekrar koşulmadı.
+
+## Kod 0.1.20 / mimari v0.27 — 13 Eylül 2026
+
+Ayrı CRT startup API/CLI, bounded initializer tablosu, rel32 ve enclosing stack denetimi eklendi. C++/Python corpus ve standart build girişleri, ADR-55 ve owner belgeleri birlikte güncellendi. C ABI/otorite/GNS değişmez; kaldırılan özellik veya kalıcı migration yok. [Uygulama ve kanıt](d1-crt-startup.md).
+
+Dört yerel Windows akışı geçti: x86 Debug/Release 19 native suite/79 managed/170 Python; x64 Debug/Release 8/79/122. 15 portable spec kontrolü, 16 x86 senaryo + 12 warm çevrim ve yedi yeni policy/iki CLI testi eklendi. Gerçek GTA 12/12 CRT sınırı, 27/27 beklenen matris sonucu, 24/24 child çıkışı ve 115/115 girdi korunumu; her koşuda 1676 slot üç kez karşılaştırıldı. İlk generator f-string syntax hatası ve eksik owner dokümanları build öncesi giderildi. İlk hatalar ve loglar raporda korunur; başlatıcı gövdeleri/uygulama girişi, Linux/hosted CI/N1 SDK bu kesitte çalıştırılmadı.
+
+## Kod 0.1.19 / mimari v0.26 — 13 Eylül 2026
+
+Bağımsız `image_protection_probe.py` ve 17 taşınabilir test eklendi. Çalıştırılmayan kendi fixture image'ında 0x40 isteği sonrası 0x80 ve tek özel kopya yazımında 0x40 geçişi ölçülür; bounded PE/region, girdi korunumu ve kapanış kontrolü vardır. Windows/Linux standart test girişleri ve belge eşlemesi güncellendi. C ABI/SDK/dependency/otorite değişmez; kaldırılan özellik/migration yok. X64 Debug standart build 7 native/79 managed/115 Python ve ayrı Debug/Release Windows eşleme ölçümleri geçti; bu görevde GTA veya hosted/Linux koşusu yapılmadı. [Kapsam ve doğrulama](d1-image-protection.md).
+
+Ayrı doğal startup-return API/CLI, exact Windows export önekleri, loader VirtualProtect argüman/dönüş/region ve doğal GetStartupInfoA stack/register denetimi eklendi. Bootstrap ABI değişmedi; bu mod export çağırmadan doğal yola ayrılır. Eski modlar aynı duraklarda kalır; C++ caller yeniden derlenir, kaldırılan özellik/kalıcı migration yok. ADR-54, corpus, build/CI ve owner belgeleri birlikte güncellendi. Gerçek GTA 12/12 doğal dönüş, 24/24 frame bayt örneği; 26/26 beklenen matris sonucu, 23/23 child çıkışı ve 100/100 girdi korunumu doğrulandı. [Test, ilk hatalar ve GTA kanıtı](d1-startup-return.md).
+
+Son dört Windows akışı geçti: x86 Debug/Release 17 native suite/79 managed/161 Python; x64 Debug/Release 7/79/115. Doğal startup corpus'u 18 senaryo + 12 tekrar, portable frame/startup sözleşmesi 33 kontrol içerir. İlk C++ tür çıkarımı ve parent seçim hataları düzeltildi. Başarılı VirtualProtect sonrası 0x80 image sonucu Microsoft sözleşmesi ve bağımsız Windows Debug/Release ölçümüyle incelendi; exact 0x40/0x80 kabulü ve negatifleri eklendi. Yeni tanı aracının eksik doküman eşlemesinde duran akışlar owner belgeleri güncellendikten sonra geçti. Başarısız ilk loglar korunur; Linux/hosted CI/N1 SDK yeniden çalıştırılmadı.
+
+## Kod 0.1.18 / mimari v0.25 — 13 Eylül 2026
+
+Read-only frame adayı reçetesi, portable rel32/range/match sözleşmesi, ayrı API/CLI ve üç duraklı observer örnekleri eklendi. SDK event ile CGame::Process ilişkisi belgelendi; initGameEvent/Initialise ayrımı düzeltildi. Negatif corpus, build/CI, ADR-53 ve owner eşlemesi aynı değişiklikte güncellendi. GNS, otorite ve bootstrap C ABI 1 değişmedi; C++ observer yeniden derlenir, kaldırılan özellik/kalıcı migration yok. Dört Windows akışı geçti: x86 Debug/Release 16 native/79 managed/135 Python, x64 Debug/Release 7/79/91. Gerçek GTA 12/12 koşuda 36/36 faz örneği; 25/25 regresyon matrisi, 22/22 child çıkışı, 84 girdi korunumu. Kısa bayt dizisine 32 baytlık hash formatter uygulanması ilk derlemede yakalanıp düzeltildi; üretilmiş reçete portable C++ testine alındı. [Kanıt ve sınırlar](d1-frame-target.md).
+
+## Kod 0.1.17 / mimari v0.24 — 13 Eylül 2026
+
+Ayrı bootstrap yaşam döngüsü izni, sekiz çağrı/status denetimi, executable export prefix audit ve crypto-provider pini eklendi. Own fake/gerçek DLL fixture ve negatif corpus, Windows/Linux policy kontrolleri ve ADR-52/owner belgeleri birlikte güncellendi. C ABI 1 değişmedi; C++ caller yeniden derlenir, kaldırılan özellik/kalıcı migration yoktur. Dört Windows akışı geçti: x86 Debug/Release 15 native/79 managed/126 Python; x64 Debug/Release 6/79/84. Gerçek GTA 12/12, 96/96 C ABI dönüşü; 24/24 matris, 21/21 child exit ve 59 input hash korunumu. İki fixture hatası ve Release prologue relocation uyumsuzluğu giderilip kayıtları korundu. Ayrıntılar [raporda](d1-bootstrap-lifecycle.md).
+
+## Kod 0.1.16 / mimari v0.23 — 13 Eylül 2026
+
+Ayrı ASI call/return gözlemi, DR2 boş tarama koruması, exact full-path ve fresh module/EAX/stack denetimi eklendi. CMake denetlenmiş bootstrap DLL/map çıktısını configuration'a özel observer pinine bağlar; yeni mod Release 28/Debug 31 pin ister. Own ASI corpus, strict policy ve artifact-binding testleri eklendi. Bootstrap export/C ABI, GNS/otorite ve engine profili değişmedi; kaldırılan özellik yoktur. C++ observer yeniden derlenir; eski özel ASI kopyası yeni artifact ile eşleşmiyorsa tekrar hazırlanır. ADR-51 ve owner belgeleri aynı değişiklikte güncellendi. İlk policy kontrolü elle yazılmış return örneğinin 16 yerine 17 byte olduğunu yakaladı; exact pinned PE'den 16 byte alınarak düzeltildi. [Doğrulama kaydı](d1-asi-bootstrap-load.md). İlk derleme/fixture-path/preflight sorunları ve map newline hash düzeltmesi raporda saklandı. Son dört Windows akışı: x86 Debug/Release 14 native/79 managed/112 Python; x64 Debug/Release 6/79/78 geçti. Gerçek GTA 12/12 SAEX DLL load dönüşü, 11 regresyonla 23/23 beklenen sonuç; 20/20 created child çıkışı ve 44 input hash korunumu. ASI isim izni default kapalı, yalnız game-root exact ad için açık. C ABI çağrısı henüz yok; Linux/hosted/N1 yeniden koşulmadı.
+
+
+## Kod 0.1.15 / mimari v0.22 — 13 Eylül 2026
+
+Ayrı codec-bindings API/CLI ve codec parent digest'ine bağlı sekiz isim/slot/target recipe eklendi. Beşinci durakta boş tablonun exact root+RVA adresleriyle dolması, ilk 16 target byte kararlılığı ve retained mapping sürekliliği denetlenir. Null/yanlış bağ, retired mapping, yeni DLL, stop/target drift ve eski durak regresyonları için own fixture/corpus eklendi. Yeni modül pini, bootstrap C ABI/engine profile/SDK/otorite/GNS değişikliği yoktur. C++ observer çağıranları yeniden derlenir; kaldırılan özellik veya kalıcı migration yoktur. ADR-50, owner sözleşmeleri, status/roadmap/component-map ve Windows/Linux generator/test akışı birlikte güncellendi. [Doğrulama kaydı](d1-codec-bindings.md); ilk Debug native 24 senaryo/control/12 warm, altı policy ve ilk özel GTA sekiz bağ kontrolü geçti. İlk eksik execution-contracts eşlemesi tamamlandı; son matris: x86 Debug/Release 13 native/79 managed/101 Python; x64 Debug/Release 6/79/72 geçti. Özel GTA 12/12 koşuda 96/96 pointer bağı, sekiz regresyonla 20/20 beklenen sonuç; 18/18 created child çıkışı ve 22 input hash korunumu. Linux/hosted/N1 SDK bu sürüm için yeniden koşulmadı.
+
+
+## Kod 0.1.14 / mimari v0.21 — 13 Eylül 2026
+
+Ayrı codec-return API/CLI ve startup digest'ine bağlı üç exact codec pini eklendi. Dördüncü DR0 hit ilk LoadLibraryA dönüşünde EAX/root ve yeni dependency mapping'lerini denetler; DR1 IAT watch, eski modların durakları/pinleri ve owned cleanup korunur. Yedi own EXE, root/leaf DLL zinciri, pozitif canary, negatif corpus, warm çevrim ve strict policy/CLI ret testleri eklendi. C++ observer kullanıcıları yeniden derlenir; bootstrap C ABI 1, SDK lock, profile/anchor, GNS/HTTPS ve otorite aynı. Kaldırılan özellik/kalıcı migration yoktur. Owner sözleşmeleri, component-map, Windows/Linux akışı ve ADR-49 birlikte güncellendi. [Doğrulama kaydı](d1-codec-return.md); ilk Debug native corpus 24 senaryo + control + 12 warm ve ilk özel GTA codec dönüşü geçti. İlk testin preloaded sistem DLL varsayımı kernel32 seçimiyle düzeltildi; başarısız kayıt saklandı. Son standart sonuç: x86 Debug/Release 12 native/79 managed/93 Python, x64 Debug/Release 6/79/66 geçti. Gerçek özel GTA 12/12 codec dönüşü; yedi ek regresyonla 19/19 beklenen sonuç, 17/17 created child exit ve 22 input hash korunumu. Eksik/değişmiş codec child öncesi reddedildi. Linux/hosted/N1 bu sürüm için koşulmadı.
+
+
 ## 2026-09-13 — 0.1.13 hosted yayın kanıtı
 
 `bd98c4a` kaynakları için PR #9’daki beş Windows/Linux build, doküman ve sır taramasının tamamı geçti. Windows x64 6 native/79 managed/60 Python, x86 11 native/79 managed/85 Python; Linux 4 native/79 managed/51 Python. Yerel x86 Debug birleştirme koşusu ve altı commit’li geçmişin Gitleaks taraması da geçti. Status ve yayın raporu güncellendi; bu sonuç kaydı yalnız belgedir. Kaynak/ABI/otorite, raw hash girdileri ve önceki gerçek GTA kanıtının sınırı değişmedi; N1 hosted ve GTA yeniden çalıştırılmadı.
@@ -167,3 +252,9 @@ Kaldırılan ürün özelliği yoktur. “Yalnız Markdown çalışma dizini” 
 ### Hosted corpus tamamlaması
 
 İkinci hosted tur Linux ve Windows x64'te geçti; x86 native 9/9 sonrasında Python cwd karşılaştırması runneradmin/RUNNER~1 yazım farkını reddetti. CLI testi artık pathlib.samefile ile dizin kimliğini sınar; bilinmeyen engine/child öncesi ret ve ortam redaction korunur. Bootstrap corpus da geçersiz reason için exact INTERNAL_ERROR ve bilinen ret değerlerini açık doğrular. Production API, profile/recipe ve oyun davranışı değişmez.
+
+## Kod 0.1.17 — Kontrollü bootstrap yaşam döngüsü
+
+[Ayrı yaşam döngüsü sözleşmesi ve kanıtı](d1-bootstrap-lifecycle.md): aynı build'in üç denetlenmiş export'u sekiz sabit çağrıyla, ASI dönüşünden sonra çalıştırılır. Yığın veri yazımı ve EIP/ESP yönlendirmesi ayrı izindir; eski komutların durakları korunur. C ABI 1, engine profili, GNS/HTTPS ve otorite değişmedi. Dört yerel Windows akışı, 24 test senaryosu + 12 tekrar ve gerçek GTA 12/12 koşuda 96/96 dönüş geçti. N2/N3 ve oynanabilir D2 açık; geçmiş sürüm başlıkları o kesitin kanıtını anlatır.
+
+Export girişleri 20 byte'tır; PE32 HIGHLOW alanları metadata'dan tam dört byte olarak normalize edilir. Kısmi/çakışan fixup ve bilinmeyen tip reddedilir. Hiçbir prefix byte'ı karşılaştırmadan çıkarılmaz; C ABI 1 aynı kalır.

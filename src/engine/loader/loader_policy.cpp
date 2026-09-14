@@ -11,7 +11,7 @@ bool valid_name(std::string_view name) noexcept {
 }
 }
 PreparedLoaderPolicy::PreparedLoaderPolicy(std::span<const LoaderPinSpec> specs, const Sha256& expected_engine,
-    const Sha256& actual_engine, std::wstring_view game_directory, std::wstring_view system_directory) {
+    const Sha256& actual_engine, std::wstring_view game_directory, std::wstring_view system_directory, bool allow_bootstrap_asi) {
     if (expected_engine != actual_engine || std::all_of(expected_engine.begin(), expected_engine.end(), [](std::byte b) { return b == std::byte{}; })) {
         error_ = "loader_policy_engine_mismatch"; return;
     }
@@ -22,7 +22,8 @@ PreparedLoaderPolicy::PreparedLoaderPolicy(std::span<const LoaderPinSpec> specs,
     // Validate the ENTIRE recipe before file IO; basename uniqueness includes both origins.
     for (std::size_t i = 0; i < specs.size(); ++i) {
         const auto& spec = specs[i];
-        if (!valid_name(spec.name) || (spec.origin != LoaderOrigin::system_x86 && spec.origin != LoaderOrigin::game_root) ||
+        const bool bootstrap_name = allow_bootstrap_asi && spec.origin == LoaderOrigin::game_root && spec.name == "saex_bootstrap.asi";
+        if ((!valid_name(spec.name) && !bootstrap_name) || (spec.origin != LoaderOrigin::system_x86 && spec.origin != LoaderOrigin::game_root) ||
             !spec.bytes || spec.bytes > max_loader_file_bytes ||
             std::all_of(spec.sha256.begin(), spec.sha256.end(), [](std::byte b) { return b == std::byte{}; })) {
             error_ = "loader_policy_spec"; return;

@@ -4,10 +4,14 @@
 extern "C" {
 __declspec(dllexport) unsigned char* proxy_original_entry{};
 __declspec(dllexport) void __cdecl proxy_restore();
+#if defined(SAEX_PROXY_codec)
+__declspec(dllexport) void __cdecl proxy_iat_target();
+#else
 __declspec(dllexport) void __cdecl proxy_iat_target() {
     mark_loader_phase(L".startup-entered");
     ExitProcess(90); // Test escape canary; never masquerades as GetStartupInfoA.
 }
+#endif
 __declspec(dllexport, naked) void proxy_thunk() {
     __asm {
         call proxy_restore

@@ -19,7 +19,11 @@ namespace {
 void require(bool value, const char* why) { if (!value) throw std::runtime_error(why); }
 struct Markers {
     std::wstring path;
-    static constexpr const wchar_t* suffixes[]{L".dll-entered", L".proxy-entered", L".main-entered", L".startup-entered"};
+    static constexpr const wchar_t* suffixes[]{L".dll-entered", L".proxy-entered", L".main-entered", L".startup-entered",
+        L".codec-leaf-entered", L".codec-dll-entered", L".codec-after-return", L".binding-after-stop", L".binding-function-called",
+        L".asi-entered", L".asi-after-return", L".asi-end-escaped", L".asi-export-called",
+        L".startup-after-call", L".tail-after-asi", L".tail-after-protect",
+        L".crt-after-startup", L".crt-io-returned", L".crt-initializer-entered", L".application-initializer-entered", L".application-body-entered", L".platform-api-called", L".instance-window-called", L".event-app-called"};
     explicit Markers(const wchar_t* source) : path(source) {
         for (auto suffix : suffixes) require(!exists(suffix), "preexisting marker");
     }

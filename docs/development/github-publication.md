@@ -112,3 +112,59 @@ Organizasyon profilindeki banner ve belge bağlantıları görünür, `saex` ana
 Ayrı Documentation kontrolü gerçek `a0562ef` PR tabanına göre 46 değişmiş yol, 91 Markdown, 1254 yerel bağlantı, 6 JSON örneği ve 13 tooling testinde geçti; Secret scan başarılıdır. Ana çalışma klasöründeki x86 Debug birleştirme doğrulaması da 11 native suite/79 managed/85 Python ve aynı belge kapısıyla geçti. Altı commit’li yerel Git geçmişinde Gitleaks sıfır bulgu verdi. 229 tracked dosyada oyun/build binary’si ve çözümlenmemiş çakışma işareti bulunmadı; kaynak dosyaları `aede99f` ile aynıdır. Bu kanıtlar adı geçen kaynak commit’ine aittir; sonraki sonuç kaydı yalnız belgedir ve PR’ın güncel başı yine zorunlu kontrollerden geçer.
 
 N1 SDK hosted işi ve gerçek GTA bu aktarımda çalıştırılmadı. Önceki gerçek GTA raporları kendi artifact kimlikleriyle korunur; proxy/startup wrapper gövdesi, dinamik SAEX DLL yüklemesi ve D1/D2 ürün kapıları bu CI sonucuyla kapanmaz.
+
+## Kod 0.1.14 — Codec dönüş kesiti
+
+0.1.14 codec kaynak/test/generator ekleri yerel geliştirmedir. tools/ci.py portable akışı yeni recipe üretim/ret testlerini içerir; önceki 0.1.13 hosted commit sonucu bu yeni değişikliğin GitHub doğrulaması sayılmaz. Remote/push/release işlemi bu kesitte yapılmaz. [Sözleşme ve doğrulama](d1-codec-return.md).
+
+## Kod 0.1.15 — Codec fonksiyon bağları
+
+tools/ci.py portable generator/ret corpusuna binding policy eklendi. 0.1.15 yerel kaynak/test değişikliğidir; önceki hosted commit kanıtı bu sürümü kapsamaz. Bu geliştirme adımında remote/push/release işlemi yürütülmedi. [Sözleşme ve kanıt](d1-codec-bindings.md).
+
+## Kod 0.1.16 — ASI bootstrap yükleme
+
+[ASI yükleme sözleşmesi](d1-asi-bootstrap-load.md), iki ek call/return durağı ve boş tarama korumasını tanımlar. Yeni mod, build auditinden geçen aynı SAEX DLL bitlerini özel klasörde `.asi` adıyla yüklemeyi denetler; Release 28/Debug 31 exact pin, tam yol kontrolü ve owned child cleanup uygulanır. Önceki CLI durakları ve C ABI 1 korunur; `asiObservation` eski modlarda null olur. Initialize/Query/Stop çağrıları bu kesitte çalışmaz; N2/D1/D2 açık kalır. Test ve gerçek GTA kanıtı ilgili raporda ayrı izlenir.
+
+## Kod 0.1.17 — Kontrollü bootstrap yaşam döngüsü
+
+[Ayrı yaşam döngüsü sözleşmesi ve kanıtı](d1-bootstrap-lifecycle.md): aynı build'in üç denetlenmiş export'u sekiz sabit çağrıyla, ASI dönüşünden sonra çalıştırılır. Yığın veri yazımı ve EIP/ESP yönlendirmesi ayrı izindir; eski komutların durakları korunur. C ABI 1, engine profili, GNS/HTTPS ve otorite değişmedi. Dört yerel Windows akışı, 24 test senaryosu + 12 tekrar ve gerçek GTA 12/12 koşuda 96/96 dönüş geçti. N2/N3 ve oynanabilir D2 açık; geçmiş sürüm başlıkları o kesitin kanıtını anlatır.
+
+Export girişleri 20 byte'tır; PE32 HIGHLOW alanları metadata'dan tam dört byte olarak normalize edilir. Kısmi/çakışan fixup ve bilinmeyen tip reddedilir. Hiçbir prefix byte'ı karşılaştırmadan çıkarılmaz; C ABI 1 aynı kalır.
+
+0.1.17 sonuçları yereldir; bu görevde push, PR, deployment veya hosted CI çalıştırılmadı. Önceki yayın kayıtlarının kapsamı genişletilmez.
+
+## Kod 0.1.18 bağlantısı
+
+0.1.18 frame-target kodu ve CI tanımı yerel geliştirme kapsamındadır. Bu değişiklik için remote/push, hosted CI veya binary yayın işlemi yapılmadı; önceki hosted sonuçlar yeni kaynak kanıtı olarak kullanılmaz. [Aday ve doğrulama raporu](d1-frame-target.md).
+
+## Kod 0.1.19 bağlantısı
+
+0.1.19 yerel geliştirmedir; CI tanımına yeni policy/test eklendi. Bu çalışma remote/push/hosted CI veya binary yayını yapmaz; geçmiş hosted sonuçlar yeni kaynak doğrulaması değildir. [Sözleşme ve kanıt](d1-startup-return.md).
+
+## Kod 0.1.19 — Bağımsız image koruma deneyi
+
+Image-protection aracının 17 taşınabilir testi tools/build.ps1 ve tools/ci.py Linux akışına bağlandı. Bu değişiklik için hosted workflow çalıştırılmadı veya kaynak yayımlanmadı; yerel ölçüm hosted kanıt sayılmaz. [Sözleşme ve kanıt](d1-image-protection.md).
+
+## Kod 0.1.20 bağlantısı
+
+Yerel 0.1.20 CRT startup kaynak/test girişleri eklendi. Bu geliştirmede GitHub yayını veya hosted CI çalıştırılmadı; geçmiş yayın kanıtı yeni Windows/GTA kesitine aktarılmaz. [Sözleşme ve kanıt](d1-crt-startup.md).
+
+## Kod 0.1.21 bağlantısı
+
+Ayrı `--observe-application-entry` modu başlatıcıların doğal dönüşünü, ikinci startup çağrısını ve uygulamanın ilk komutundan önce giriş yığınını denetler. Önceki CRT komutu başlatıcı CALL önünde durur; eski kanıtlar kendi artifact kapsamındadır. Yeni izin ve güncel doğrulama [uygulama giriş sözleşmesinde](d1-application-entry.md) izlenir. C ABI 1 korunur; initialized dünya, doğal frame/N3 ve D1/D2 kapıları açık kalır.
+
+## Kod 0.1.22 bağlantısı
+
+Ayrı platform-startup modu uygulama prologue'unu ilerletir ve sistem ayarı çağrısından önce durur. Dört argüman, yığın/register ve pinned API hedefi doğrulanır; host ayarı değişmez, eski CLI sınırları korunur. [Sözleşme ve sonuç](d1-platform-startup.md). C ABI 1/GNS/otorite aynı; sistem ayarı uyarlaması, pencere/renderer, doğal frame ve N2/N3/D1/D2 kapıları açık kalır.
+
+## Kod 0.1.23 bağlantısı
+
+Tek exact platform çağrısı için ayrı süreç içi bağlam uyarlaması eklendi: sentetik FALSE, last-error/yığın/register koruma ve bağlam geri alma; API çalıştırılmaz. Önceki doğal sınır komutları korunur. [Sözleşme ve sonuç](d1-platform-suppression.md). C ABI 1/GNS/otorite aynı; instance/pencere/renderer ve N2/N3/D1/D2 kapıları açık.
+
+## Kod 0.1.31 kaynak eşitlemesi — 14 Eylül 2026
+
+GitHub `main` tabanı `81ffade` (kod 0.1.13), yerel kaynak sürümü kod 0.1.31 / mimari v0.38'dir. Kullanıcı biriken bütün kaynakların GitHub'a aktarılmasını istedi. 0.1.14–0.1.31 arasındaki codec/ASI yükleme, C ABI yaşam döngüsü, startup/uygulama başlangıcı ve CRT cwd/SEH/kilit gözlemleri; fixture, strict policy/generator, negatif test, mimari/ADR ve kanıt belgeleri birlikte yayın kapsamındadır. Güncel banner ve README de aynı kaynak anlık görüntüsüne dahildir.
+
+İlk envanter 394 dosya / 2.944.954 byte'tır. Değişiklikten önce bütün kaynak byte'ları ZIP ve SHA-256 manifest'iyle, mevcut Git geçmişi tam bundle ile korundu. Oyun/build binary'si, özel laboratuvar kopyası ve yerel çıktı aktarılmaz. Engine policy JSON'larının exact byte/hash sözleşmesi korunur. Bu yayın ek ürün davranışı veya yeni native izin tanımlamaz; geçmiş gerçek GTA kanıtları kendi rapor ve artifact kimlikleriyle sınırlıdır.
+
+Yayın kısa ömürlü dal → PR → yedi zorunlu kontrol → squash merge akışını izler. Kaynaklar temiz checkout'ta yeniden derlenir; yerel ve hosted sonuçlar ayrı kaydedilir. Önceki 0.1.13 CI başarısı yeni 0.1.31 kaynağının başarı kanıtı sayılmaz. N1 SDK, gerçek GTA ve oynanabilir binary release bu kaynak aktarımının test/dağıtım adımı değildir.

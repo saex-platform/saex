@@ -73,3 +73,7 @@ N1 testi SDK'nin gerçek `.lib` içindeki `plugin::Core::GetVersion()` fonksiyon
 17 bağımlılık testi; bozuk/eksik/ek kaynak, mevcut cache'i koruma, Windows tehlikeli yolları, case/JSON çakışması, patch ön/son koşulu, tekrarlı patch context, değişmiş recipe, seçili archive extraction, bozuk/yanlış içerikli archive, archive symlink, source lock sapması ve gerçek cache doğrulamasını kapsar. İki ayrı **gerçek CMake** testi x64 hedefini ve izole kopyada eksik kaynakları reddeder. Bir SDK compile/link testiyle **20 yeni test tanımı** vardır; Debug/Release tekrarları yeni test sayısı değildir.
 
 Bu alt sonuç D1-N1 / R-02a'nın seçilmiş build kapsamını ve AC-89'un buna ait bölümünü destekler. **D1-N2–N7 ve AC-90–96 çalıştırılmadı.** EngineInspector hâlâ `canAttach=false`; GTA dosyası değiştirilmedi/başlatılmadı. Gerçek profile, bootstrap, hook drain, IPC, entity/asset ve OS/GNS kapıları açık kalır.
+
+## Kod 0.1.19 — Bağımsız image koruma deneyi
+
+Bağımsız Windows koruma deneyi tools/native altında eklendi; Plugin-SDK dependency/23 dosyalı kaynak lock'u ve opt-in SDK build değişmedi. Araç mevcut SAEX x86 fixture çıktısını çalıştırmadan eşler, vendor kodu çağırmaz. [Sözleşme ve kanıt](d1-image-protection.md).

@@ -1,5 +1,7 @@
 # SAEX — San Andreas Extended
 
+Kod 0.1.31 / mimari v0.38: [CRT mevcut kilidi alma ve dönüş](docs/development/d1-cwd-acquire.md) özel GTA kopyasında 12/12 koşuda doğrulandı. Pencere/renderer ve multiplayer henüz hazır değil.
+
 ![SAEX — San Andreas Extended](docs/branding/saex-banner.svg)
 
 [![Build](https://github.com/saex-platform/saex/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/saex-platform/saex/actions/workflows/ci.yml)
@@ -9,7 +11,7 @@
 
 SAEX; dünya, oyun kuralları, içerik ve arayüzlerini tanımlayabilmek için geliştirilen modüler bir platformdur. C++20 çekirdek ve C#/.NET 10 araçları üzerine kuruludur.
 
-**D1 geliştirme aşamasında · Kod 0.1.13 · Mimari v0.20**
+**D1 geliştirme aşamasında · Kod 0.1.31 · Mimari v0.38**
 
 Çekirdek temeli ve doğrulama araçları mevcuttur. Oynanabilir multiplayer istemcisi/sunucusu, production SDK ve launcher henüz yayımlanmadı. [Uygulama durumu](docs/development/status.md), kodlanmış ve doğrulanmış kapsamı ayrı gösterir.
 
@@ -72,3 +74,11 @@ SAEX'e ait kaynaklar **[MIT](LICENSE)** lisanslıdır. [Üçüncü taraf bildiri
 [Proxy dönüş sınırı](docs/development/d1-proxy-return.md) uygulanmıştır; test ve gerçek GTA kanıtı ilgili raporda ayrı tutulur. N2/D1 ve oynanabilir multiplayer kapsamı açık kalır.
 
 [0.1.13 startup çağrı sınırı](docs/development/d1-startup-call.md), entry sonrası çağrı zamanını ve sınırlı image örneklerini doğrular; dinamik yükleme/gerçek SAEX bootstrap ve N2/D1 açık kalır.
+
+[0.1.14 dinamik codec dönüşü](docs/development/d1-codec-return.md): ayrı izinle ilk LoadLibrary dönüşü ve retained modül kimlikleri. Gerçek SAEX bootstrap ve D1/D2 hâlâ açık.
+
+[0.1.15 codec fonksiyon bağları](docs/development/d1-codec-bindings.md): beşinci durakta sekiz pointer ve target kararlılığı. O kesitin ASI yükleme devamı aşağıda ayrı izlenir.
+
+[0.1.16 ASI yükleme kesiti](docs/development/d1-asi-bootstrap-load.md): SAEX DLL’si gerçek GTA sürecine 12/12 denemede yüklenip döndü; dört Windows build akışı geçti. Bu 0.1.16 modu export çağırmaz; yeni 0.1.17 C ABI kanıtı aşağıdadır. N2/D1/D2 açık kalır.
+
+Yeni [bootstrap yaşam döngüsü](docs/development/d1-bootstrap-lifecycle.md): gerçek GTA içinde 12/12 denemede 96/96 C ABI dönüşü ve terminal Stop doğrulandı. Dört Windows build akışı geçti. Engine fazı/native symbol ABI ve N3 frame entegrasyonu henüz açık; oynanabilir multiplayer değildir.

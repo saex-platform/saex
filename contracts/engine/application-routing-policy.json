@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.application-routing-v1",
+  "stage": "before-game-initializer-call",
+  "dispatchPolicySha256": "6265420804ada87df4beae0fc034fcb0478ad408dd05d04e9173d6d02f681058",
+  "reviewDocument": "docs/development/d1-application-routing.md",
+  "initializer": {
+    "callRva": 1305643,
+    "targetRva": 1293136,
+    "callHex": "e820cfffff",
+    "targetPrefixHex": "e85b381f00e826160300e891cbffff6a"
+  },
+  "detourRva": 6350,
+  "indexRva": 1305864,
+  "tableRva": 1305820,
+  "indicesHex": "000a0a0a010a0a0a0a020a0a0a0a0a0a0a0a0a0a0a03040a050607080a0a0a0a0a0a0a0a0a0a09",
+  "targetRvas": [
+    1305660,
+    1305773,
+    1305761,
+    1305711,
+    1305731,
+    1305643,
+    1305750,
+    1305784,
+    1305803,
+    1305705,
+    1305814
+  ],
+  "detourHex": "0fb68008ed5300e94ad31300",
+  "indirectHex": "ff2485dcec5300"
+}

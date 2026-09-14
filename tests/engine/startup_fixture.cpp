@@ -2,10 +2,28 @@
 #include <cstring>
 extern "C" __declspec(dllimport) void __cdecl proxy_iat_target();
 extern "C" __declspec(dllexport, align(4096)) unsigned char startup_sample[4096]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+#if defined(SAEX_FRAME_FIXTURE)
+extern "C" __declspec(dllexport, naked) void frame_target() {
+    __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop
+    __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop
+    __asm ret
+}
+extern "C" __declspec(dllexport, naked) void frame_caller() { __asm call frame_target __asm ret }
+#endif
 
 int main() {
     mark_loader_phase(L".main-entered");
     STARTUPINFOA info{};
+#if defined(SAEX_FRAME_ASI_DRIFT)
+    DWORD old{};
+    auto target = reinterpret_cast<unsigned char*>(&frame_target);
+    if (!VirtualProtect(target,16,PAGE_EXECUTE_READWRITE,&old)) ExitProcess(98);
+    target[15] ^= 1;
+    FlushInstructionCache(GetCurrentProcess(),target,16);
+#endif
+#if defined(SAEX_STARTUP_preload)
+    if (!LoadLibraryA("saex_codec")) ExitProcess(97);
+#endif
 #if defined(SAEX_STARTUP_fault)
     DebugBreak();
 #elif defined(SAEX_STARTUP_stall)
@@ -50,6 +68,7 @@ int main() {
 #else
     GetStartupInfoA(&info);
 #endif
+    mark_loader_phase(L".startup-after-call");
     proxy_iat_target(); // Keep the fixture DLL statically imported; must never reach here.
     return 95;
 }

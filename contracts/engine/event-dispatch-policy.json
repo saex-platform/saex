@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.event-dispatch-v1",
+  "stage": "before-application-event-call",
+  "instancePolicySha256": "26c06199eaa5d4e14c1e693ac60bd6df5c69cb3557e80b1baad320d7fc46f7e9",
+  "reviewDocument": "docs/development/d1-event-dispatch.md",
+  "dispatcher": {
+    "callRva": 3442489,
+    "targetRva": 2202464,
+    "callHex": "e82214edff",
+    "targetPrefixHex": "568b74240c578b7c240c5657e89f50f2"
+  },
+  "application": {
+    "callRva": 2202476,
+    "targetRva": 1305616,
+    "callHex": "e89f50f2ff",
+    "targetPrefixHex": "8b44240483f8260f87b90000009090e9"
+  },
+  "applicationPrefixHex": "8b44240483f8260f87b90000009090e9aa2cecffff",
+  "branchHex": "85c0750f536a18"
+}

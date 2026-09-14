@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.windows-26200.codec-bindings-v1",
+  "stage": "codec-bindings-boundary",
+  "codecPolicySha256": "425272040c068e1e73b0cc1a9c43f9328b4dd13a2a00441efdbebe0a2372348d",
+  "stopRva": 5446,
+  "procSlotRva": 16420,
+  "stopHex": "c78554fdffff00000000c78558fdffff",
+  "reviewDocument": "docs/development/d1-codec-bindings.md",
+  "bindings": [
+    {"name": "ov_open_callbacks", "slotRva": 25608, "targetRva": 4352},
+    {"name": "ov_clear", "slotRva": 25640, "targetRva": 4096},
+    {"name": "ov_time_total", "slotRva": 25620, "targetRva": 8640},
+    {"name": "ov_time_tell", "slotRva": 25604, "targetRva": 13296},
+    {"name": "ov_read", "slotRva": 25644, "targetRva": 13664},
+    {"name": "ov_info", "slotRva": 25628, "targetRva": 13536},
+    {"name": "ov_time_seek", "slotRva": 25600, "targetRva": 12720},
+    {"name": "ov_time_seek_page", "slotRva": 25636, "targetRva": 12976}
+  ]
+}

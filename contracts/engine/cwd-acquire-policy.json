@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.cwd-acquire-v1",
+  "stage": "after-enter-and-selector-return",
+  "lockPolicySha256": "098567bb8f34f0619e5a31f3c0f760e89d32af659ec4b9fec633245215ac6327",
+  "reviewDocument": "docs/development/d1-cwd-acquire.md",
+  "iatRva": 4554988,
+  "bodyHex": "ff36ff15ec8085005e5dc3",
+  "returnPrefixHex": "598365fc00ff750cff75086a00e8edfe",
+  "function": {
+    "rva": 344784,
+    "prefixHex": "8bff558bec51568b750833d257648b3d18000000",
+    "preferredBase": 1260912640,
+    "highlowOffsets": []
+  },
+  "systemModule": {
+    "name": "ntdll.dll",
+    "bytes": 1821376,
+    "sha256": "665df97f10439d9333e1390f5a9873b6af24d396e6bef6b0316ff1ed0f2418de"
+  }
+}

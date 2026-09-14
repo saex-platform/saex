@@ -1,6 +1,6 @@
 # Native SDK entegrasyonu ve doğrulama sözleşmesi
 
-Durum: **mimari v0.18, ADR-35–46; D1-N1 build, N2 gözlem araçları ve ayrı kontrollü entry sınırı uygulandı; initialized GTA/gerçek SAEX bootstrap entegrasyonu bekliyor**. Kod 0.1.11; [N1 kanıtı](../development/d1-native-dependency.md) bu sözleşmenin SDK build sınırını gösterir. [Motor adapter](engine-adapter.md) · [Kaynak kanıtı](../references/plugin-sdk-sa.md) · [Uygulama sırası](../development/d1-engine-integration.md) · [Durum](../development/status.md)
+Durum: **mimari v0.30 / kod 0.1.23; N1 build ve N2 sınırlı loader/ASI/bootstrap/frame adayı, doğal startup dönüşü, CRT sınırı, doğal uygulama girişi ve host-setting CALL öncesi platform başlangıcı ve ayrı sentetik dönüş/restore alt kanıtları mevcut. Initialized GTA, doğal frame ve N3 bekliyor.** [Motor adapter](engine-adapter.md) · [Uygulama sırası](../development/d1-engine-integration.md) · [Güncel durum](../development/status.md)
 
 ### Kod 0.1.4 süreç gözlemi sözleşmesi
 
@@ -143,3 +143,79 @@ Bootstrap uint32_t fallback dönüşümü ve Windows own fixture dizin kimliği 
 ## Kod 0.1.13 — Startup çağrı sınırı
 
 [StartupStopSpec](../development/d1-startup-call.md) yalnız güvenilir local C++ çağıranın tuttuğu 1–4 ImageAnchor span’ıdır. Üçüncü hedefte DR0 execution, main-thread IAT slotunda DR1 dört byte write watch kurulur; EIP/stack/EFlags veya code/IAT observer tarafından yazılmaz. Watchpoint yazımdan sonra tuzak verir; cross-thread güvenlik sınırı değildir. Bootstrap C ABI 1 ve N1 SDK bağı/standardı değişmez.
+
+## Kod 0.1.14 — Codec dönüş kesiti
+
+N2 için ayrı run_to_codec_return izni, startup parent digest ve üç exact game-root codec pini eklendi. LoadLibraryA dönüşündeki EAX aktif root mapping ile eşleşmeli; codec export/ASI/gerçek SAEX C ABI çağrısı henüz kapsamda değildir. N1 SDK lock ve bootstrap ABI 1 aynı kalır. [Sözleşme ve doğrulama](../development/d1-codec-return.md).
+
+## Kod 0.1.15 — Codec fonksiyon bağları
+
+Ayrı run_to_codec_bindings izni aynı 26 pin ve codec source digest bağıyla sekiz direkt export pointer bağını gözler. Null veya yanlış root+RVA hedefi, byte drift, retired codec mapping ve yeni DLL ret verir. Bootstrap C ABI 1/SDK lock aynı kalır. [Sözleşme ve kanıt](../development/d1-codec-bindings.md).
+
+## Kod 0.1.16 — ASI bootstrap yükleme
+
+[ASI yükleme sözleşmesi](../development/d1-asi-bootstrap-load.md), iki ek call/return durağı ve boş tarama korumasını tanımlar. Yeni mod, build auditinden geçen aynı SAEX DLL bitlerini özel klasörde `.asi` adıyla yüklemeyi denetler; Release 28/Debug 31 exact pin, tam yol kontrolü ve owned child cleanup uygulanır. Önceki CLI durakları ve C ABI 1 korunur; `asiObservation` eski modlarda null olur. Initialize/Query/Stop çağrıları bu kesitte çalışmaz; N2/D1/D2 açık kalır. Test ve gerçek GTA kanıtı ilgili raporda ayrı izlenir.
+
+0.1.16 runtime sınırı güncellendi: SDK bağımsız SAEX DLL’si gerçek GTA’ya yüklendi, LoadLibrary döndü. Plugin-SDK-SA library/probe kaynak kilidi ve bootstrap C ABI değişmedi. GTA içindeki açık bootstrap çağrıları ve N3 frame/hook capability ayrı kanıt bekler; bu yükleme SDK binding/hook aktivasyonu değildir.
+
+## Kod 0.1.17 — Kontrollü bootstrap yaşam döngüsü
+
+[Ayrı yaşam döngüsü sözleşmesi ve kanıtı](../development/d1-bootstrap-lifecycle.md): aynı build'in üç denetlenmiş export'u sekiz sabit çağrıyla, ASI dönüşünden sonra çalıştırılır. Yığın veri yazımı ve EIP/ESP yönlendirmesi ayrı izindir; eski komutların durakları korunur. C ABI 1, engine profili, GNS/HTTPS ve otorite değişmedi. Dört yerel Windows akışı, 24 test senaryosu + 12 tekrar ve gerçek GTA 12/12 koşuda 96/96 dönüş geçti. N2/N3 ve oynanabilir D2 açık; geçmiş sürüm başlıkları o kesitin kanıtını anlatır.
+
+Export girişleri 20 byte'tır; PE32 HIGHLOW alanları metadata'dan tam dört byte olarak normalize edilir. Kısmi/çakışan fixup ve bilinmeyen tip reddedilir. Hiçbir prefix byte'ı karşılaştırmadan çıkarılmaz; C ABI 1 aynı kalır.
+
+## Kod 0.1.18 bağlantısı
+
+Pinned SDK gameProcessEvent CALL 0x53E981, CGame::Process 0x53BEE0 ile disk üzerinde örtüşür. PRIORITY_AFTER/void() kaynak bilgisi runtime ABI kabulü değildir. initGameEvent hedefi 0x53E580, CGame::Initialise 0x53BC80 ile aynı değildir. N1 kaynak/link kapsamı değişmedi; N2 ve N3 açık. [Aday ve doğrulama raporu](../development/d1-frame-target.md).
+
+## Kod 0.1.19 bağlantısı
+
+Doğal startup dönüşü, N2 içinde ayrı capability deneyidir: Windows export/IAT/önek, koruma argümanları/sonucu ve stdcall/nonvolatile dönüşü doğrulanır. CGame::Process hâlâ yalnız adaydır; doğal frame thread/faz/ABI ve N3 hook kapısı açık kalır. [Sözleşme ve kanıt](../development/d1-startup-return.md).
+
+## Kod 0.1.19 — Bağımsız image koruma deneyi
+
+Ayrı image-protection aracı yalnız derlenmiş SAEX fixture'ını kendi Python sürecinde SEC_IMAGE olarak eşler; engine binding, SDK link kapsamı veya runtime capability açmaz. 0x40/0x80 ölçümü ve tek özel kopya yazımı OS davranışını tekrar üretir; orijinal dosya yazılmaz. [Sözleşme ve kanıt](../development/d1-image-protection.md).
+
+## Kod 0.1.21 bağlantısı
+
+Ayrı `--observe-application-entry` modu başlatıcıların doğal dönüşünü, ikinci startup çağrısını ve uygulamanın ilk komutundan önce giriş yığınını denetler. Önceki CRT komutu başlatıcı CALL önünde durur; eski kanıtlar kendi artifact kapsamındadır. Yeni izin ve güncel doğrulama [uygulama giriş sözleşmesinde](../development/d1-application-entry.md) izlenir. C ABI 1 korunur; initialized dünya, doğal frame/N3 ve D1/D2 kapıları açık kalır.
+
+## Kod 0.1.22 bağlantısı
+
+Ayrı platform-startup modu uygulama prologue'unu ilerletir ve sistem ayarı çağrısından önce durur. Dört argüman, yığın/register ve pinned API hedefi doğrulanır; host ayarı değişmez, eski CLI sınırları korunur. [Sözleşme ve sonuç](../development/d1-platform-startup.md). C ABI 1/GNS/otorite aynı; sistem ayarı uyarlaması, pencere/renderer, doğal frame ve N2/N3/D1/D2 kapıları açık kalır.
+
+## Kod 0.1.23 bağlantısı
+
+Tek exact platform çağrısı için ayrı süreç içi bağlam uyarlaması eklendi: sentetik FALSE, last-error/yığın/register koruma ve bağlam geri alma; API çalıştırılmaz. Önceki doğal sınır komutları korunur. [Sözleşme ve sonuç](../development/d1-platform-suppression.md). C ABI 1/GNS/otorite aynı; instance/pencere/renderer ve N2/N3/D1/D2 kapıları açık.
+
+## Kod 0.1.24 bağlantısı
+
+Ayrı instance-startup modu platform bastırma dönüşünden gerçek named event oluşturma/açma ve doğal helper dönüşüne ilerler. Mevcut event veya NULL handle durumunda pencere kolundan önce ret verilir. Önceki suppression modu restore ederek bitmeye devam eder; yeni mod doğal API sonrası eski CALL bağlamını geri yazmaz. [Sözleşme ve doğrulama](../development/d1-instance-startup.md). Oturumdaki ortak event ömrü process-private değildir; observer sinyal durumunu değiştirmez. C ABI 1/GNS/otorite aynı; pencere/renderer/doğal frame ve N2/N3/D1/D2 kapıları açıktır.
+
+## Kod 0.1.25 bağlantısı
+
+Ayrı event-dispatch modu, instance dönüşünden doğal olay dağıtıcısı CALL/entry ve uygulama işleyicisi CALL önüne ilerler. Üç durakta argüman, dönüş adresi, register ve yaşayan caller stack doğrulanır; uygulama işleyicisi çalıştırılmaz. [Sözleşme ve sonuç](../development/d1-event-dispatch.md). Eski instance terminali, C ABI 1/GNS/otorite aynı; yeni bağımlılık/kalıcı migration yoktur. AppEventHandler gövdesindeki executable yönlendirmesi, renderer/window ve doğal frame sonraki kapılardır; N2/N3/D1/D2 açık kalır.
+
+## Kod 0.1.26 bağlantısı
+
+`--observe-application-routing` önceki event-dispatch kanıtından sonra yalnız rsINITIALIZE=24 rotasını yürütür: işleyici entry → executable detour → indirect JMP → ilk oyun initializer CALL öncesi. 39 index/11 hedef tablosu, rel32/absolute operand ve dört yığın/register sınırı doğrulanır. [Sözleşme ve sonuç](../development/d1-application-routing.md). Önceki mod kendi AppEventHandler CALL öncesi terminalini korur. Yeni modda `eventDispatchObservation.applicationHandlerCallAllowed=true`, routing nesnesinde initializer çağrı izni false olur; önceki stage/verified ara kanıtı korunur. C++ trace/API yeniden derlenir; C ABI 1/GNS/otorite aynı, yeni bağımlılık/kaldırılan özellik/kalıcı migration yoktur. Oyun initializer gövdesi, RsInitialize, renderer/window ve doğal frame sonraki kapılardır; N2/N3/D1/D2 açık kalır.
+
+## Kod 0.1.27 bağlantısı
+
+`--observe-game-prelude` ilk oyun initializer içine girer; exact boş Init ve üç yerelleştirme bayrağını yazan iki helper doğal olarak geri döner. Beş durak, stack/register/flags, yaşayan caller ve 16-byte veri penceresi denetlenir; yalnız üç veri byte değişebilir. CFileMgr CALL çalıştırılmaz. [Sözleşme ve sonuç](../development/d1-game-prelude.md). Önceki application-routing terminali korunur; yeni üst modda routing nesnesinin initializerCallAllowed alanı true, prelude nesnesinin fileManagerCallAllowed ve initializerReturnVerified alanları false olur. C++ observer yeniden derlenir; C ABI 1/GNS/otorite aynı, yeni dependency/kaldırma/kalıcı migration yoktur. CFileMgr, streaming/pad, initializer dönüşü, RsInitialize, renderer ve doğal frame ile N2/N3/D1/D2 açık kalır.
+
+## Kod 0.1.28 bağlantısı
+
+`--observe-file-manager-entry` CFileMgr içine doğal CALL ve ilk üç PUSH komutunu açar; 0x5386FB CRT cwd CALL önünde durur. İki durakta buffer/maxlen=128 ABI, nested return stack, register/flags, 136-byte root/guard ve localisation korunumu denetlenir. [Sözleşme ve sonuç](../development/d1-file-manager-entry.md). Önceki prelude terminali korunur; yeni üst modda prelude fileManagerCallAllowed=true, manager cwdCallAllowed=false/fileManagerReturnVerified=false olur. CRT lock/SEH/OS/copy yolu henüz açılmaz. Gelecekte suffix yazımından önce NUL en geç buffer offset 126, başarılı dönüş ve ANSI byte uzunluğu kanıtı gerekir. C++ observer yeniden derlenir; C ABI 1/GNS/otorite/IPC aynı, yeni dependency/kaldırma/kalıcı migration yoktur. Manager/initializer dönüşü, streaming/pad, RsInitialize, renderer ve doğal frame ile N2/N3/D1/D2 açık kalır.
+
+## Kod 0.1.29 bağlantısı
+
+`--observe-cwd-seh` CRT wrapper ve SEH prologue içine doğal CALL açar; kayıt kurulup yardımcı döndüğünde 0x836E9D noktasında durur. Üç durakta 80-byte stack, 28-byte NT_TIB, önceki kayıt ve caller/buffer/localisation korunumu denetlenir. [Sözleşme ve sonuç](../development/d1-cwd-seh.md). Önceki manager terminali korunur; yeni üst modda manager cwdCallAllowed=true, cwdSeh lockPathAllowed/directoryApiAllowed/cwdReturnVerified/unwindVerified=false olur. Handler veya kilit/OS/copy yolu açılmaz; owned child sonunda kapatılır, eski TEB/context rollback yapılmaz. C++ observer yeniden derlenir; C ABI 1/GNS/otorite/IPC aynı, yeni dependency/kaldırma/kalıcı migration yoktur. Kilit/cwd, SEH sökümü, manager/initializer dönüşü, renderer/doğal frame ve N2/N3/D1/D2 açıktır.
+
+## Kod 0.1.30 bağlantısı
+
+`--observe-cwd-lock` lock(7) selector CALL ve ilk 17-byte gövdeyi doğal yürütür; CMP tamamlandığında 0x82ADCF JNE önünde durur. [Sözleşme ve sonuç](../development/d1-cwd-lock.md). 100-byte stack, 16-byte slot penceresi, NT_TIB/önceki kayıt/caller/buffer korunur; slot değeri dereference edilmez. SlotPresent yalnız sıfırdan farklı word demektir, kritik bölüm veya kilit alma kanıtı değildir. Üst modda cwdSeh.lockPathAllowed=true yalnız selector iznidir; yeni branchAllowed/lazyInitializationAllowed/criticalSectionCallAllowed/lockAcquiredVerified=false. Önceki SEH terminali korunur; DR0 dışında yeni observer müdahalesi ve TEB/context rollback yoktur. C++ trace yeniden derlenir; C ABI 1/GNS/otorite/IPC aynı, dependency/kaldırma/kalıcı migration yoktur. Mevcut/lazy dal, OS kilidi, cwd/SEH dönüşü ve N2/N3/D1/D2 açıktır.
+
+## Kod 0.1.31 bağlantısı
+
+`--observe-cwd-acquire` mevcut/unowned lock(7) nesnesi için doğal dal, admitted ntdll API entry/return ve CRT selector dönüşünü açar; 0x836EA4 terminalinde durur. [Sözleşme ve sonuç](../development/d1-cwd-acquire.md). Beş durakta object/slot/84-byte caller/SEH korunumu ve API sonrası thread sahipliği doğrulanır. x86 24-byte kritik bölüm düzeni pinned Windows uygulamasına aittir; VOID dönüşte EAX başarı kodu sayılmaz. Heap veya aynı GTA image nesnesi için sınır/koruma denetimi vardır. Üst modda branch/criticalSectionCallAllowed=true, acquired readback ile ayrıdır; lazy/directory/unlock kapalı kalır. Önceki lock terminali korunur; kilit tutulurken bütün owned child kapatılır, observer veri/TEB/context rollback yapmaz. C++ trace yeniden derlenir; C ABI 1/GNS/otorite/IPC aynı, dependency/kaldırma/kalıcı migration yoktur. Cwd/SEH/manager dönüşü ve N2/N3/D1/D2 açıktır.
