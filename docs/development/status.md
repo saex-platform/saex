@@ -6,6 +6,8 @@ Sürüm: mimari v0.38 / kod 0.1.31, D1 foundation + native dependency + N2 prefl
 
 ### Kod 0.1.31 kaynak eşitlemesi
 
+İlk hosted koşuda Windows x86 Debug/Release, 13 fixture grubundaki yerel sistem export varsayımını reddetti. [Test reçetesi düzeltmesi](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği) üretim policy/hash kapsamını değiştirmeden uygulandı; yeniden doğrulama sonucu [yayın raporunda](github-publication.md) izlenir.
+
 14 Eylül 2026: Yerelde biriken 0.1.14–0.1.31 kaynakları ve bütün ilgili test/belgeler, 0.1.13 public tabanı üzerine yayın için hazırlanır. [Yayın kapsamı ve doğrulama kaydı](github-publication.md#kod-0131-kaynak-eşitlemesi--14-eylül-2026). Aşağıdaki 0.1.13 hosted sonuçları tarihsel kanıttır; güncel 0.1.31 kontrolleri ayrı kaydedilir. Ürün sürümü, D1/D2 kapıları ve gerçek GTA raporlarının kapsamı bu yayın çalışmasıyla değişmez.
 
 ### Public GitHub kaynak yayını

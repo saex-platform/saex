@@ -1,5 +1,9 @@
 # Kaynak ve belge değişiklik kaydı
 
+## 14 Eylül 2026 — 0.1.31 CI fixture düzeltmesi
+
+İlk hosted x86 Debug/Release koşusu, yerel Windows export adreslerini devralan 13 fixture grubunda reddedildi. Sistem export/HIGHLOW reçetelerini tutulan host PE dosyalarından okuyan test yardımcısı, beş canlı prefix karşılaştırması ve on bozuk metadata reddi eklendi; ilgili fixture alanları buna bağlandı. Üretim JSON/generated policy, ABI/otorite ve GTA destek kapsamı aynı kaldı. Sahip belgeleri/component map birlikte güncellendi; ayrıntılar [startup-return raporunda](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği), kontrol durumu [yayın raporunda](github-publication.md).
+
 ## 14 Eylül 2026 — 0.1.14–0.1.31 kaynaklarının GitHub yayını
 
 Kullanıcının tüm birikmiş kaynakları yayımlama isteğiyle 0.1.31 / mimari v0.38 anlık görüntüsü hazırlandı. Kaynak/test/policy/generator, bütün sahip belgeleri ve güncel marka varlıkları tek PR kapsamındadır. Kaynak ZIP/manifest ve Git bundle yedekleri alındı; temiz checkout ve mevcut yedi hosted kontrol yayın kapısıdır. Bu kayıt yeni ürün davranışı, ABI/otorite değişimi veya migration eklemez. [Yayın raporu](github-publication.md) geçmiş gerçek GTA ve yeni kaynak CI kanıtını ayrı tutar.

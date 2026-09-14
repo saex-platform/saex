@@ -1,10 +1,11 @@
-#include "proxy_fixture_support.hpp"
+#include "system_fixture_support.hpp"
 #include "saex/engine/cwd_seh_policy.generated.hpp"
 int wmain(int argc,wchar_t** argv) {
     if (argc!=6) return 2; // EXE + proxy, codec root/leaf, ASI.
     try {
         wchar_t buffer[32768]{}; const auto length=GetSystemDirectoryW(buffer,32768);
         require(length && length<32768,"system directory"); const std::wstring system(buffer);
+        SystemFixtureExports system_exports(system);
         std::vector<std::unique_ptr<LoaderFile>> files; std::vector<const LoaderFile*> pins;
         for (const auto& p:reviewed_entry_specs) if (p.origin==LoaderOrigin::system_x86) {
             const std::wstring name(p.name.begin(),p.name.end());
@@ -36,6 +37,7 @@ int wmain(int argc,wchar_t** argv) {
             AsiStopSpec asi{&asi_file,call,end,dll.at<std::array<std::byte,16>>(call+6),dll.at<std::array<std::byte,16>>(end),artifact};
             SuspendedImage child(path,exe.layout.image_size); require(child.error().empty(),"child create");
             auto tail=reviewed_startup_return_spec;
+            tail.protect_function=system_exports.protect; tail.startup_function=system_exports.startup;
             tail.protect_call_rva=dll.symbol("protect_call");
             tail.protect_slot_rva=dll.at<DWORD>(tail.protect_call_rva+2)-dll.layout.image_base;
             tail.startup_slot_rva=dll.symbol("original_startup"); tail.forward_rva=dll.symbol("startup_forward");
@@ -67,8 +69,11 @@ int wmain(int argc,wchar_t** argv) {
             platform.return_prefix=exe.at<std::array<std::byte,16>>(platform.call_rva+6);
             platform.function={dll.symbol("platform_system_canary"),dll.at<std::array<std::byte,20>>(dll.symbol("platform_system_canary")),dll.layout.image_base,0};
             auto suppression=reviewed_suppression_spec;
+            suppression.last_error_function=system_exports.last_error;
             suppression.last_error_iat_rva=exe.at<DWORD>(exe.symbol("suppression_last_error_call")+2)-exe.layout.image_base;
             auto instance=reviewed_instance_spec;
+            instance.create_function=system_exports.create_event;
+            instance.create_thunk_rva=system_exports.create_thunk_rva; instance.create_thunk_slot_rva=system_exports.create_thunk_slot_rva;
             instance.caller={static_cast<DWORD>(child.image_base()),exe.layout.image_size,platform.call_rva+6,exe.symbol("instance_target")};
             instance.caller.call=exe.at<std::array<std::byte,5>>(instance.caller.call_rva);
             instance.caller.target_prefix=exe.at<std::array<std::byte,16>>(instance.caller.target_rva);

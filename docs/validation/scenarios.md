@@ -326,3 +326,7 @@ Dolu opaque ve boş slotlu iki fixture selector girişi/CMP sonrası terminaline
 ### AC-90 alt senaryo — CRT mevcut kilidi alma ve dönüş
 
 Pozitifte mevcut dal, Win32 CALL/entry/return ve selector RET izlenir; recursion 0→1, owner 0→child main thread, pinned LockCount -1→-2 ve metadata korunumu gerekir. Heap ve game-image fixture ayrı sınanır. Boş/tutulmuş/salt okunur/geçersiz nesne, yanlış IAT/prefix/spec, volatile/nonvolatile ABI/flags, eski lock modu, owner/kota/event, iki canary ve 12 warm çevrim kapsanır. 84-byte caller, TIB/önceki SEH kaydı, buffer ve named event korunur. [Test/GTA kanıtı](../development/d1-cwd-acquire.md). Acquire readback tam cwd/unlock/unwind veya AC-90/D1 tamamlanması değildir.
+
+## 14 Eylül 2026 — Windows fixture taşınabilirliği
+
+Startup-return ve devamındaki fixture zinciri, sistem DLL reçetelerini test makinesinin diskte tutulan PE dosyalarından çıkarır. Ortak okuyucu ve negatif doğrulamalar [test kapsamı notunda](../development/d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği) açıklanır; üretim policy/hash kuralları ve bu belgedeki gerçek GTA kanıtının sınırları aynıdır.

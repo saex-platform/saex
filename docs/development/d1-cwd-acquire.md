@@ -98,3 +98,7 @@ Image fixture içeren ilk başarılı warm sayımı 136 → 136 (`cwd-acquire-fi
 | Release map | `d62c1e2fd00946af04c8af5c29cf1c0631b6ec395fc68f9d068b9d25fdfec241` |
 
 Bu sonuç mevcut kritik bölümün doğal alınmasını ve selector dönüşünü kanıtlar. Unlock, cwd okuma/kopyalama, SEH sökümü ve temiz oyun kapanışı doğrulanmamıştır; renderer ve multiplayer kapıları açık kalır.
+
+## 14 Eylül 2026 — Windows fixture taşınabilirliği
+
+Startup-return ve devamındaki fixture zinciri, sistem DLL reçetelerini test makinesinin diskte tutulan PE dosyalarından çıkarır. Ortak okuyucu ve negatif doğrulamalar [test kapsamı notunda](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği) açıklanır; üretim policy/hash kuralları ve bu belgedeki gerçek GTA kanıtının sınırları aynıdır.

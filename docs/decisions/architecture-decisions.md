@@ -241,3 +241,7 @@ Karar: lock(7) selector doğal yürütülür; slot karşılaştırmasından sonr
 ## ADR-66 — Mevcut CRT kritik bölümünde doğal acquire ve sahiplik readback
 
 Karar: boşta ve mevcut slot dalından admitted ntdll EnterCriticalSection hedefi doğal çağrılır; beş checkpoint ve kritik bölümün 24-byte before/after durumu ile ana thread sahipliği doğrulanır. EAX VOID API için başarı sinyali değildir. Heap ve aynı GTA image içindeki writable nesneler kabul edilir; başka image, stack/TIB, geçersiz/held/semaphore nesnesi ret verir. Internal LockCount -1/-2 beklentisi bu OS pinine özeldir. Windows iç yardımcılarının tamamı denetlendi iddiası yoktur; gerçek fonksiyon sözleşmesi ve pinned implementation kullanılır. Kilit tutulurken yalnız bütün owned child kapatılır; gameplay devamı/unlock/SEH unwind izni yoktur. C++ trace değişir, C ABI 1/otorite aynı. [Sözleşme](../development/d1-cwd-acquire.md).
+
+## 14 Eylül 2026 — Windows fixture taşınabilirliği
+
+Startup-return ve devamındaki fixture zinciri, sistem DLL reçetelerini test makinesinin diskte tutulan PE dosyalarından çıkarır. Ortak okuyucu ve negatif doğrulamalar [test kapsamı notunda](../development/d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği) açıklanır; üretim policy/hash kuralları ve bu belgedeki gerçek GTA kanıtının sınırları aynıdır.

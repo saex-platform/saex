@@ -217,7 +217,8 @@
         "tools/startup_return_policy.py",
         "tests/engine/startup_return*",
         "tests/engine/test_startup_return_policy.py",
-        "tests/engine/startup_fixture.cpp"
+        "tests/engine/startup_fixture.cpp",
+        "tests/engine/system_fixture_support.hpp"
       ],
       "documents": [
         "docs/development/d1-startup-return.md",

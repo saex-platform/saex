@@ -110,3 +110,13 @@ Ayrı platform-startup modu uygulama prologue'unu ilerletir ve sistem ayarı ça
 ## Kod 0.1.23 bağlantısı
 
 Tek exact platform çağrısı için ayrı süreç içi bağlam uyarlaması eklendi: sentetik FALSE, last-error/yığın/register koruma ve bağlam geri alma; API çalıştırılmaz. Önceki doğal sınır komutları korunur. [Sözleşme ve sonuç](d1-platform-suppression.md). C ABI 1/GNS/otorite aynı; instance/pencere/renderer ve N2/N3/D1/D2 kapıları açık.
+
+## 14 Eylül 2026 — Windows fixture taşınabilirliği
+
+0.1.31 kaynak yayınının ilk hosted koşusunda Windows x86 Debug/Release, `startup_return_precondition_shape` ile 13 native grupta durdu; aynı commit temiz yerel Windows checkout'unda geçti. Testler fixture koduna ait alanları değiştirirken kernel32/kernelbase/ntdll alanlarında incelenmiş yerel Windows sürümünün RVA/prefix değerlerini bırakıyordu. [İlk başarısız koşu](https://github.com/saex-platform/saex/actions/runs/34800439726) bu ortam farkını kaydeder.
+
+`tests/engine/system_fixture_support.hpp`, yalnız testler için tutulan sistem DLL dosyalarından adlandırılmış PE32 export RVA'sını, yürütülebilir 20-byte prefix'i ve HIGHLOW başlangıçlarını okur. Export tablo/bütçe/ordinal aralığı, hole/forwarder, relocation türü/blok sınırı ve kısmi/örtüşen fixup'lar doğrulanır. CreateEventA için kernel32 FF25 thunk/IAT slotu ayrıca kontrol edilir; relocation kabul etmeyen gözlem sözleşmeleri için prefix'in relocation içermemesi gerekir. Desteklenmeyen biçim testi durdurur.
+
+13 runtime fixture grubunda startup-return reçetesi; ilgili alt gruplarda GetLastError, CreateEventA ve RtlEnterCriticalSection alanları bu test verisinden kurulur. Yanlış RVA/prefix senaryoları, child canary'leri, handle tekrarları ve gözlemci kontrolleri korunur. `native.startup_return`, beş prefix'i zaten yüklü modüllerin belleğiyle ASLR normalizasyonundan sonra karşılaştırır ve özel byte kopyalarında on bozuk PE metadata senaryosunu reddeder. Yardımcı DLL yüklemez, disk/system belleğine yazmaz. İlk yerel yardımcı koşusu ntdll'nin sıfır giriş noktasını EXE parser'ına verdiği için reddedildi. Yalnız ntdll metadata okumasında açıkça seçilen sıfır giriş modu, özel parse kopyasında yürütülebilir bölüm başlangıcını geçici kullanır ve sonuçta orijinal sıfır RVA'yı geri koyar; EXE kontrolleri ve diskteki DLL aynı kalır.
+
+Üretim loader/entry/startup-return ve diğer canonical JSON/generated policy'leri bu düzeltmede değişmez. Gerçek GTA için yeni Windows sürümü onaylanmış sayılmaz; yeni GTA koşusu yapılmamıştır. Tam yayın ve kontrol sonucu [GitHub yayın raporunda](github-publication.md) tutulur.

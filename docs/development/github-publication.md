@@ -168,3 +168,9 @@ GitHub `main` tabanı `81ffade` (kod 0.1.13), yerel kaynak sürümü kod 0.1.31 
 İlk envanter 394 dosya / 2.944.954 byte'tır. Değişiklikten önce bütün kaynak byte'ları ZIP ve SHA-256 manifest'iyle, mevcut Git geçmişi tam bundle ile korundu. Oyun/build binary'si, özel laboratuvar kopyası ve yerel çıktı aktarılmaz. Engine policy JSON'larının exact byte/hash sözleşmesi korunur. Bu yayın ek ürün davranışı veya yeni native izin tanımlamaz; geçmiş gerçek GTA kanıtları kendi rapor ve artifact kimlikleriyle sınırlıdır.
 
 Yayın kısa ömürlü dal → PR → yedi zorunlu kontrol → squash merge akışını izler. Kaynaklar temiz checkout'ta yeniden derlenir; yerel ve hosted sonuçlar ayrı kaydedilir. Önceki 0.1.13 CI başarısı yeni 0.1.31 kaynağının başarı kanıtı sayılmaz. N1 SDK, gerçek GTA ve oynanabilir binary release bu kaynak aktarımının test/dağıtım adımı değildir.
+
+### İlk hosted koşu ve test ortamı düzeltmesi
+
+[PR #10](https://github.com/saex-platform/saex/pull/10) için `432ac47130541672d9755fe97f5da3fa44380e62` kaynak anlık görüntüsü gönderildi. Temiz yerel Windows x86 Debug tam akışı geçti. [Build 34800439726](https://github.com/saex-platform/saex/actions/runs/34800439726) Linux x64 ve iki Windows x64 işinde geçti; iki Windows x86 işi 13 native grubun `startup_return_precondition_shape` reddiyle başarısız oldu. [Documentation ve Secret scan](https://github.com/saex-platform/saex/actions/runs/34800439729) geçti.
+
+Ortak [test reçetesi](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği), fixture sistem export alanlarını host PE metadata'sından kuracak şekilde düzeltildi. Üretim JSON/generated policy dosyaları korunur. Bu düzeltmenin yerel ve hosted tekrar sonuçları yayın kaydına eklenecektir.
