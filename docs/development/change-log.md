@@ -1,5 +1,9 @@
 # Kaynak ve belge değişiklik kaydı
 
+## 14 Eylül 2026 — GitHub 0.1.40 ve teslim akışı
+
+Tamamlanan tüm kaynaklar korundu; eski publish dalıyla güncel main arasındaki fark, OS/policy exact byte'ları ve yeni davranışları koruyarak birleştirildi. Önceki CI runner/VS/Python düzeltmeleri geri taşındı. AGENTS ve workflow tamamlanan kesitlerin aynı teslimatta PR/yedi kontrol/squash ile yayımlanmasını ve temiz main'e dönüşü tanımlar. Ham kaynak/Git yedekleri alındı; [yayın raporu](github-publication.md) gerçek GTA ve yeni kaynak kontrollerini ayrı tutar. Ürün davranışı/ABI/otorite izni genişlemez.
+
 ## Kod 0.1.40 / mimari v0.47 — 14 Eylül 2026
 
 Streaming kanal belleği için C++ API/CLI, parent-hash policy ve generated header eklendi. Dokuz evrede SetLastError/LocalAlloc gerçek thunk/implementation/return ilişkisi, 240 byte sıfırlama, global yayın ve parent allocation korunumu denetlenir. Üç native fixture, portable mutasyon corpus'u, sekiz policy testi ve CLI gate testi eklendi. Run-SAEX 13 kontrol/20 hash girdisiyle güncellendi; yeni terminal 0x406C34. C++ trace tüketicileri yeniden derlenir; bootstrap C ABI 1, OS pinleri, GNS/HTTPS ve SDK davranışı aynı. Kaldırılan özellik, veri migration'ı veya yeni runtime bağımlılığı yok. ADR-75, AC-90 alt kesiti ve component sahipleri aynı değişiklikte güncellendi. Native free/I/O/thread kapıları açık. [Ayrıntı ve sonuçlar](d1-cd-stream-channels.md).

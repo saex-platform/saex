@@ -4,6 +4,11 @@ Sürüm: mimari v0.47 / kod 0.1.40, D1 foundation + native dependency + N2 prefl
 
 ## Gerçek durum
 
+### GitHub 0.1.40 eşitlemesi
+
+Tamamlanan 0.1.32–0.1.40 kaynakları güncel main/CI ile birleştirildi; 475 dosya yedeklendi. Eski publish dalında birikme giderilir; tamamlanan kesitler aynı teslimatta PR/yedi kontrol/squash ile yayımlanır. [Yayın ve kontrol kaydı](github-publication.md#kod-0140-tam-eşitleme--14-eylül-2026). Yerel/GTA ve hosted kanıtlar ayrıdır; D1/D2 açık kalır.
+
+
 ### Kod 0.1.40 — Streaming kanal belleği
 
 SetLastError/LocalAlloc doğal yürütmesi ve global kayıt kodlandı. İlk gerçek Debug GTA **0x406C34**, **144 olay**, **5 × 48 sıfır byte** ve child çıkışı verdi; yeni native ve portable testler geçti. Run-SAEX **13 kontrol / 20 hash girdisi** üzerinden yeni kesiti raporlar. [Sözleşme ve final kanıt](d1-cd-stream-channels.md). Final x86 Debug/Release **58 native / 79 C# / 331 Python** geçti. Yeni corpus **2585 portable kontrol / 18 native senaryo / bir canary / 12 warm**; GTA **27/27**, **14 pozitif**, **22/22 child çıkışı**, **141/141 girdi korunumu**. İki PowerShell 5.1 raporu **13/13**; ek x64 Debug portable test geçti. Final **354/354 kaynak/config** hash aynı. Arşiv açma/okuma, thread, LocalFree/FreeAlign ve renderer açık; D1/D2 kapanmadı.

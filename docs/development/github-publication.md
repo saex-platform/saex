@@ -234,3 +234,9 @@ Yerel temiz checkout'ta ilk fixture düzeltmesi 41 native/79 managed/254 Python 
 Organizasyon profili banner'ı [.github PR #1](https://github.com/saex-platform/.github/pull/1) ile ana kaynak deposunun canonical SVG'sine bağlandı; yinelenen profil görseli artık gösterilmez. Yayın sırasında yeniden başlayan cwd-query geliştirmesi bu 0.1.31 anlık görüntüsünden ayrıdır ve kaynak çalışma alanında korunur. Bu rapor yeni GTA çalıştırması veya oynanabilir binary release iddiası taşımaz.
 
 VS 2026/v143 configure aşaması [sonraki koşuda](https://github.com/saex-platform/saex/actions/runs/34803447972) geçti; Python keşfi iki executable yolunu birleştirdiği için FindPython3 reddetti. Foundation script PATH önceliğindeki ilk Application sonucunu seçer; WindowsApps alias'ı ikinci yol olarak CMake'e eklenmez.
+
+## Kod 0.1.40 tam eşitleme — 14 Eylül 2026
+
+Yerel kod 0.1.40 / mimari v0.47, eski publish/0.1.31 dalında main'in dört CI/doküman commit'ini almadan ilerlemişti. Kaynakların tamamı yeni codex dalında korundu; güncel main birleştirilerek x86 Windows Server 2025/VS 2026/v143 ve tek Python executable düzeltmeleri, yeni 0.1.32–0.1.40 kaynak/test/policy/generator/araştırma/kanıt belgeleriyle birlikte taşındı. 475 dosyalık ham kaynak ZIP/SHA-256 manifest ve tam Git bundle yedeği alındı; binary/oyun dosyası yok. İlk geçmiş sır taraması temizdir.
+
+Sıfır OS giriş noktası/host fixture metadata ve eski Windows reddi kuralları korunur. Üretim 26200.9445 profil güncellemesi 0.1.33'ün açık incelemesine aittir; bu yayın otomatik bilinmeyen OS desteği eklemez. Önceki gerçek GTA kanıtları kendi raporlarıyla sınırlıdır. Yeni temiz checkout/hosted sonuçları PR kabul kaydıyla ayrı izlenir. AGENTS/workflow, tamamlanan kesitleri aynı teslimatta yayımlamayı ve temiz güncel main'e dönmeyi zorunlu kılar.

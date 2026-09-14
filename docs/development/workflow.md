@@ -297,3 +297,11 @@ Standart build `cd_stream_channels_policy.py --check`, sekiz policy testi, porta
 `tools/build.ps1 -Architecture x86 -Configuration Debug -VisualStudio 2026` seçeneği CMake 4.2 veya üstüyle `Visual Studio 18 2026` generator'ını ve kurulu `v143` C++ toolset'ini seçer. Yerel varsayılan VS 2022 preset'i korunur. GitHub x86 işleri bu açık seçeneği kullanır; eksik generator/toolset güvenli derleme hatasıdır. Pinned native SDK işinin exact MSVC/CMake/SDK lock'u bu foundation seçeneğinden etkilenmez.
 
 Python executable yolu PATH önceliğindeki ilk Application sonucundan alınır; birden fazla Python/WindowsApps alias eşleşmesi tek CMake yoluna birleştirilmez. `-Python` ile verilen açık dosya yolu aynı şekilde kullanılabilir.
+
+## Güncel GitHub ile geliştirme teslimi
+
+14 Eylül 2026 kullanıcı yetkisiyle tamamlanan SAEX kesitleri kaynakları ve sahip belgeleriyle aynı teslimatta GitHub'a aktarılır. Başlangıçta fetch/status/upstream incelenir; temiz güncel main'den codex dalı açılır. Eski merged publish dalında sonraki sürüm biriktirilmez. Başka görev aynı checkout'ta aktifse ayrı worktree kullanılır; index/branch değiştirilmez.
+
+Yayın: kaynak ZIP/manifest ve Git bundle → belge/policy/generator ve ilgili tam build kontrolleri → commit/push → PR → yedi required check → kontrol edilen head için normal squash merge. Sonra temiz checkout main'e dönüp ff-only eşitlenir. Yeni draft veya aktif iş varsa korunur; kullanıcıya henüz yayımlanmayan kapsam açıklanır. Force push, cleanup/reset ve CI bypass kullanılmaz. Ana dal protection'ı ve x86 runner/Python düzeltmeleri sonraki sürümlere taşınır.
+
+Örnek başlangıç: `git fetch origin`, `git status --short --branch`, temizse `git switch main`, `git merge --ff-only origin/main`, `git switch -c codex/<kesit>`. Yayın bitince `git switch main` ve `git merge --ff-only origin/main`. Açık iş varsa bu örnek branch geçişleri uygulanmaz; ayrı checkout ile ilerlenir. Güncel sonuçlar [yayın raporunda](github-publication.md) izlenir.

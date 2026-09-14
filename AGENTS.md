@@ -11,3 +11,13 @@ Kullanıcı 12 Eylül 2026'da kodlamaya geçilmesini ve her ekleme/değiştirme/
 - İndirilen C# için process/sandbox kanıtı gerekir. Yerel conformance probe, production IPC veya güvenlik sandbox'ı diye sunulmaz.
 - Küçük, derlenen ve anlamlı negatif testleri olan kesitler teslim edilir. tools/build.ps1 ve docs/development/workflow.md izlenir; başarısız kontrol gizlenmez.
 - Kullanıcı istemedikçe alt ajan veya ayrı task açılmaz. Git remote/push/deployment/server restart açık yetki gerektirir. Mevcut dosyaları silen Git cleanup yapılmaz.
+
+## GitHub eşitleme ve teslim
+
+Kullanıcı 14 Eylül 2026'da GitHub yapısının düzeltilmesini ve kaynakların tamamının güncel tutulmasını açıkça onayladı. Bu yetki SAEX kaynak/doküman commit, push, PR ve başarılı required checks sonrası normal squash merge için geçerlidir; deployment/server restart veya oyun dosyası dağıtma yetkisi değildir.
+
+- Yeni tamamlanmış kesiti eski/merged `publish/*` dalında biriktirmeyin. Başlangıçta `git fetch origin`, branch/upstream ve dirty durumunu inceleyin; temiz güncel `main` üzerinden `codex/*` dalı kullanın.
+- Aynı klasörde başka görev aktifse branch/index değiştirmeyin; yedekleyip ayrı worktree kullanın. Tamamlanmamış kaynakları bitmiş teslimat diye main'e almayın.
+- Tamamlanan kod ve sahip belgelerini birlikte commit/push edin; PR'ın tüm yedi zorunlu kontrolünü geçirin ve yalnız doğrulanan head'i squash merge edin. Retleri veya unknown OS/hash politikalarını sırf CI için gevşetmeyin.
+- Teslim sonunda çalışma alanı temizse yerel `main`'e dönün, `origin/main` ile ff-only eşitleyin. Dirty/aktif iş varsa saklayın ve açık kalan farkı belirtin; cleanup/reset/force push kullanmayın.
+- GitHub güncellik iddiasında yerel dosyalar, GitHub blob kimlikleri, PR kabulü ve en son CI sonuçlarını ayrı doğrulayın. Biten kaynaklar aynı teslimatta yayımlanır; süren taslaklar ayrı kalır.
