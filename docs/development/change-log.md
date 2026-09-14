@@ -2,7 +2,7 @@
 
 ## 14 Eylül 2026 — GitHub 0.1.40 ve teslim akışı
 
-Tamamlanan tüm kaynaklar korundu; eski publish dalıyla güncel main arasındaki fark, OS/policy exact byte'ları ve yeni davranışları koruyarak birleştirildi. Önceki CI runner/VS/Python düzeltmeleri geri taşındı. AGENTS ve workflow tamamlanan kesitlerin aynı teslimatta PR/yedi kontrol/squash ile yayımlanmasını ve temiz main'e dönüşü tanımlar. Ham kaynak/Git yedekleri alındı; [yayın raporu](github-publication.md) gerçek GTA ve yeni kaynak kontrollerini ayrı tutar. Ürün davranışı/ABI/otorite izni genişlemez.
+[PR #11](https://github.com/saex-platform/saex/pull/11) tesliminde tamamlanan tüm kaynaklar korundu; eski publish dalıyla güncel main arasındaki fark, OS/policy exact byte'ları ve yeni davranışları koruyarak birleştirildi. Önceki CI runner/VS/Python düzeltmeleri geri taşındı. AGENTS ve workflow tamamlanan kesitlerin aynı teslimatta PR/yedi kontrol/squash ile yayımlanmasını ve temiz main'e dönüşü tanımlar. Ham kaynak/Git yedekleri alındı; [yayın raporu](github-publication.md) gerçek GTA ve yeni kaynak kontrollerini ayrı tutar. Ürün davranışı/ABI/otorite izni genişlemez.
 
 ## Kod 0.1.40 / mimari v0.47 — 14 Eylül 2026
 

@@ -6,7 +6,7 @@ Sürüm: mimari v0.47 / kod 0.1.40, D1 foundation + native dependency + N2 prefl
 
 ### GitHub 0.1.40 eşitlemesi
 
-Tamamlanan 0.1.32–0.1.40 kaynakları güncel main/CI ile birleştirildi; 475 dosya yedeklendi. Eski publish dalında birikme giderilir; tamamlanan kesitler aynı teslimatta PR/yedi kontrol/squash ile yayımlanır. [Yayın ve kontrol kaydı](github-publication.md#kod-0140-tam-eşitleme--14-eylül-2026). Yerel/GTA ve hosted kanıtlar ayrıdır; D1/D2 açık kalır.
+[PR #11](https://github.com/saex-platform/saex/pull/11) ile tamamlanan 0.1.32–0.1.40 kaynakları güncel main/CI ile birleştirildi; 475 dosya yedeklendi. Eski publish dalında birikme giderilir; tamamlanan kesitler aynı teslimatta PR/yedi kontrol/squash ile yayımlanır. [Yayın ve kontrol kaydı](github-publication.md#kod-0140-tam-eşitleme--14-eylül-2026). Yerel/GTA ve hosted kanıtlar ayrıdır; D1/D2 açık kalır.
 
 
 ### Kod 0.1.40 — Streaming kanal belleği

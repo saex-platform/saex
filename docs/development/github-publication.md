@@ -242,3 +242,9 @@ Yerel kod 0.1.40 / mimari v0.47, eski publish/0.1.31 dalında main'in dört CI/d
 Sıfır OS giriş noktası/host fixture metadata ve eski Windows reddi kuralları korunur. Üretim 26200.9445 profil güncellemesi 0.1.33'ün açık incelemesine aittir; bu yayın otomatik bilinmeyen OS desteği eklemez. Önceki gerçek GTA kanıtları kendi raporlarıyla sınırlıdır. Yeni temiz checkout/hosted sonuçları PR kabul kaydıyla ayrı izlenir. AGENTS/workflow, tamamlanan kesitleri aynı teslimatta yayımlamayı ve temiz güncel main'e dönmeyi zorunlu kılar.
 
 0.1.40 [ilk hosted build](https://github.com/saex-platform/saex/actions/runs/34841308859), Linux portable file-manager testindeki misleading-indentation uyarısını -Werror ile reddetti. Test döngüsünün gövdesi ve terminator yazımı açıklaştırıldı; compiler kontrolü korunur.
+
+### 0.1.40 teslim ve nihai kabul bağlantıları
+
+[PR #11](https://github.com/saex-platform/saex/pull/11), 475 kaynak dosyasını ve güncel geliştirme kurallarını aynı teslimatta taşır. [Yedi zorunlu kontrol](https://github.com/saex-platform/saex/pull/11/checks) en son head için değerlendirilir; [PR kabul kaydı](https://github.com/saex-platform/saex/pull/11) squash commit ve birleştirme zamanını gösterir. Yalnız bu head başarılıysa birleştirilir. Yerel main, çalışma alanı temizken GitHub main ile ff-only eşitlenir; eski publish dalı teslimin açık dalı olarak bırakılmaz. Tam kaynak/Git yedeği ve final GitHub blob karşılaştırma makbuzu yerel out/github-publication altında tutulur.
+
+0.1.40 gerçek GTA kanıtı d1-cd-stream-channels raporundaki artifact/OS sınırındadır. Yayın doğrulaması GTA çalıştırmaz; yeni hosted başarı üretim OS pinlerini genişletmez. İlk Linux uyarısı üstte korunur ve uyarıyı kapatarak geçilmiş sayılmaz.
