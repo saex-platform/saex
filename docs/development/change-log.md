@@ -6,7 +6,7 @@
 
 ## 14 Eylül 2026 — 0.1.14–0.1.31 kaynaklarının GitHub yayını
 
-Kullanıcının tüm birikmiş kaynakları yayımlama isteğiyle 0.1.31 / mimari v0.38 anlık görüntüsü hazırlandı. Kaynak/test/policy/generator, bütün sahip belgeleri ve güncel marka varlıkları tek PR kapsamındadır. Kaynak ZIP/manifest ve Git bundle yedekleri alındı; temiz checkout ve mevcut yedi hosted kontrol yayın kapısıdır. Bu kayıt yeni ürün davranışı, ABI/otorite değişimi veya migration eklemez. [Yayın raporu](github-publication.md) geçmiş gerçek GTA ve yeni kaynak CI kanıtını ayrı tutar.
+Kullanıcının tüm birikmiş kaynakları yayımlama isteğiyle 0.1.31 / mimari v0.38 anlık görüntüsü [PR #10](https://github.com/saex-platform/saex/pull/10) ile yüklendi; ilk 394 dosya ve ek test yardımcısı birlikte teslim edildi. Kaynak/test/policy/generator, bütün sahip belgeleri ve güncel marka varlıkları tek PR kapsamındadır. Kaynak ZIP/manifest ve Git bundle yedekleri alındı; temiz checkout ve mevcut yedi hosted kontrol yayın kapısıdır. Bu kayıt yeni ürün davranışı, ABI/otorite değişimi veya migration eklemez. [Yayın raporu](github-publication.md) geçmiş gerçek GTA ve yeni kaynak CI kanıtını ayrı tutar.
 
 ## Kod 0.1.31 / mimari v0.38 — 13 Eylül 2026
 
