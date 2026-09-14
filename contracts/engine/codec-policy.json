@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "gta-sa.f01a00ce.windows-26200.codec-return-v1",
+  "id": "gta-sa.f01a00ce.windows-26200-9445.codec-return-v1",
   "stage": "codec-return-boundary",
-  "startupPolicySha256": "ed2834167df81d2068197dd333e7f28602dc243adcd8d80290498c41508caf30",
+  "startupPolicySha256": "7d187537f9165399b14fce1b35ad6c45f9e029ebb78b969e467b25f09852b082",
   "sequenceRva": 5293,
   "nameRva": 16836,
   "loadSlotRva": 16416,
@@ -10,8 +10,20 @@
   "callForm": "x86-push-ff15-mov-edi-eax",
   "reviewDocument": "docs/development/d1-codec-return.md",
   "modules": [
-    {"name": "vorbishooked.dll", "bytes": 65536, "sha256": "a08923479000cec366967fb8259e0920b7aa18859722c7dda1415726bed4774f"},
-    {"name": "vorbis.dll", "bytes": 1060864, "sha256": "fefda850b69e007fceba644483c7616bc07e9f177fc634fb74e114f0d15b0db0"},
-    {"name": "ogg.dll", "bytes": 36864, "sha256": "4a4f65427e016b3c5ae0d2517a69db5f1cdc7a43d2c0a7957e8da5d6f378f063"}
+    {
+      "name": "vorbishooked.dll",
+      "bytes": 65536,
+      "sha256": "a08923479000cec366967fb8259e0920b7aa18859722c7dda1415726bed4774f"
+    },
+    {
+      "name": "vorbis.dll",
+      "bytes": 1060864,
+      "sha256": "fefda850b69e007fceba644483c7616bc07e9f177fc634fb74e114f0d15b0db0"
+    },
+    {
+      "name": "ogg.dll",
+      "bytes": 36864,
+      "sha256": "4a4f65427e016b3c5ae0d2517a69db5f1cdc7a43d2c0a7957e8da5d6f378f063"
+    }
   ]
 }

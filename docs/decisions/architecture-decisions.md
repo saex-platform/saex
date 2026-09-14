@@ -245,3 +245,41 @@ Karar: boşta ve mevcut slot dalından admitted ntdll EnterCriticalSection hedef
 ## 14 Eylül 2026 — Windows fixture taşınabilirliği
 
 Startup-return ve devamındaki fixture zinciri, sistem DLL reçetelerini test makinesinin diskte tutulan PE dosyalarından çıkarır. Ortak okuyucu ve negatif doğrulamalar [test kapsamı notunda](../development/d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği) açıklanır; üretim policy/hash kuralları ve bu belgedeki gerçek GTA kanıtının sınırları aynıdır.
+
+## ADR-67 — Cwd API sonucunu native kopyadan önce doğrulamak
+
+Karar: mevcut CRT lock sonrası yalnız drive-zero helper ve GetCurrentDirectoryA doğal çağrı/dönüşü açılır. API'nin 260 byte local alanı, caller'ın 128 byte hedefinden ayrıdır. Başarılı DWORD uzunluk, ilk NUL, explicit ASCII launch directory ve sonraki backslash/NUL için 126 byte tavan birlikte kabul edilir. Yedi checkpoint ve stack/SEH/kilit/cookie/root korunumu sağlanmadan kopya izni doğmaz. Yanlış OS hash'i fixture sonucu ile bypass edilmez; statik arşiv export incelemesi runtime onayı değildir. ReAgent yalnız isteğe bağlı kanıt araştırmasıdır; candidate/parity sonucu native capability açmaz. Yeni C++ trace yeniden derlenir; C ABI 1/otorite/GNS aynı. [Sözleşme](../development/d1-cwd-query.md).
+
+## ADR-68 — OS güncellemesi açık profil geçişidir
+
+14 Eylül 2026, v0.40 / kod 0.1.33. 26200.9445 dosyaları önceki Windows pinlerinden farklıdır. Aynı modül izin kümesi ve GTA native sınırları korunarak 23 policy/header zinciri yeni OS kimliğiyle incelenir. Sistem DLL export/thunk/fixup'ları hash ile birlikte yenilenir; yalnız hash'i değiştirmek yeterli değildir. Eski profil bu binary'nin otomatik fallback'i olmaz. Önceki GTA kanıtı yeni profilin runtime kanıtı sayılmaz; fixture ve özel GTA tekrarları ayrıca kaydedilir. Oyun binary'si, veri formatı, C ABI 1, transport ve otorite değişmez. Ayrıntı ve geçiş: [OS profil raporu](../development/d1-system-profile-9445.md).
+
+## ADR-69 — Doğal cwd kopyası ayrı sınır ve veri kanıtı gerektirir
+
+14 Eylül 2026, v0.41 / kod 0.1.34. Query sonucu tek başına hedefe kopya kanıtı değildir. Ayrı explicit izin doğal kontrol dalları/strcpy CALL ve dönüşünü açar; hedefte yalnız dizin+NUL değişebilir, geri kalan root/guard ve kaynak/caller/SEH/kilit/cookie korunur. 126-byte suffix önkoşulu devam eder; helper dönüşü/unlock/SEH sökümü ayrı aşamadır. Observer sentetik buffer copy yapmaz. Eski query sınırı ve C ABI 1/GNS/otorite korunur. [Sözleşme, hata ve kabul](../development/d1-cwd-copy.md).
+
+## ADR-70 — Cwd helper dönüşü için ayrı doğal izin
+
+14 Eylül 2026, v0.42/kod 0.1.35. Copy hedefinin doğru olması cookie/normal helper dönüşünü kanıtlamaz. Ayrı izin iki POP, decoded cookie, checker eşitlik yolu ve LEAVE/RET'i altı checkpoint ile açar. Return sonrası local kaynak retired olarak işaretlenir; snapshot okunması canlı pointer hakkı değildir. Wrapper/try-state/unlock/SEH ayrı kalır; C ABI 1 ve ağ otoritesi değişmez. [Sözleşme ve kabul](../development/d1-cwd-return.md).
+
+## ADR-71 — Fonksiyon tamamlayan birleşik izin ve çalıştırma raporu
+
+14 Eylül 2026, kod 0.1.36 / mimari v0.43. Küçük talimat durakları test kanıtı olarak korunur; kullanıcı tek `file-manager-ready` komutuyla fonksiyon sonuna ulaşır. Sınırlı native davranış önceden incelenir ve dokuz aşamada denetlenir. Parent kayıtları tarihsel checkpoint snapshot, yeni ready kaydı final durumdur. Yerel PowerShell aracı policy/ayrı kopya/native sonuç/HTML raporu birleştirir. C ABI 1 ve otorite değişmez. [Sözleşme, kullanıcı komutu ve doğrulama](../development/d1-file-manager-ready.md).
+
+0.1.36 araç doğrulama düzeltmesi: Run-SAEX hash okuması .NET SHA256/FileStream kullanır; Windows PowerShell Get-FileHash modül keşfine bağlı değildir. UTF-8 BOM/konsol ve kısmi hata raporu ile Windows PowerShell 5.1 üzerinde Debug/Release pozitif akış ve eksik klasör/bilinmeyen exe retleri geçti. Native izin ve başarı koşulları değişmedi.
+
+## ADR-72 — Streaming hazırlığı ve Ghidra kanıtı ayrı yetkilerdir
+
+14 Eylül 2026, kod 0.1.37 / mimari v0.44. CdStreamInit'te 32 handle ve 32 isim başlangıcını temizleyen bellek döngüleri ayrı, exact caller/body ve 2.192-byte readback ile çalıştırılır; disk API'sinden önce durulur. Yerel exe'nin CdStreamOpen/Read yönlendirmeleri topluluk kaynağıyla aynı varsayılmaz. Ghidra/bridge static export'u kaynak/hash/limit/eksik root kaydı taşır; hiçbir capability veya native CALL izni üretmez. Araştırma araçları normal CMake/SDK/oyun dağıtımına bağımlılık oluşturmaz. C++ trace tüketicileri yeniden derlenir, bootstrap C ABI 1 ve GNS korunur. [Sözleşme ve kabul](../development/d1-cd-stream-tables.md), [araç iş akışı](../references/ghidra-bridge.md).
+
+## ADR-73 — Disk API sonucu allocation önkoşuludur
+
+0.1.38/v0.45. Orijinal GTA sorgu BOOL'ünü kontrol etmeden sektör local'ini kullanır. Ayrı explicit observer modu başarılı return ABI'si ve kabul edilen geometriyi görmeden o native komutları çalıştırmaz. BOOL 0 çıktısı yorumlanmaz; başarısızlık başarılı değere çevrilmez. Logical sector fiziksel alignment kanıtı sayılmaz. Geçerli sonuçta flags/argument hazırlığı doğal kodla yürür, ilk MallocAlign CALL önünde durulur. Parent snapshot'ları eski kanıtı korur; son sonuç ayrı modeldedir. C++ trace yeniden derlenir; C ABI 1/GNS/OS pinleri değişmez. [Sorumluluk, ABI ve kabul](../development/d1-cd-stream-disk.md).
+
+## ADR-74 — Hizalı allocation ve doğal dönüş
+
+0.1.39/v0.46. Doğrulanmış disk hazırlığını izleyen MallocAlign/CRT/HeapAlloc normal yolu, ayrı explicit observer modu ve 160 olay bütçesiyle açılır. Eski modlar 128 sınırındadır. Heap modu 1 veya istek boyutundan küçük SBH eşiğiyle mod 3 kabul edilir; new-handler 0, gerçek JNZ/JA flag denetimleri zorunludur. NULL sonucu pointer hesabına sokulmaz. Raw+alignment aritmetiği, metadata/payload sınırları, maskeli hash ve SEH doğal geri dönüşü denetlenir. Terminal 0x406BF9'dur. Bounded child teardown gerçek FreeAlign/HeapFree başarısı sayılmaz; doğal free'ye kadar aradaki I/O/thread yollarının kanıtı gerekir. Parent kayıtları evre snapshot'larıdır. C++ trace yeniden derlenir; C ABI 1 ve ağ otoritesi değişmez. [Ayrıntılı sözleşme](../development/d1-cd-stream-allocation.md).
+
+## ADR-75 — Streaming kanal belleği
+
+0.1.40/v0.47. Doğrulanmış aligned allocation dönüşünden sonra SetLastError(0) ve LocalAlloc(LPTR,240) yalnız ayrı explicit modda yürütülür. Sabit 5 × 48 kontrol belleğinin NULL/sınır/sıfır kontrolleri ve pointer global kaydı zorunludur; arşiv CALL önünde 0x406C34 terminali kullanılır. Eski parent kayıtları tarihsel snapshot olarak kalır; live tablo yalnız iki DWORD sayacı değiştirebilir. LocalAlloc doğal eşlemesi LocalFree, aligned tamponun eşlemesi FreeAlign/HeapFree'dir; child teardown bunları doğrulamaz. C++ trace yeniden derlenir; C ABI 1 ve ağ/otorite değişmez. Mevcut 160 olay tavanı genişletilmez. [Sözleşme ve kabul](../development/d1-cd-stream-channels.md).

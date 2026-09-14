@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "gta-sa.f01a00ce.windows-26200.platform-suppression-v1",
-  "platformPolicySha256": "a5c666a8b72a2e4576770419fc801c8210416a08e54440f983f4993195bd35c7",
+  "id": "gta-sa.f01a00ce.windows-26200-9445.platform-suppression-v1",
+  "platformPolicySha256": "33433396cd874a1a3744d8b713559529410706a1e271f26fe214bdb07aace082",
   "reviewDocument": "docs/development/d1-platform-suppression.md",
   "method": "owned-context-false-return",
   "returnValue": 0,
@@ -9,11 +9,11 @@
   "lastErrorIatRva": 4554900,
   "lastErrorModule": {
     "name": "kernel32.dll",
-    "bytes": 683312,
-    "sha256": "4ef63ecfe99158e16a387028be295308b00618cec64d94f016f99b79ffe84e05"
+    "bytes": 687472,
+    "sha256": "bafd9e061964642802d62f1eb694e7e4af60de739a8df1a492f90006dc5680f3"
   },
   "lastErrorFunction": {
-    "rva": 144448,
+    "rva": 144960,
     "prefixHex": "64a134000000c3cccccccccccccccccc64a13000",
     "preferredBase": 268435456,
     "highlowOffsets": []

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "gta-sa.f01a00ce.cwd-lock-v1",
   "stage": "after-comparison-before-branch",
-  "sehPolicySha256": "995b9d5bc9223df40245583de1ba6226d04b372fc4585d046df039d7859cd198",
+  "sehPolicySha256": "8d2309d8b8c5fde7a0414fe13243f1173242c1518a318d4856f45752716a867c",
   "reviewDocument": "docs/development/d1-cwd-lock.md",
   "selector": {
     "callRva": 4419231,

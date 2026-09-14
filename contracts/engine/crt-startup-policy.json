@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "gta-sa.f01a00ce.windows-26200.crt-initializer-boundary-v1",
+  "id": "gta-sa.f01a00ce.windows-26200-9445.crt-initializer-boundary-v1",
   "stage": "before-crt-initializers",
-  "startupReturnPolicySha256": "57d4d3867122c623e8132d61a0866c56e0055949074c3ea098f54a5fd087aeb7",
+  "startupReturnPolicySha256": "497aece5ffd9a9e82c61a7148cfddef5e35ed60ed771e6b82d11f7a99573fe4f",
   "reviewDocument": "docs/development/d1-crt-startup.md",
   "io": {
     "callRva": 4343396,

@@ -1,8 +1,46 @@
 # Uygulama durumu ve doğrulama sınırı
 
-Sürüm: mimari v0.38 / kod 0.1.31, D1 foundation + native dependency + N2 preflight, bootstrap, askıda process, statik envanter ve sınırlı loader gözlemi alt kümeleri. Tarih: 13 Eylül 2026. Kullanıcı kodlamayı ve her kaynak değişiminde belgelerin güncellenmesini onayladı. [Ana indeks](../../README.md) · [Çalışma akışı](workflow.md) · [Foundation](d1-foundation.md) · [N1 kanıtı](d1-native-dependency.md) · [Değişiklik kaydı](change-log.md)
+Sürüm: mimari v0.47 / kod 0.1.40, D1 foundation + native dependency + N2 preflight, bootstrap, askıda process, statik envanter ve sınırlı loader gözlemi alt kümeleri. Tarih: 14 Eylül 2026. Kullanıcı kodlamayı ve her kaynak değişiminde belgelerin güncellenmesini onayladı. [Ana indeks](../../README.md) · [Çalışma akışı](workflow.md) · [Foundation](d1-foundation.md) · [N1 kanıtı](d1-native-dependency.md) · [Değişiklik kaydı](change-log.md)
 
 ## Gerçek durum
+
+### Kod 0.1.40 — Streaming kanal belleği
+
+SetLastError/LocalAlloc doğal yürütmesi ve global kayıt kodlandı. İlk gerçek Debug GTA **0x406C34**, **144 olay**, **5 × 48 sıfır byte** ve child çıkışı verdi; yeni native ve portable testler geçti. Run-SAEX **13 kontrol / 20 hash girdisi** üzerinden yeni kesiti raporlar. [Sözleşme ve final kanıt](d1-cd-stream-channels.md). Final x86 Debug/Release **58 native / 79 C# / 331 Python** geçti. Yeni corpus **2585 portable kontrol / 18 native senaryo / bir canary / 12 warm**; GTA **27/27**, **14 pozitif**, **22/22 child çıkışı**, **141/141 girdi korunumu**. İki PowerShell 5.1 raporu **13/13**; ek x64 Debug portable test geçti. Final **354/354 kaynak/config** hash aynı. Arşiv açma/okuma, thread, LocalFree/FreeAlign ve renderer açık; D1/D2 kapanmadı.
+
+### Kod 0.1.39 — Gerçek hizalı streaming tamponu
+
+GTA'nın MallocAlign/CRT/HeapAlloc zinciri ve doğal dönüşü kodlandı. İlk gerçek Debug GTA koşusu **0x406BF9**, **2048-byte payload / 2560-byte heap isteği / 512-byte hizalama** verdi. Back-pointer ve payload hash korunumu, SEH geri yüklenmesi ve child çıkışı doğrulandı; Run-SAEX **12/12 kontrol, 19/19 girdi korunumu** sağladı. [Sözleşme ve güncel kanıt](d1-cd-stream-allocation.md). Final x86 Debug/Release **56 native / 79 C# / 322 Python** geçti; yeni native corpus **19 senaryo + iki canary + 12 warm**. GTA matrisi **27/27**, **14 allocation**, **22/22 child çıkışı**, **140/140 girdi korunumu** verdi. PowerShell 5.1 raporları iki yapılandırmada **12/12**; ek x64 Debug **32980 portable kontrol** geçti. Final **346/346 kaynak/config** korundu; CMake sürüm metadata eşitlemesi sonrası **216 Debug artifact hash'i** aynı kaldı. Native FreeAlign/HeapFree, I/O/thread ve renderer henüz doğrulanmadı. D1/D2 açık.
+
+### Kod 0.1.38 — Disk sorgusu ve bellek ayırma öncesi hazırlık
+
+Yeni komut disk API thunk/implementation/return ve native flags/argument hazırlığını dört durakta doğrular; terminal **0x406BF4**. API başarısızlığı veya kabul edilmeyen mantıksal sektör geometri kullanımından önce durur. İlk x86 Debug portable/native testleri ve gerçek GTA koşusu geçti: **512 byte/sektör, 8 sektör/küme**, 2048-byte allocation argümanları ve 0x60000000 flags. [Sözleşme, hata yolları ve final kanıt](d1-cd-stream-disk.md). Run-SAEX bu kesiti raporlar. Final x86 Debug ve Release tam akışları **54 native / 79 C# / 313 Python** geçti. GTA **27/27**, **14 pozitif**, **22/22 child çıkışı** ve **139/139 girdi korunumu** verdi. İki PowerShell 5.1 raporu **11/11**, x64 Debug portable corpus **296 kontrol** geçti; **338/338 kaynak/config** hash aynı. Bellek henüz ayrılmadı; streaming/I/O/thread, renderer ve D1/D2 açık.
+
+### Kod 0.1.37 — Streaming tablo hazırlığı ve çalışan Ghidra bridge
+
+CdStreamInit girişindeki iki tablo döngüsü ve disk sorgusunun argüman hazırlığı kodlandı. Gerçek GTA **60/60 matris**, **20 pozitif tablo hazırlığı**, **55/55 child çıkışı** ve **178/178 girdi korunumu** verdi; terminal **0x406BB4**, disk CALL önüdür. Run-SAEX artık dokuz kontrol gösterir. Ghidra/Java/bridge ayrı yerel araç ortamında kuruldu; 15 fonksiyon export edildi, bir eksik thread root'u ve iki patched streaming yönlendirmesi açık kaydedildi. [Native sözleşme](d1-cd-stream-tables.md), [araç kullanımı](../references/ghidra-bridge.md). Release tam akışı **52 native / 79 managed / 304 Python** geçti. Debug, ilk 51/52 native sonucu + stack regresyonunun 1/1 hedefli onarımı + 79/304 kalan standart kontrol ile tamamlandı; tek temiz full koşu değildir. X64 Debug yeni portable suite ve iki Windows PowerShell 5.1 raporu 9/9 geçti. Streaming dosya okuma/thread, CPad, renderer ve D1/D2 halen açık.
+
+### Kod 0.1.36 — Tam dosya yöneticisi dönüşü ve çalıştırılabilir doğrulama aracı
+
+Wrapper temizliği, unlock(7), doğal SEH sökümü, suffix ve CFileMgr::Initialise dönüşü tek modda kodlandı. İlk gerçek GTA koşusu **0x53BB5F** terminalinde bütün evreleri doğruladı. `./tools/Run-SAEX.ps1` özel yerel kopya oluşturur, tek çalıştırmada evreleri doğrular ve HTML/JSON raporu üretir. x86 Debug/Release **50 native/79 managed**; Debug 285 Python + 2 ayrı runner, Release 287 Python geçti. Gerçek GTA **58/58 matris**, **20 tam dönüş**, **53/53 child çıkışı**, **177/177 girdi hash korunumu** verdi. Run-SAEX iki yapılandırmada sekizer kontrolü geçti; x64 Debug portable suite de başarılı. [Nihai kanıt](d1-file-manager-ready.md). Diğer initializer yardımcıları, renderer/doğal frame, N2/N3/D1/D2 açık.
+
+Aşağıdaki eski sürüm paragrafları o tarihteki kanıt ve sınırları saklar; güncel toplu sonuç en üstteki allocation kesitidir. Eski alt komutlar kendi tarihsel duraklarında kalır.
+
+### Kod 0.1.35 doğal cwd helper dönüşü
+
+Altı checkpoint ile kopya argüman temizliği, cookie eşitlik kontrolü, checker ve helper'ın doğal dönüşü kodlandı. Dört Windows akışı geçti: x86 Debug/Release **48 native/79 managed/277 Python**, x64 Debug/Release **22/79/204**. Gerçek GTA **20 pozitif helper dönüşü**, **56/56 matris**, **51/51 child çıkışı**, **176/176 girdi korunumu** verdi. 309 kaynak/config hash'i aynı kaldı. [Return raporu](d1-cwd-return.md). Terminal `0x836EB6`; wrapper argüman/sonuç/try-state işlemleri, unlock(7) ve SEH sökümü açık.
+
+### Kod 0.1.34 doğal cwd kopyası
+
+Ayrı copy API/CLI ve beş checkpoint kodlandı. Doğrulanmış query kaynağı native yordamla 128-byte GTA hedefine kopyalanır; source/guard, caller/SEH/kilit/cookie ve return ABI denetlenir. Dört Windows akışı geçti: x86 Debug/Release **46 native/79 managed/270 Python**, x64 Debug/Release **21/79/198**. Gerçek GTA: **20 pozitif doğal kopya**, **54/54 matris**, **49/49 child çıkışı**, **175/175 girdi korunumu**. 301 kaynak/config hash'i aynı kaldı. [Copy raporu](d1-cwd-copy.md). Argüman temizliği/helper dönüşü/unlock/SEH sökümü açık kalır.
+
+### Kod 0.1.33 Windows profil yenilemesi
+
+Yeni Windows 26200.9445 profilinde gerçek GTA query doğrulandı: **14 pozitif sorgu**, 126/127-byte sınırları, **50/50 matris**, **41/41 child çıkışı**, **134/134 girdi korunumu**. İlk Debug CLI stack overflow heap trace kayıtlarıyla düzeltildi. Dört Windows akışı geçti: x86 Debug/Release 43 native/79 managed/263 Python, x64 Debug/Release 20/79/192. 293 kaynak/config hash'i sabit kaldı. [Profil ve hata raporu](d1-system-profile-9445.md). Copy/helper dönüşü, unlock, SEH sökümü ve N2/N3/D1/D2 açıktır; Linux/hosted/N1 yeniden koşulmadı.
+
+### Kod 0.1.32 yerel query kesiti
+
+Doğal drive-zero çalışma dizini sorgusu ve 126 ANSI-byte kopyalama önkoşulu kodlandı. Yedi checkpoint, Win32 dönüşü, kilit/SEH/cookie/root korunumları ve strict policy birlikte denetlenir. Dört Windows akışı geçti: x86 Debug/Release 43 native suite / 79 managed / 261 Python; x64 Debug/Release 20 / 79 / 190. [Query raporu](d1-cwd-query.md): 583 portable kontrol, 12 senaryo, canary ve 12 warm. GTA kabul girişinde 4/4 beklenen ret, sıfır child; 17 OS dosyası eski pinlerden farklı ve 61/61 girdi hash'i korundu. SysWOW64 dosyaları eski GTA OS pinlerinden farklıdır; bu kesit için gerçek GTA pozitif runtime sonucu yoktur. Eski 0.1.31 GTA kanıtı kendi dosya/artifact kapsamındadır. Native kopya, helper dönüşü, unlock ve SEH sökümü açık kalır. [ReAgent değerlendirmesi](../references/reagent.md) araştırma referansıdır; kurulu/çalışan bağımlılık değildir.
 
 ### Kod 0.1.31 kaynak eşitlemesi
 
@@ -26,10 +64,15 @@ Bu kaynak yayını D1'i kapatmaz; D2 oynanabilir multiplayer veya native binary 
 
 | Bileşen | Kodlanmış davranış | Doğrulama | Kalan sınır |
 |---|---|---|---|
-| CRT mevcut kilidi alma | Doğal JNE/Win32 CALL/selector dönüşü; nesne sahipliği, ABI ve caller/SEH korunumu | Dört Windows akışı; 141 portable kontrol/17 senaryo/iki canary/12 warm; GTA 12/12 ve 40/40 matris; [rapor](d1-cwd-acquire.md) | Kilit tutulurken terminal; unlock/cwd/SEH dönüşü açık |
+| Streaming tablo hazırlığı + Ghidra | 32 handle / 32 isim başlangıcı, 2.192-byte kontrol; bounded yerel bridge snapshot | GTA 60/60; Release 52/79/304, Debug birleşik 52/79/304; Ghidra gerçek snapshot ve 10 offline test | Disk CALL/IO/thread ve CPad açık; static export native izin değildir |
+| Tam dosya yöneticisi + yerel araç | Dokuz birleşik checkpoint, doğal unlock/SEH/suffix/manager dönüşü; Run-SAEX ve HTML/JSON | x86 Debug/Release 50/79; GTA 58/58, 20 tam dönüş; Run-SAEX 8/8; [kanıt](d1-file-manager-ready.md) | Diğer initializer yardımcıları, renderer/frame ve D1/D2 açık |
+| CRT cwd helper dönüşü | Altı doğal durak; cookie eşitliği, LEAVE/RET, kaynak ömrü ve caller/kilit/SEH korunumu | Dört Windows akışı; 789 portable/14 senaryo/12 warm; GTA 20 pozitif, 56/56 matris; [rapor](d1-cwd-return.md) | Kendi terminalinde kilit tutulur; tam dönüş ready satırında |
+| CRT doğal dizin kopyası | Beş native checkpoint, exact copy body, hedef içerik/guard ve kaynak/ABI korunumu | Dört Windows akışı; 18.457 portable/13 senaryo/1.984 copy kombinasyonu; GTA 20 pozitif, 54/54 matris; [rapor](d1-cwd-copy.md) | Copy kendi terminalinde kalır; tam dönüş ready satırında |
+| CRT çalışma dizini sorgusu | Doğal helper/Win32 çağrısı ve dönüş; uzunluk/NUL/expected path/suffix sınırı | Dört Windows akışı; yeni OS/GTA 14 query, 50/50 matris; [rapor](d1-system-profile-9445.md) | Query kendi terminalinde kalır; doğal copy ayrı satırda doğrulandı, helper/unlock/SEH açık |
+| CRT mevcut kilidi alma | Doğal JNE/Win32 CALL/selector dönüşü; nesne sahipliği, ABI ve caller/SEH korunumu | Dört Windows akışı; 141 portable kontrol/17 senaryo/iki canary/12 warm; GTA 12/12 ve 40/40 matris; [rapor](d1-cwd-acquire.md) | Acquire kendi terminalinde kilit tutar; boşalma ready satırında |
 | CRT lock(7) kayıt seçimi | Doğal CALL, tablo adresleme ve CMP; JNE önünde iki durak, slot/stack/SEH korunumu | Dört Windows akışı; 332 portable kontrol/13 senaryo/iki canary/12 warm; GTA 12/12 ve 39/39 matris; [rapor](d1-cwd-lock.md) | Slot içeriği opaque; kilit alma/OS/lazy yol açık |
-| CRT cwd SEH kaydı | Wrapper/prologue entry ve doğal dönüş; FS:[0] zinciri, 80-byte stack ve 28-byte NT_TIB denetimi | Dört Windows akışı; 210 portable kontrol/11 senaryo/12 warm; GTA 12/12 ve 38/38 matris; [rapor](d1-cwd-seh.md) | Kilit/OS cwd, SEH sökümü ve cwd dönüşü açık |
-| Dosya yöneticisi girişi | Doğal CFileMgr CALL ve üç PUSH; iki durak, buffer/maxlen ABI ve 136-byte korunum | Dört Windows akışı; 99 portable kontrol/12 senaryo/12 warm; GTA 12/12 ve 37/37 matris; [rapor](d1-file-manager-entry.md) | CRT cwd CALL/dönüşü, NUL/suffix ve manager dönüşü açık |
+| CRT cwd SEH kaydı | Wrapper/prologue entry ve doğal dönüş; FS:[0] zinciri, 80-byte stack ve 28-byte NT_TIB denetimi | Dört Windows akışı; 210 portable kontrol/11 senaryo/12 warm; GTA 12/12 ve 38/38 matris; [rapor](d1-cwd-seh.md) | SEH kaydı kendi terminalinde kurulu; söküm ready satırında |
+| Dosya yöneticisi girişi | Doğal CFileMgr CALL ve üç PUSH; iki durak, buffer/maxlen ABI ve 136-byte korunum | Dört Windows akışı; 99 portable kontrol/12 senaryo/12 warm; GTA 12/12 ve 37/37 matris; [rapor](d1-file-manager-entry.md) | Yalnız giriş komutu; tam dönüş ready satırında |
 | İlk oyun başlatma yardımcıları | Boş Init dönüşü ve üç yerelleştirme bayrağının doğal yazımı; beş durak, ABI ve 13 guard byte denetimi | Dört Windows akışı; 215 portable kontrol/11 senaryo/12 warm; GTA 12/12 ve 36/36 matris; [rapor](d1-game-prelude.md) | CFileMgr, streaming/pad, initializer dönüşü ve N2/N3 açık |
 | Uygulama başlatma dalı | Handler entry, executable detour, dolaylı tablo atlaması ve ilk oyun initializer CALL öncesi durak | Dört Windows akışı; 167 portable kontrol/11 senaryo/12 warm; GTA 12/12 ve 35/35 matris; [rapor](d1-application-routing.md) | Bu mod CALL öncesinde kalır; ilk iki yardımcının yürütmesi ayrı satırdadır |
 | Uygulama olayına geçiş | Caller CALL, dağıtıcı entry ve AppEventHandler CALL önünde doğal argüman/yığın/register denetimi | Dört Windows akışı; 81 portable kontrol/11 senaryo/12 warm; GTA 12/12 ve 34/34 matris; [rapor](d1-event-dispatch.md) | Bu mod kendi CALL öncesi sınırında kalır; sınırlı handler rotası ayrı satırdadır |
@@ -70,7 +113,7 @@ Bu kaynak yayını D1'i kapatmaz; D2 oynanabilir multiplayer veya native binary 
 
 D0 v0.5 belge teslimatı tarihsel olarak tamamlandı. D1 **başladı ve henüz tamamlanmadı**. R-01 dosya incelemesi, R-13 metadata/kimlik üretimi, R-14 queue primitive ve R-21 lease/clock alt kanıtları oluştu. D1-N1/R-02a ve AC-89'un seçilmiş build alt kümesi eklendi; bütün ana R kayıtları açık kalır. AC-34/35/45/71/72/83/86 [foundation](d1-foundation.md), N1 ise [native dependency raporundaki](d1-native-dependency.md) sınırla yorumlanır. AC-90 dosya/image, oyun dışı DLL, ilk create-debug görüntü ve gerçek GTA ASI load alt kümeleri ayrı raporlarla sınandı; initialized runtime bölümü ve AC-91–96 çalıştırılmadı. 96 AC'nin topluca geçtiği söylenmez.
 
-0.1.31 ile **D1-N2 CRT mevcut kilidi alma alt kesiti** doğrulandı. Beş doğal checkpoint, admitted ntdll hedefi, 24-byte kritik bölüm sahipliği ve 84-byte caller stack korunumu denetlenir. [Kanıt ve sınır](d1-cwd-acquire.md). Heap ve yalnız aynı GTA image içindeki nesneler denetlenir; boş/tutulmuş/geçersiz nesne reddedilir. Sonraki kesit cwd helper/OS/copy ve ardından unlock/SEH sökümüdür. Cwd/manager/initializer dönüşü, renderer/doğal frame ve N2/N3/D1/D2 açıktır.
+0.1.36 ile **D1-N2 dosya yöneticisinin tam dönüş alt kesiti** gerçek GTA'da doğrulandı: cwd okuma/kopya/cookie dönüşünü normal unlock(7), SEH epilogue, suffix ve CFileMgr dönüşü izler. [Kanıt ve sınır](d1-file-manager-ready.md). Genel initializer'ın kalan CdStreamInit/CPad çağrıları, renderer/doğal frame ve N2/N3/D1/D2 açıktır. Run-SAEX bu tamamlanmış alt kesiti tekrar çalıştırır; bir multiplayer launcher değildir.
 
 ## Kod 0.1.20 doğrulaması
 
@@ -249,3 +292,9 @@ Dört Windows akışı geçti: x86 Debug/Release 39 native suite, 79 managed, 24
 ## Kod 0.1.31 doğrulaması
 
 Dört Windows akışı geçti: x86 Debug/Release 41 native suite, 79 managed, 254 Python; x64 Debug/Release 19/79/184. Yeni 141 portable kontrol, 17 x86 senaryo, iki canary ve 12 warm çevrim geçti. Gerçek GTA 12/12 doğal EnterCriticalSection/selector dönüşü ve thread sahipliği, 40/40 matris, 37/37 child çıkışı ve 280/280 girdi korunumu. 284 kaynak/yapılandırma girdisi ve altı x86 artifact final kontrolde aynı. [Kanıt ve kapsam](d1-cwd-acquire.md). İlk heap-only keşif reddi raporda korunur. Linux/hosted/N1 SDK tekrar koşulmadı; N2/N3/D1/D2 açık.
+
+0.1.36 araç doğrulama düzeltmesi: Run-SAEX hash okuması .NET SHA256/FileStream kullanır; Windows PowerShell Get-FileHash modül keşfine bağlı değildir. UTF-8 BOM/konsol ve kısmi hata raporu ile Windows PowerShell 5.1 üzerinde Debug/Release pozitif akış ve eksik klasör/bilinmeyen exe retleri geçti. Native izin ve başarı koşulları değişmedi.
+
+## 0.1.37 — Bootstrap fixture stack regresyonu
+
+İlk tam Debug kontrolünde 51/52 suite geçti; bootstrap lifecycle fixture çalıştırıcısı **0xC00000FD (stack overflow)** ile çıktı. Ortak trace'e tablo snapshot'ları eklenince eski testteki çok sayıda değer olarak tutulan büyük sonuç ve ternary temporary x86 stack sınırını aştı. Test çalıştırıcısı sonuçları heap üzerinde tutacak ve tek dispatch return slot'u kullanacak şekilde düzeltildi. Test senaryoları, üretim stack reserve, native izinler ve doğrulamalar gevşetilmedi. Hata `cd-stream-bootstrap-failure.json` ve ilk tam Debug log'unda korunur; hedefli tekrar ve tam sonuçlar final kanıtta kaydedilir.

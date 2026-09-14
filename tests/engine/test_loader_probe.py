@@ -47,6 +47,143 @@ class LoaderProbeTests(unittest.TestCase):
                 self.assertFalse(output['cwdAcquireObservation']['directoryApiAllowed'])
                 self.assertTrue(output['gamePreludeObservation']['fileManagerCallAllowed'])
 
+    def test_cd_stream_disk_gate_and_arguments(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'unknown.exe';data=fixture();path.write_bytes(data)
+            r=subprocess.run([PROBE,'--observe-cd-stream-disk',str(path),directory],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);v=json.loads(r.stdout)
+            self.assertEqual(v['scope'],'bounded-cd-stream-disk');self.assertEqual(v['reason'],'unknown_fingerprint')
+            self.assertFalse(v['childCreated']);self.assertFalse(v['loaderAdvanced'])
+            for key in ('armed','continued','verified','allocationCallAllowed','physicalAlignmentVerified','streamingReady'):
+                self.assertFalse(v['cdStreamDiskObservation'][key])
+            for args in ([],[str(path)],[str(path),directory,'extra']):
+                r=subprocess.run([PROBE,'--observe-cd-stream-disk',*args],capture_output=True,timeout=10)
+                self.assertEqual(r.returncode,2)
+            r=subprocess.run([PROBE,'--observe-cd-stream-disk',str(path),'relative'],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);self.assertEqual(json.loads(r.stdout)['reason'],'launch_directory_input')
+            r=subprocess.run([PROBE,'--observe-cd-stream-tables',str(path),directory],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);self.assertIsNone(json.loads(r.stdout)['cdStreamDiskObservation'])
+            self.assertEqual(path.read_bytes(),data)
+
+    def test_cd_stream_channels_gate_and_arguments(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'unknown.exe';data=fixture();path.write_bytes(data)
+            r=subprocess.run([PROBE,'--observe-cd-stream-channels',str(path),directory],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);v=json.loads(r.stdout)
+            self.assertEqual(v['scope'],'bounded-cd-stream-channels');self.assertEqual(v['reason'],'unknown_fingerprint')
+            self.assertFalse(v['childCreated']);self.assertFalse(v['loaderAdvanced'])
+            for key in ('armed','continued','verified','allocationSucceeded','nativeFreeVerified','fileOpenAllowed','streamingReady'):
+                self.assertFalse(v['cdStreamChannelsObservation'][key])
+            for args in ([],[str(path)],[str(path),directory,'extra']):
+                r=subprocess.run([PROBE,'--observe-cd-stream-channels',*args],capture_output=True,timeout=10)
+                self.assertEqual(r.returncode,2)
+            r=subprocess.run([PROBE,'--observe-cd-stream-channels',str(path),'relative'],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);self.assertEqual(json.loads(r.stdout)['reason'],'launch_directory_input')
+            r=subprocess.run([PROBE,'--observe-cd-stream-allocation',str(path),directory],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);self.assertIsNone(json.loads(r.stdout)['cdStreamChannelsObservation'])
+            self.assertEqual(path.read_bytes(),data)
+
+    def test_cd_stream_allocation_gate_and_arguments(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'unknown.exe';data=fixture();path.write_bytes(data)
+            r=subprocess.run([PROBE,'--observe-cd-stream-allocation',str(path),directory],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);v=json.loads(r.stdout)
+            self.assertEqual(v['scope'],'bounded-cd-stream-allocation');self.assertEqual(v['reason'],'unknown_fingerprint')
+            self.assertFalse(v['childCreated']);self.assertFalse(v['loaderAdvanced'])
+            for key in ('armed','continued','verified','allocationSucceeded','nativeFreeVerified','nextInitializationCallAllowed','streamingReady'):
+                self.assertFalse(v['cdStreamAllocationObservation'][key])
+            for args in ([],[str(path)],[str(path),directory,'extra']):
+                r=subprocess.run([PROBE,'--observe-cd-stream-allocation',*args],capture_output=True,timeout=10)
+                self.assertEqual(r.returncode,2)
+            r=subprocess.run([PROBE,'--observe-cd-stream-allocation',str(path),'relative'],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);self.assertEqual(json.loads(r.stdout)['reason'],'launch_directory_input')
+            r=subprocess.run([PROBE,'--observe-cd-stream-disk',str(path),directory],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);self.assertIsNone(json.loads(r.stdout)['cdStreamAllocationObservation'])
+            self.assertEqual(path.read_bytes(),data)
+
+    def test_cd_stream_tables_gate_and_arguments(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'unknown.exe';data=fixture();path.write_bytes(data)
+            r=subprocess.run([PROBE,'--observe-cd-stream-tables',str(path),directory],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);v=json.loads(r.stdout)
+            self.assertEqual(v['scope'],'bounded-cd-stream-tables');self.assertEqual(v['reason'],'unknown_fingerprint')
+            self.assertFalse(v['childCreated']);self.assertFalse(v['loaderAdvanced'])
+            for key in ('armed','continued','verified','diskQueryCallAllowed','streamingThreadStarted','streamingReady'):
+                self.assertFalse(v['cdStreamTablesObservation'][key])
+            for args in ([],[str(path)],[str(path),directory,'extra']):
+                r=subprocess.run([PROBE,'--observe-cd-stream-tables',*args],capture_output=True,timeout=10)
+                self.assertEqual(r.returncode,2)
+            r=subprocess.run([PROBE,'--observe-cd-stream-tables',str(path),'relative'],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);self.assertEqual(json.loads(r.stdout)['reason'],'launch_directory_input')
+            r=subprocess.run([PROBE,'--observe-file-manager-ready',str(path),directory],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);self.assertIsNone(json.loads(r.stdout)['cdStreamTablesObservation'])
+            self.assertEqual(path.read_bytes(),data)
+
+    def test_file_manager_ready_gate_and_arguments(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'unknown.exe';path.write_bytes(fixture())
+            r=subprocess.run([PROBE,'--observe-file-manager-ready',str(path),directory],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);v=json.loads(r.stdout)
+            self.assertEqual(v['scope'],'bounded-file-manager-ready');self.assertEqual(v['reason'],'unknown_fingerprint')
+            self.assertFalse(v['childCreated']);self.assertFalse(v['loaderAdvanced'])
+            for k in ('continued','lockReleased','sehRemoved','suffixWritten','managerReturned','verified'):
+                self.assertFalse(v['fileManagerReadyObservation'][k])
+            for args in ([],[str(path)],[str(path),directory,'extra']):
+                r=subprocess.run([PROBE,'--observe-file-manager-ready',*args],capture_output=True,timeout=10)
+                self.assertEqual(r.returncode,2)
+            r=subprocess.run([PROBE,'--observe-file-manager-ready',str(path),'relative'],capture_output=True,timeout=10)
+            self.assertEqual(r.returncode,1);self.assertEqual(json.loads(r.stdout)['reason'],'launch_directory_input')
+
+    def test_cwd_return_gate_and_arguments(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'unknown.exe';path.write_bytes(fixture())
+            for mode in ('cwd-return','cwd-copy','cwd-query'):
+                result=subprocess.run([str(PROBE),'--observe-'+mode,str(path),directory],capture_output=True,text=True,timeout=10)
+                self.assertEqual(result.returncode,1)
+                v=json.loads(result.stdout);self.assertEqual(v['reason'],'unknown_fingerprint');self.assertFalse(v['childCreated']);self.assertFalse(v['loaderAdvanced'])
+                if mode=='cwd-return':
+                    q=v['cwdReturnObservation'];self.assertTrue(q['helperReturnAllowed'])
+                    for key in ('continued','helperReturned','verified','sourceRetired','unlockVerified','sehRemovalVerified'):self.assertFalse(q[key])
+                else:self.assertIsNone(v['cwdReturnObservation'])
+            for args in ([],[str(path)],[str(path),directory,'extra']):
+                result=subprocess.run([str(PROBE),'--observe-cwd-return',*args],capture_output=True,text=True,timeout=10)
+                self.assertEqual(result.returncode,2)
+            result=subprocess.run([PROBE,'--observe-cwd-return',str(path),'relative'],capture_output=True,text=True,timeout=10)
+            self.assertEqual(result.returncode,1);self.assertEqual(json.loads(result.stdout)['reason'],'launch_directory_input')
+
+    def test_cwd_copy_gate_and_arguments(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'gta_sa.exe';path.write_bytes(fixture())
+            for mode in ('--observe-cwd-copy','--observe-cwd-query','--observe-cwd-acquire'):
+                r=subprocess.run([PROBE,mode,str(path),directory],capture_output=True,timeout=10)
+                self.assertEqual(r.returncode,1);o=json.loads(r.stdout)
+                self.assertEqual(o['reason'],'unknown_fingerprint');self.assertFalse(o['childCreated'])
+                if mode!='--observe-cwd-copy':
+                    self.assertIsNone(o['cwdCopyObservation'])
+                    if mode=='--observe-cwd-query':self.assertFalse(o['cwdQueryObservation']['copyAllowed'])
+                    continue
+                q=o['cwdCopyObservation'];self.assertTrue(q['copyAllowed'])
+                for k in ('continued','verified','copied','functionReturned','helperReturnVerified','unlockVerified','sehRemovalVerified'):self.assertFalse(q[k])
+        for args in ([],['unused.exe'],['unused.exe','relative','extra']):
+            r=subprocess.run([PROBE,'--observe-cwd-copy',*args],capture_output=True,timeout=10);self.assertEqual(r.returncode,2)
+        r=subprocess.run([PROBE,'--observe-cwd-copy','unused.exe','relative'],capture_output=True,timeout=10)
+        self.assertEqual(r.returncode,1);self.assertEqual(json.loads(r.stdout)['reason'],'launch_directory_input')
+
+    def test_cwd_query_gate_and_arguments(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'gta_sa.exe';path.write_bytes(fixture())
+            for mode in ('--observe-cwd-query','--observe-cwd-acquire'):
+                r=subprocess.run([PROBE,mode,str(path),directory],capture_output=True,timeout=10)
+                self.assertEqual(r.returncode,1);o=json.loads(r.stdout)
+                self.assertEqual(o['reason'],'unknown_fingerprint');self.assertFalse(o['childCreated'])
+                if mode=='--observe-cwd-acquire':self.assertIsNone(o['cwdQueryObservation']);continue
+                q=o['cwdQueryObservation'];self.assertTrue(q['directoryApiAllowed'])
+                for k in ('continued','verified','pathVerified','copyAllowed','unlockVerified','sehRemovalVerified'):self.assertFalse(q[k])
+        for args in ([],['unused.exe'],['unused.exe','relative','extra']):
+            r=subprocess.run([PROBE,'--observe-cwd-query',*args],capture_output=True,timeout=10);self.assertEqual(r.returncode,2)
+        r=subprocess.run([PROBE,'--observe-cwd-query','unused.exe','relative'],capture_output=True,timeout=10)
+        self.assertEqual(r.returncode,1);self.assertEqual(json.loads(r.stdout)['reason'],'launch_directory_input')
+
     def test_cwd_acquire_arguments(self):
         for args in ([],['unused.exe'],['unused.exe','relative','extra']):
             r=subprocess.run([PROBE,'--observe-cwd-acquire',*args],capture_output=True,timeout=10)
@@ -547,7 +684,7 @@ class LoaderProbeTests(unittest.TestCase):
                 self.assertFalse(output['launchContext']['prepared'])
 
     def test_context_redacts_environment_and_keeps_engine_gate(self):
-        with tempfile.TemporaryDirectory(prefix='saex context çığ ') as directory:
+        with tempfile.TemporaryDirectory(prefix='saex context Ã§Ä±ÄŸ ') as directory:
             path = Path(directory) / 'gta_sa.exe'
             path.write_bytes(fixture())
             environment = dict(os.environ, SAEX_TEST_PRIVATE_VALUE='synthetic-secret-never-print')

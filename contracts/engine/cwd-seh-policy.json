@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "gta-sa.f01a00ce.cwd-seh-v1",
   "stage": "after-seh-before-lock",
-  "managerPolicySha256": "0e65b724069c440804e61d3aad88fa781ff490ffd757a7928c62c318e63cc2a4",
+  "managerPolicySha256": "a7dfec624fcba478c2d9fa69ba34f2f78c33ed5d66f00fa3427a63aa4cfb536b",
   "reviewDocument": "docs/development/d1-cwd-seh.md",
   "wrapper": {
     "callRva": 1279739,

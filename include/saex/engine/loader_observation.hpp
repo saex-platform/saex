@@ -7,7 +7,7 @@
 #include "saex/engine/application_entry.hpp"
 #include "saex/engine/platform_startup.hpp"
 #include "saex/engine/platform_suppression.hpp"
-#include "saex/engine/cwd_acquire.hpp"
+#include "saex/engine/cd_stream_channels.hpp"
 #include <array>
 
 namespace saex::engine {
@@ -29,6 +29,7 @@ public:
     [[nodiscard]] bool valid() const noexcept { return valid_; }
     [[nodiscard]] void* handle() const noexcept { return handle_; }
     [[nodiscard]] const LoaderFileIdentity& identity() const noexcept { return identity_; }
+
 private:
     void* handle_{};
     LoaderFileIdentity identity_{};
@@ -108,6 +109,14 @@ struct LoaderTrace {
     CwdSehObservation cwd_seh{};
     CwdLockObservation cwd_lock{};
     CwdAcquireObservation cwd_acquire{};
+    CwdQueryObservation cwd_query{};
+    CwdCopyObservation cwd_copy{};
+    CwdReturnObservation cwd_return{};
+    FileManagerReadyObservation file_manager_ready{};
+    CdStreamTablesObservation cd_stream_tables{};
+    CdStreamDiskObservation cd_stream_disk{};
+    CdStreamChannelsObservation cd_stream_channels{};
+    CdStreamAllocationObservation cd_stream_allocation{};
     std::string_view reason{"loader_not_started"};
 };
 struct EntryStopSpec {
@@ -284,11 +293,64 @@ public:
         const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
         const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
         const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, LoaderLimits limits = {}) noexcept;
+    // Natural drive-zero directory API return; no copy/unlock/SEH removal.
+    static LoaderTrace run_cwd_query(SuspendedImage& child, void* executable_file,
+        std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+        const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+        const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+        const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+        const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, LoaderLimits limits = {}) noexcept;
+    // Natural copy return; no argument cleanup, helper return, unlock or SEH removal.
+    static LoaderTrace run_cwd_copy(SuspendedImage& child, void* executable_file,
+        std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+        const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+        const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+        const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+        const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, LoaderLimits limits = {}) noexcept;
+    // Natural cookie check and helper return; wrapper arguments and lock remain live.
+    static LoaderTrace run_cwd_return(SuspendedImage& child, void* executable_file,
+        std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+        const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+        const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+        const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+        const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, LoaderLimits limits = {}) noexcept;
+    // Full cwd cleanup, lock release, SEH removal and natural CFileMgr return.
+    static LoaderTrace run_file_manager_ready(SuspendedImage& child, void* executable_file,
+        std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+        const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+        const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+        const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+        const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, const FileManagerReadySpec& ready, LoaderLimits limits = {}) noexcept;
+    static LoaderTrace run_cd_stream_tables(SuspendedImage& child, void* executable_file,
+        std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+        const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+        const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+        const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+        const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, const FileManagerReadySpec& ready, const CdStreamTablesSpec& tables, LoaderLimits limits = {}) noexcept;
+    static LoaderTrace run_cd_stream_disk(SuspendedImage& child, void* executable_file,
+        std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+        const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+        const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+        const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+        const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, const FileManagerReadySpec& ready, const CdStreamTablesSpec& tables, const CdStreamDiskSpec& disk, LoaderLimits limits = {}) noexcept;
+    static LoaderTrace run_cd_stream_allocation(SuspendedImage& child, void* executable_file,
+        std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+        const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+        const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+        const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+        const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, const FileManagerReadySpec& ready, const CdStreamTablesSpec& tables, const CdStreamDiskSpec& disk, const CdStreamAllocationSpec& allocation, LoaderLimits limits = {160}) noexcept;
+    static LoaderTrace run_cd_stream_channels(SuspendedImage& child, void* executable_file,
+        std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+        const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+        const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+        const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+        const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, const FileManagerReadySpec& ready, const CdStreamTablesSpec& tables, const CdStreamDiskSpec& disk, const CdStreamAllocationSpec& allocation, const CdStreamChannelsSpec& channels, LoaderLimits limits = {160}) noexcept;
+
 private:
     static LoaderTrace run_impl(SuspendedImage& child, void* executable_file,
         std::span<const LoaderFile* const> pins, LoaderLimits limits, const EntryStopSpec* entry,
         const ProxyStopSpec* proxy = nullptr, const StartupStopSpec* startup = nullptr,
         const CodecStopSpec* codec = nullptr, const BindingStopSpec* binding = nullptr,
-        const AsiStopSpec* asi = nullptr, const BootstrapLifecycleSpec* bootstrap = nullptr, const FrameTargetSpec* frame = nullptr, const StartupReturnSpec* tail = nullptr, const CrtStartupSpec* crt = nullptr, const ApplicationEntrySpec* application = nullptr, const PlatformStartupSpec* platform = nullptr, const PlatformSuppressionSpec* suppression = nullptr, const InstanceStartupSpec* instance = nullptr, const EventDispatchSpec* dispatch = nullptr, const ApplicationRoutingSpec* routing = nullptr, const GamePreludeSpec* prelude = nullptr, const FileManagerEntrySpec* manager = nullptr, const CwdSehSpec* seh = nullptr, const CwdLockSpec* lock = nullptr, const CwdAcquireSpec* acquire = nullptr) noexcept;
+        const AsiStopSpec* asi = nullptr, const BootstrapLifecycleSpec* bootstrap = nullptr, const FrameTargetSpec* frame = nullptr, const StartupReturnSpec* tail = nullptr, const CrtStartupSpec* crt = nullptr, const ApplicationEntrySpec* application = nullptr, const PlatformStartupSpec* platform = nullptr, const PlatformSuppressionSpec* suppression = nullptr, const InstanceStartupSpec* instance = nullptr, const EventDispatchSpec* dispatch = nullptr, const ApplicationRoutingSpec* routing = nullptr, const GamePreludeSpec* prelude = nullptr, const FileManagerEntrySpec* manager = nullptr, const CwdSehSpec* seh = nullptr, const CwdLockSpec* lock = nullptr, const CwdAcquireSpec* acquire = nullptr, const CwdQuerySpec* query = nullptr, const CwdCopySpec* copy = nullptr, const CwdReturnSpec* completion = nullptr, const FileManagerReadySpec* ready = nullptr, const CdStreamTablesSpec* tables = nullptr, const CdStreamDiskSpec* disk = nullptr, const CdStreamAllocationSpec* allocation = nullptr, const CdStreamChannelsSpec* channels = nullptr) noexcept;
 };
 }

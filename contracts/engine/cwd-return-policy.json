@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.cwd-return-v1",
+  "stage": "after-helper-return-before-wrapper-cleanup",
+  "copyPolicySha256": "4ea42b0e0ece7ba1ba21a620ff1f85d6bd48b8f21247f30f25a9d21ffacdbe94",
+  "reviewDocument": "docs/development/d1-cwd-return.md",
+  "checkerRva": 4369108,
+  "cleanupHex": "5959e951ffffff",
+  "epilogueHex": "8b4dfc334d045be8e63cffffc9c3",
+  "checkerHex": "3b0dbc318e007501c3",
+  "returnPrefixHex": "83c40c8945e4834dfcffe8090000008b"
+}

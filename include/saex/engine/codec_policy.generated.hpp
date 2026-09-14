@@ -2,9 +2,9 @@
 #pragma once
 #include "saex/engine/startup_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_startup_policy_digest == "ed2834167df81d2068197dd333e7f28602dc243adcd8d80290498c41508caf30", "codec startup drift");
-inline constexpr std::string_view reviewed_codec_policy_id = "gta-sa.f01a00ce.windows-26200.codec-return-v1";
-inline constexpr std::string_view reviewed_codec_policy_digest = "425272040c068e1e73b0cc1a9c43f9328b4dd13a2a00441efdbebe0a2372348d";
+static_assert(reviewed_startup_policy_digest == "7d187537f9165399b14fce1b35ad6c45f9e029ebb78b969e467b25f09852b082", "codec startup drift");
+inline constexpr std::string_view reviewed_codec_policy_id = "gta-sa.f01a00ce.windows-26200-9445.codec-return-v1";
+inline constexpr std::string_view reviewed_codec_policy_digest = "35bf28c6927e31dc3415f7f3890a277217556e27b551f8ee3e65342cbd1c62a2";
 inline constexpr std::array<std::string_view, 3> reviewed_codec_modules{"vorbishooked.dll", "vorbis.dll", "ogg.dll"};
 inline constexpr auto reviewed_codec_specs = [] {
     std::array<LoaderPinSpec, reviewed_entry_specs.size() + 3> result{};

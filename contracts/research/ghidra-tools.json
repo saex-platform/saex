@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "executableSha256": "f01a00ce950fa40ca1ed59df0e789848c6edcf6405456274965885d0929343ac",
+  "bridgeCommit": "faaf05363796cbc43eac7924f3b6981cd5e40619",
+  "reagentReviewedCommit": "d12cea338c61898b06a86fe8adb25275fa9d5615",
+  "ghidraVersion": "12.1.3",
+  "ghidraArchiveSha256": "93a5d11a9ad510622acaaf908c556a7b9b764d338e78a7567f3689bf5081fd54",
+  "javaArchiveSha256": "f9d6e191ab098c0d416e7d588a24420a8621cd2f4720dab2459b8b7b2d2d8b4e",
+  "ghidraPropertiesSha256": "fb9b6292c801e4a18b7c20829437d3b18b2241b273aea9b1cbdebdf3e5d0dc15",
+  "javaReleaseSha256": "07117c72ce033949c14878e07fbf2fe23f59a1f8c90a6d1351b5c89099847ce7",
+  "packages": {
+    "ghidra-ai-bridge": "0.2.0",
+    "pyghidra": "3.1.0",
+    "JPype1": "1.5.2",
+    "PyYAML": "6.0.3",
+    "packaging": "26.3"
+  },
+  "bridgeFiles": {
+    "address_map.py": "94fa976030e4a0c41a19ddfd3d8a80cf2f2d0a952b77b84160448036df39d508",
+    "asm.py": "3d8eddfdc0f4318c1fcb2022814d721c74dc7ab91d02298901caf399ff51f6b7",
+    "cli.py": "e6e50d438f40dbc193c0cf64c504678478fea6aab35b2cdcbe06240dc2db8baa",
+    "config.py": "27f400d3cba00942a2cab3d9053361eeb53f6ca9b5997227dd6f69627d4fa101",
+    "init_wizard.py": "00420d4c09866e941114d0d4eaad9861ba09dfa5651df530c47c4d0722b9d137",
+    "query.py": "03d0e895274f0663333712a19b934c7e9568ef2394ec888ea704a0aa80d3d4f8",
+    "source_types.py": "3a6fb6f09b0aacb9f6e8bbaa66fcb81e50a78fc3b75ea60b27cb949f3541f0df",
+    "__init__.py": "01eac98cd5d493702eb718133fb80d66639229f56dbe9463fe89751e0bd3a6f8",
+    "__main__.py": "a828dd78a9e0863b665b7711a65cebc2d05c262e8a274b170c588d0716fe8995",
+    "exporters/runner.py": "0f7afed618306e31d3804fe5d8451a5b4c73813ca0db923fe83e4f5261e8d2aa",
+    "exporters/__init__.py": "990507b9b7069b1b0b3e61331ab4136ef951545d4f1d71575314d2cddfbe2df4",
+    "patterns/defaults.py": "347a697a6fddd4076391a8f6503f7ade26c9c17339fca2d01f61146bdaa64908",
+    "patterns/__init__.py": "adbf5da6ce4bf4e79c4975b125ab83b8d6f02d7010d6ac35905272730b7e1c7a"
+  },
+  "roots": [
+    "00406b70",
+    "00541d90",
+    "00541a70",
+    "004068f0",
+    "00406560",
+    "004067b0",
+    "00406a20",
+    "00406690",
+    "00406460",
+    "0072f4c0",
+    "0072f4f0"
+  ]
+}

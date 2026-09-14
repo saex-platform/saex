@@ -41,6 +41,14 @@ try {
     Invoke-Checked $Python @('tools/cwd_seh_policy.py', '--check')
     Invoke-Checked $Python @('tools/cwd_lock_policy.py', '--check')
     Invoke-Checked $Python @('tools/cwd_acquire_policy.py', '--check')
+    Invoke-Checked $Python @('tools/cwd_query_policy.py', '--check')
+    Invoke-Checked $Python @('tools/cwd_copy_policy.py', '--check')
+    Invoke-Checked $Python @('tools/cwd_return_policy.py', '--check')
+    Invoke-Checked $Python @('tools/file_manager_ready_policy.py', '--check')
+    Invoke-Checked $Python @('tools/cd_stream_tables_policy.py', '--check')
+    Invoke-Checked $Python @('tools/cd_stream_disk_policy.py', '--check')
+    Invoke-Checked $Python @('tools/cd_stream_allocation_policy.py', '--check')
+    Invoke-Checked $Python @('tools/cd_stream_channels_policy.py', '--check')
     $taskConfigureArgs = @('--preset', "windows-$Architecture")
     if ($Architecture -eq 'x86') {
         $taskPythonPath = (Get-Command -Name $Python -CommandType Application -ErrorAction Stop).Source
@@ -79,6 +87,15 @@ try {
     Invoke-Checked $Python @('tests/engine/test_cwd_seh_policy.py')
     Invoke-Checked $Python @('tests/engine/test_cwd_lock_policy.py')
     Invoke-Checked $Python @('tests/engine/test_cwd_acquire_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_cwd_query_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_cwd_copy_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_cwd_return_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_file_manager_ready_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_cd_stream_tables_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_cd_stream_disk_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_cd_stream_allocation_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_cd_stream_channels_policy.py')
+    Invoke-Checked $Python @('tests/engine/test_ghidra_snapshot.py')
     Invoke-Checked $Python @('tests/engine/test_image_protection_probe.py')
     Invoke-Checked $Python @('tests/engine/test_engine_probe.py', "out/windows-$Architecture/$Configuration/saex_engine_image_probe.exe")
     Invoke-Checked $Python @('tests/engine/test_process_probe.py', "out/windows-$Architecture/$Configuration/saex_engine_process_probe.exe")
@@ -86,6 +103,7 @@ try {
         Invoke-Checked $Python @('tests/engine/test_bootstrap_audit.py', "$taskBootstrap.dll", "$taskBootstrap.map")
         Invoke-Checked $Python @('tests/engine/test_bootstrap_load_artifact.py', "$taskBootstrap.dll", "$taskBootstrap.map")
         Invoke-Checked $Python @('tests/engine/test_loader_probe.py', "out/windows-x86/$Configuration/saex_engine_loader_probe.exe")
+        Invoke-Checked $Python @('tests/engine/test_engine_demo.py')
     }
     Invoke-Checked $Python ($taskDocArgs + @('--record'))
     Write-Output "SAEX D1 foundation verified ($Architecture/$Configuration); GTA integration remains unverified."

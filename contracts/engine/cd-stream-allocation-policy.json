@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.cd-stream-allocation-v1",
+  "stage": "after-aligned-allocation",
+  "diskPolicySha256": "64b5b07022d33654019d74ba6ec3deaa623f23bcac972280487962234782beb3",
+  "reviewDocument": "docs/development/d1-cd-stream-allocation.md",
+  "mallocRva": 4342359,
+  "nhRva": 4342315,
+  "heapRva": 4342192,
+  "scopeRva": 4751432,
+  "newModeRva": 9022924,
+  "thresholdRva": 9028324,
+  "heapHandleRva": 9028340,
+  "heapModeRva": 9028344,
+  "iatRva": 4555256,
+  "alignedHex": "8b442404568b74240c03c650e8864d0f008bc88d043183c4044ef7d623c68948fc5ec3",
+  "mallocHex": "ff35ccadc900ff742408e8c5ffffff5959c3",
+  "nhHex": "837c2404e07722ff742404e875ffffff85c0597516",
+  "heapEntryHex": "6a0c6848808800e8244500008b7508833df8c2c90003752e3b35e4c2c9007726",
+  "heapTailHex": "85f6750146833df8c2c90001740683c60f83e6f0566a00ff35f4c2c900ff15f8818500e8fd440000c3",
+  "function": {
+    "rva": 260224,
+    "prefixHex": "8bff558bec6afe6868e5394b688025304b64a100",
+    "preferredBase": 1260912640,
+    "highlowOffsets": [
+      8,
+      13
+    ]
+  },
+  "systemModule": {
+    "name": "ntdll.dll",
+    "bytes": 1822400,
+    "sha256": "7e15bd30890e9bf93b47fc894a68b2445618ee7528eb39584a263b21e112f9df"
+  },
+  "heapExport": "NTDLL.RtlAllocateHeap",
+  "eventLimit": 160,
+  "scopeCleanupRva": 4342303
+}

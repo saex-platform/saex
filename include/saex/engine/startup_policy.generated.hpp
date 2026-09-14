@@ -3,9 +3,9 @@
 #include "saex/engine/proxy_policy.generated.hpp"
 #include "saex/engine/observed_profile.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_proxy_policy_digest == "20ff7fb664b56f3a43cded86faaa15743495e0cc1d9f17ccb675ccf6732fddcf", "startup proxy drift");
+static_assert(reviewed_proxy_policy_digest == "15adfca7cf644462ae99dc8dd9a7db3368d86cec0c8900a559d32bd43348109b", "startup proxy drift");
 static_assert(observed_profile_source_digest == "0653426a913c3fdef809ea9e6a614fca7d26498e66cb63148d7073fe8d965436", "startup profile drift");
-inline constexpr std::string_view reviewed_startup_policy_id = "gta-sa.f01a00ce.windows-26200.startup-call-v1";
-inline constexpr std::string_view reviewed_startup_policy_digest = "ed2834167df81d2068197dd333e7f28602dc243adcd8d80290498c41508caf30";
+inline constexpr std::string_view reviewed_startup_policy_id = "gta-sa.f01a00ce.windows-26200-9445.startup-call-v1";
+inline constexpr std::string_view reviewed_startup_policy_digest = "7d187537f9165399b14fce1b35ad6c45f9e029ebb78b969e467b25f09852b082";
 inline constexpr StartupStopSpec reviewed_startup_spec{observed_anchors};
 }

@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "gta-sa.f01a00ce.windows-26200.entry-boundary-v1",
+  "id": "gta-sa.f01a00ce.windows-26200-9445.entry-boundary-v1",
   "stage": "pe-entry-boundary",
-  "basePolicySha256": "91bb9479a01a91fea9161939ed7ac063fce541c9bb9bd35e1a4c3c8e4dce49a8",
+  "basePolicySha256": "6bd379294368d81d4de7b1a10756eb3ea9d71c8cae1b6b12cca1b7a3681c2287",
   "engineSha256": "f01a00ce950fa40ca1ed59df0e789848c6edcf6405456274965885d0929343ac",
   "reviewDocument": "docs/development/d1-entry-boundary.md",
   "additionalModules": [
     {
       "origin": "system-x86",
       "name": "imm32.dll",
-      "bytes": 148344,
-      "sha256": "c69ca53458deb7609f9a879b356f62330be743343aaa08afd055f15fa4fe2a95",
+      "bytes": 147856,
+      "sha256": "027d404ea547f446740336b90dc69b0cfa7c2bea4f1f366053251364f0eefe02",
       "basis": "loader-system"
     }
   ]

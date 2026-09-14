@@ -330,3 +330,41 @@ Pozitifte mevcut dal, Win32 CALL/entry/return ve selector RET izlenir; recursion
 ## 14 Eylül 2026 — Windows fixture taşınabilirliği
 
 Startup-return ve devamındaki fixture zinciri, sistem DLL reçetelerini test makinesinin diskte tutulan PE dosyalarından çıkarır. Ortak okuyucu ve negatif doğrulamalar [test kapsamı notunda](../development/d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği) açıklanır; üretim policy/hash kuralları ve bu belgedeki gerçek GTA kanıtının sınırları aynıdır.
+
+## AC-90 alt kapsamı — Kod 0.1.32 cwd sorgusu
+
+[Query sözleşmesi](../development/d1-cwd-query.md) için yedi doğal durak; farklı drive/yanlış argüman/yanlış API/prefix, eksik/erken NUL, sıfır ve aşırı DWORD uzunluk, 126/127 sınırı, beklenmeyen dizin ve korunmuş SEH/cookie/lock/root denetlenir. Eski acquire komutu query izni almaz. Fixture OS metadata'sı ile gerçek GTA profil admission'ı ayrıdır; yeni Windows hash'inde child öncesi ret beklenir. Fixture PASS, initialized runtime/AC-90 bütününü veya AC-91–96'yı kapatmaz. Native copy/unlock/SEH removal henüz bu kabulün çıktısı değildir.
+
+## AC-90 alt kapsamı — 0.1.33 OS profil geçişi
+
+26/20 sistem dosyası incelemesi, 23 digest zinciri ve API/HIGHLOW bilgileri birlikte doğrulanır. Eski binary güncel dosyalarla child öncesi reddetmelidir; yeni binary aynı GTA/query sınırında tekrar kanıt üretmelidir. Karma kernel32/kernelbase hash/boyutları ve her ancestor byte drift'i reddedilir. Özel GTA'da query/acquire, bilinmeyen/eksik/değişmiş girdiler, 126/127-byte cwd ve named-event çakışması ile owned child çıkışı sınanır. Sonuçlar [profil raporunda](../development/d1-system-profile-9445.md); bu alt kabul bütün AC-90/R/N2/D1 kapısını kapatmaz.
+
+## AC-90 alt kapsamı — 0.1.34 doğal cwd copy
+
+Doğal strcpy return, doğru EAX/cdecl stack, tam dizin+NUL, kaynak/sonlandırıcı/guard ve SEH/kilit/cookie korunumları birlikte kabul edilir. Her hedef byte'ı bozulması, kod/parent drift, yanlış owner, yanlış cwd ve 127-byte kapasite reddi denetlenir. Ayrı gövde kontrolü 1.984 hizalama/uzunluk kombinasyonunu kapsar; post-copy canary bir sonraki komutun çalıştırılmadığını doğrular. Eski query terminali korunur; GTA pozitif ve regresyon matrisi [copy raporunda](../development/d1-cwd-copy.md) ayrıca kaydedilir. Bütün AC-90/R/N2/D1 kapısı kapanmaz.
+
+## AC-90 alt kapsamı — 0.1.35 cwd helper return
+
+Cookie eşitliği, doğru CALL/RET adresleri, stack/EBP geçişleri, kaynak retirement ve hedef/caller/SEH/kilit korunumları birlikte kabul edilir. Yanlış checker/parent/prefix, register/flags drift, yanlış owner/cwd, kapasite ve instance retleri gerekir. Post-helper canary ve warm handle dengesi ayrı ölçülür; eski copy/query/acquire sınırları korunur. [Kaynak ve dört akış/GTA kanıtı](../development/d1-cwd-return.md). Genel AC-90/N2/D1 kapısı kapanmaz.
+
+## AC-90 alt kapsamı — 0.1.36 tam dosya yöneticisi dönüşü
+
+AC-90 alt kabulü artık dokuz birleşik durakla doğal unlock/SEH/suffix/manager dönüşünü kapsar. Doğru final caller, boş kilit ve eski FS zinciri birlikte gerekir. API/IAT/epilogue bozulması, 126/127 kapasite, owner/bütçe ve parent terminal regresyonları reddedilmelidir. Run-SAEX raporu da gerçek kanıt, child exit ve input hash koşullarıyla sınanır. Bütün AC-90/R/N2/D1/D2 kapanmaz. [Sözleşme, kullanıcı komutu ve doğrulama](../development/d1-file-manager-ready.md).
+
+0.1.36 araç doğrulama düzeltmesi: Run-SAEX hash okuması .NET SHA256/FileStream kullanır; Windows PowerShell Get-FileHash modül keşfine bağlı değildir. UTF-8 BOM/konsol ve kısmi hata raporu ile Windows PowerShell 5.1 üzerinde Debug/Release pozitif akış ve eksik klasör/bilinmeyen exe retleri geçti. Native izin ve başarı koşulları değişmedi.
+
+## AC-90 alt kesiti — 0.1.37 streaming tabloları
+
+Pozitif kabul: iki doğal döngü sonunda 32 handle ve 32 isim ilk byte'ı sıfır, 2.192-byte pencerenin diğer byte'ları aynı; disk API argümanları, caller/root/SEH/kilit/last-error doğru ve child exit confirmed. Negatif kabul: bilinmeyen spec, değişmiş operand, yanlış cwd, event/owner/kota, bozuk byte/frame ayrı ret üretir; disk-call canary normal koşuda erişilmez. Eski ready modu kendi terminalinde durmalıdır. Static Ghidra eksik root/unknown ABI/thunk sonucu bu AC'yi kapatamaz. [Test ve sonuç kaydı](../development/d1-cd-stream-tables.md). AC-90 bütünü, AC-91, D1/D2 açık kalır.
+
+## AC-90 alt kesiti — 0.1.38 disk ve allocation argümanları
+
+Doğru API thunk/implementation/return, BOOL ve geometri, native flags, stack argümanları, globals guard ve parent korunumuyla 0x406BF4 terminali gerekir. Sıfır BOOL+zehirli çıktı ve geçersiz geometri portable karar testinde ret; gerçek Windows API failure veya 4K disk koşulunun çalıştırıldığı iddia edilmez. Yanlış native adres/prefix/slot, legacy terminal, event/owner/bütçe ve allocation canary ayrı native kontrollerdir. Child exit ve hash korunumu GTA matrisinde aranır. [Kabul türleri ve nihai kanıt](../development/d1-cd-stream-disk.md). AC-90 bütünü, D1/D2 açık.
+
+## AC-90 alt kesiti — 0.1.39 hizalı allocation
+
+Doğal HeapAlloc ve CRT dönüşüyle 0x406BF9'a ulaşılmalı; raw/metadata/payload sınırları, 512-byte gözlenen hizalama, hash, SEH, parent state ve child exit doğrulanmalıdır. Mode 1 / mode 3 bypass pozitif fixture'ları; reddedilen threshold/new-handler, yanlış code/scope/API, eski mod, owner, event ve bütçe negatifleri ayrı çalışır. İki post-allocation canary kontrolü ve 12 warm çevrim gerekir. NULL/overflow ve bütün raw kalıntıları portable corpus'tadır; gerçek OS allocation failure ve dış payload tamper enjeksiyonu yapılmış sayılmaz. Native free ve streaming thread açık kaldığı için AC-90 bütünü kapanmaz. [Kabul düzeyleri ve kanıt](../development/d1-cd-stream-allocation.md).
+
+## AC-90 alt kesiti — 0.1.40 kanal belleği
+
+SetLastError gerçek dönüşünde child LastErrorValue 0; LocalAlloc çağrısında LPTR/240; sonuçta ayrı, okunabilir 240 sıfır byte ve doğru pointer global kaydı doğrulanmalıdır. Eski aligned allocation, parent state ve SEH korunur; terminal CdStreamOpen önünde 0x406C34. Yanlış spec/API/body/filename, önceden dolu pointer, owner/event/limit ve legacy terminal negatifleri; post-terminal canary kontrolü ve 12 warm çevrim gerekir. NULL/overflow/nonzero portable testleri gerçek OS allocation failure veya canlı tamper enjeksiyonu değildir. Doğal free, I/O ve thread lifecycle açık olduğundan AC-90 bütünü kapanmaz. [Kanıt düzeyleri](../development/d1-cd-stream-channels.md).

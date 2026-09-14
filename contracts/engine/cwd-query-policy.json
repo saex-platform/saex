@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.cwd-query-v1",
+  "stage": "after-get-current-directory-before-copy",
+  "acquirePolicySha256": "d082f21922b19c205d17a209666d8d862fe7991ffd5ce33305d9a5e2020055df",
+  "reviewDocument": "docs/development/d1-cwd-query.md",
+  "helperRva": 4418979,
+  "cookieRva": 5124540,
+  "iatRva": 4555332,
+  "thunkSlotRva": 530324,
+  "wrapperHex": "598365fc00ff750cff75086a00e8edfeffff",
+  "helperHex": "558bec81ec0c010000a1bc318e00334504538b5d0885db8945fc745f",
+  "queryHex": "8d85f4feffff506804010000ff1544828500",
+  "returnPrefixHex": "85c074ac403d0401000077a48b4d0c85",
+  "function": {
+    "rva": 200800,
+    "prefixHex": "8bff558bec5dff2594170810cccccccccccccccc",
+    "preferredBase": 268435456,
+    "highlowOffsets": [
+      8
+    ]
+  },
+  "implementation": {
+    "rva": 2463152,
+    "prefixHex": "8bff558bec81ec1c010000a1c03c281033c58945",
+    "preferredBase": 268435456,
+    "highlowOffsets": [
+      12
+    ]
+  },
+  "systemModules": [
+    {
+      "name": "kernel32.dll",
+      "bytes": 687472,
+      "sha256": "bafd9e061964642802d62f1eb694e7e4af60de739a8df1a492f90006dc5680f3"
+    },
+    {
+      "name": "kernelbase.dll",
+      "bytes": 2974168,
+      "sha256": "85ad413ff860898f9e511f2e63c0e30f7aed1275fd1fd44fa90801211d328253"
+    }
+  ]
+}

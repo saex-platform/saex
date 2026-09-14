@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.cd-stream-disk-v1",
+  "stage": "before-aligned-allocation",
+  "tablesPolicySha256": "cf13c6732681f4b2a33f0e8c74c1f12d2a1f5c37975dd9c387ebec361b477aa3",
+  "reviewDocument": "docs/development/d1-cd-stream-disk.md",
+  "flagsRva": 5128160,
+  "allocatorRva": 3339456,
+  "thunkSlotRva": 529236,
+  "bodyHex": "ff15c08085008b4c240433c081f9000800007705b800000020566a00510d000000406800080000c705e83f8e0001000000a3e03f8e00c705e43f8e0000000000e8c7883200",
+  "function": {
+    "rva": 125856,
+    "prefixHex": "ff2554130810",
+    "preferredBase": 268435456,
+    "highlowOffsets": [
+      2
+    ]
+  },
+  "implementation": {
+    "rva": 2366448,
+    "prefixHex": "8bff558bec5151837d08008d4df8bab4230c100f",
+    "preferredBase": 268435456,
+    "highlowOffsets": [
+      15
+    ]
+  },
+  "systemModules": [
+    {
+      "name": "kernel32.dll",
+      "bytes": 687472,
+      "sha256": "bafd9e061964642802d62f1eb694e7e4af60de739a8df1a492f90006dc5680f3"
+    },
+    {
+      "name": "kernelbase.dll",
+      "bytes": 2974168,
+      "sha256": "85ad413ff860898f9e511f2e63c0e30f7aed1275fd1fd44fa90801211d328253"
+    }
+  ]
+}

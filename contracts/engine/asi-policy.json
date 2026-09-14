@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "gta-sa.f01a00ce.windows-26200.asi-return-v1",
+  "id": "gta-sa.f01a00ce.windows-26200-9445.asi-return-v1",
   "stage": "single-asi-return-boundary",
-  "bindingPolicySha256": "92856899cf2250668e1b644d9ec2c111b01e72eba46643bb4631285ee3de84eb",
+  "bindingPolicySha256": "97959fa701ac22cfb309110ae9e67f21a113cc8808b7b6e90ea68300d5b40cf2",
   "callRva": 6724,
   "endRva": 6747,
   "returnHex": "463bf775b38b8564fdffff8bb560fdff",
@@ -13,7 +13,7 @@
     {
       "name": "bcrypt.dll",
       "bytes": 114240,
-      "sha256": "d713ce8ccada35dcdc921184842a7316911c5151a44864cbfb3d02c7136d5ec0"
+      "sha256": "137cec7506fdb011ed03c5a7b51c6ea168cc75ec4359b8dc3f83855622d86bc3"
     }
   ],
   "debugModules": [

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "gta-sa.f01a00ce.game-prelude-v1",
   "stage": "before-file-manager-call",
-  "routingPolicySha256": "d2794efb7784cb53b20d693533f5ab67c6f05a8fbd4c2d77264942910c408f66",
+  "routingPolicySha256": "b97ecbac6dc05cc18e90af42274e1b148e741fc62012cddce98b86a90809e88e",
   "reviewDocument": "docs/development/d1-game-prelude.md",
   "empty": {
     "callRva": 1293136,

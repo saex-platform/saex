@@ -29,6 +29,31 @@ bool same_named_event(HANDLE process,std::uint32_t value,std::string_view name) 
     CloseHandle(duplicate);
     return same; // Never waits, sets, resets or closes the child's handle.
 }
+
+// Hash an admitted allocation while masking only its four-byte back-pointer.
+// VirtualQueryEx describes pages; ownership comes from the observed HeapAlloc call.
+bool allocation_hash(HANDLE process,const CdStreamAllocationLayout& block,std::array<std::byte,32>& digest) noexcept {
+    if(!block.bytes || block.bytes>67584 || block.raw>UINT32_MAX-block.bytes ||
+        block.metadata<block.raw || block.metadata>block.raw+block.bytes-4)return false;
+    BCRYPT_HASH_HANDLE hash{};if(BCryptCreateHash(BCRYPT_SHA256_ALG_HANDLE,&hash,nullptr,0,nullptr,0,0)<0)return false;
+    std::array<unsigned char,256> bytes{};bool ok=true;
+    for(DWORD offset=0;offset<block.bytes && ok;) {
+        const auto address=block.raw+offset;MEMORY_BASIC_INFORMATION region{};
+        ok=VirtualQueryEx(process,reinterpret_cast<void*>(address),&region,sizeof(region))==sizeof(region) &&
+            region.State==MEM_COMMIT && region.Type==MEM_PRIVATE && region.Protect==PAGE_READWRITE &&
+            address>=reinterpret_cast<std::uintptr_t>(region.BaseAddress);
+        if(!ok)break;
+        const auto within=address-reinterpret_cast<std::uintptr_t>(region.BaseAddress);
+        if(within>=region.RegionSize){ok=false;break;}
+        const auto length=static_cast<DWORD>(std::min<std::size_t>({bytes.size(),block.bytes-offset,region.RegionSize-within}));
+        SIZE_T read{};ok=ReadProcessMemory(process,reinterpret_cast<void*>(address),bytes.data(),length,&read) && read==length;
+        if(!ok)break;
+        for(DWORD i=0;i<length;++i)if(address+i>=block.metadata && address+i<block.metadata+4)bytes[i]=0;
+        ok=BCryptHashData(hash,bytes.data(),length,0)>=0;offset+=length;
+    }
+    if(ok)ok=BCryptFinishHash(hash,reinterpret_cast<PUCHAR>(digest.data()),static_cast<ULONG>(digest.size()),0)>=0;
+    BCryptDestroyHash(hash);return ok;
+}
 class WindowsSuppressionContext final : public SuppressionContextPort {
     HANDLE thread_;
 public:
@@ -251,10 +276,74 @@ LoaderTrace LoaderObservation::run_cwd_acquire(SuspendedImage& child, void* exec
     const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, LoaderLimits limits) noexcept {
     return run_impl(child,executable,pins,limits,&entry,&proxy,&startup,&codec,&binding,&asi,nullptr,nullptr,&tail,&crt,&application,&platform,&suppression,&instance,&dispatch,&routing,&prelude,&manager,&seh,&lock,&acquire);
 }
+LoaderTrace LoaderObservation::run_cwd_query(SuspendedImage& child, void* executable,
+    std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+    const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+    const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+    const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+    const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, LoaderLimits limits) noexcept {
+    return run_impl(child,executable,pins,limits,&entry,&proxy,&startup,&codec,&binding,&asi,nullptr,nullptr,&tail,&crt,&application,&platform,&suppression,&instance,&dispatch,&routing,&prelude,&manager,&seh,&lock,&acquire,&query);
+}
+LoaderTrace LoaderObservation::run_cwd_copy(SuspendedImage& child, void* executable,
+    std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+    const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+    const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+    const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+    const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, LoaderLimits limits) noexcept {
+    return run_impl(child,executable,pins,limits,&entry,&proxy,&startup,&codec,&binding,&asi,nullptr,nullptr,&tail,&crt,&application,&platform,&suppression,&instance,&dispatch,&routing,&prelude,&manager,&seh,&lock,&acquire,&query,&copy);
+}
+LoaderTrace LoaderObservation::run_cwd_return(SuspendedImage& child, void* executable,
+    std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+    const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+    const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+    const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+    const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, LoaderLimits limits) noexcept {
+    return run_impl(child,executable,pins,limits,&entry,&proxy,&startup,&codec,&binding,&asi,nullptr,nullptr,&tail,&crt,&application,&platform,&suppression,&instance,&dispatch,&routing,&prelude,&manager,&seh,&lock,&acquire,&query,&copy,&completion);
+}
+LoaderTrace LoaderObservation::run_file_manager_ready(SuspendedImage& child, void* executable,
+    std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+    const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+    const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+    const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+    const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, const FileManagerReadySpec& ready, LoaderLimits limits) noexcept {
+    return run_impl(child,executable,pins,limits,&entry,&proxy,&startup,&codec,&binding,&asi,nullptr,nullptr,&tail,&crt,&application,&platform,&suppression,&instance,&dispatch,&routing,&prelude,&manager,&seh,&lock,&acquire,&query,&copy,&completion,&ready);
+}
+LoaderTrace LoaderObservation::run_cd_stream_tables(SuspendedImage& child, void* executable,
+    std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+    const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+    const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+    const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+    const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, const FileManagerReadySpec& ready, const CdStreamTablesSpec& tables, LoaderLimits limits) noexcept {
+    return run_impl(child,executable,pins,limits,&entry,&proxy,&startup,&codec,&binding,&asi,nullptr,nullptr,&tail,&crt,&application,&platform,&suppression,&instance,&dispatch,&routing,&prelude,&manager,&seh,&lock,&acquire,&query,&copy,&completion,&ready,&tables);
+}
+LoaderTrace LoaderObservation::run_cd_stream_disk(SuspendedImage& child, void* executable,
+    std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+    const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+    const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+    const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+    const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, const FileManagerReadySpec& ready, const CdStreamTablesSpec& tables, const CdStreamDiskSpec& disk, LoaderLimits limits) noexcept {
+    return run_impl(child,executable,pins,limits,&entry,&proxy,&startup,&codec,&binding,&asi,nullptr,nullptr,&tail,&crt,&application,&platform,&suppression,&instance,&dispatch,&routing,&prelude,&manager,&seh,&lock,&acquire,&query,&copy,&completion,&ready,&tables,&disk);
+}
+LoaderTrace LoaderObservation::run_cd_stream_allocation(SuspendedImage& child, void* executable,
+    std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+    const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+    const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+    const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+    const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, const FileManagerReadySpec& ready, const CdStreamTablesSpec& tables, const CdStreamDiskSpec& disk, const CdStreamAllocationSpec& allocation, LoaderLimits limits) noexcept {
+    return run_impl(child,executable,pins,limits,&entry,&proxy,&startup,&codec,&binding,&asi,nullptr,nullptr,&tail,&crt,&application,&platform,&suppression,&instance,&dispatch,&routing,&prelude,&manager,&seh,&lock,&acquire,&query,&copy,&completion,&ready,&tables,&disk,&allocation);
+}
+LoaderTrace LoaderObservation::run_cd_stream_channels(SuspendedImage& child, void* executable,
+    std::span<const LoaderFile* const> pins, const EntryStopSpec& entry,
+    const ProxyStopSpec& proxy, const StartupStopSpec& startup, const CodecStopSpec& codec,
+    const BindingStopSpec& binding, const AsiStopSpec& asi, const StartupReturnSpec& tail,
+    const CrtStartupSpec& crt, const ApplicationEntrySpec& application, const PlatformStartupSpec& platform,
+    const PlatformSuppressionSpec& suppression, const InstanceStartupSpec& instance, const EventDispatchSpec& dispatch, const ApplicationRoutingSpec& routing, const GamePreludeSpec& prelude, const FileManagerEntrySpec& manager, const CwdSehSpec& seh, const CwdLockSpec& lock, const CwdAcquireSpec& acquire, const CwdQuerySpec& query, const CwdCopySpec& copy, const CwdReturnSpec& completion, const FileManagerReadySpec& ready, const CdStreamTablesSpec& tables, const CdStreamDiskSpec& disk, const CdStreamAllocationSpec& allocation, const CdStreamChannelsSpec& channels, LoaderLimits limits) noexcept {
+    return run_impl(child,executable,pins,limits,&entry,&proxy,&startup,&codec,&binding,&asi,nullptr,nullptr,&tail,&crt,&application,&platform,&suppression,&instance,&dispatch,&routing,&prelude,&manager,&seh,&lock,&acquire,&query,&copy,&completion,&ready,&tables,&disk,&allocation,&channels);
+}
 LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
     std::span<const LoaderFile* const> pins, LoaderLimits limits, const EntryStopSpec* entry,
     const ProxyStopSpec* proxy, const StartupStopSpec* startup, const CodecStopSpec* codec, const BindingStopSpec* binding,
-    const AsiStopSpec* asi, const BootstrapLifecycleSpec* bootstrap, const FrameTargetSpec* frame, const StartupReturnSpec* tail, const CrtStartupSpec* crt, const ApplicationEntrySpec* application, const PlatformStartupSpec* platform, const PlatformSuppressionSpec* suppression, const InstanceStartupSpec* instance, const EventDispatchSpec* dispatch, const ApplicationRoutingSpec* routing, const GamePreludeSpec* prelude, const FileManagerEntrySpec* manager, const CwdSehSpec* seh, const CwdLockSpec* lock, const CwdAcquireSpec* acquire) noexcept {
+    const AsiStopSpec* asi, const BootstrapLifecycleSpec* bootstrap, const FrameTargetSpec* frame, const StartupReturnSpec* tail, const CrtStartupSpec* crt, const ApplicationEntrySpec* application, const PlatformStartupSpec* platform, const PlatformSuppressionSpec* suppression, const InstanceStartupSpec* instance, const EventDispatchSpec* dispatch, const ApplicationRoutingSpec* routing, const GamePreludeSpec* prelude, const FileManagerEntrySpec* manager, const CwdSehSpec* seh, const CwdLockSpec* lock, const CwdAcquireSpec* acquire, const CwdQuerySpec* query, const CwdCopySpec* copy, const CwdReturnSpec* completion, const FileManagerReadySpec* ready, const CdStreamTablesSpec* tables, const CdStreamDiskSpec* disk, const CdStreamAllocationSpec* allocation, const CdStreamChannelsSpec* channels) noexcept {
     static_assert(sizeof(void*) == 4, "loader experiment requires a same-bitness x86 observer");
     static_assert(sizeof(STARTUPINFOA) == 68, "startup observation requires the x86 Windows structure layout");
     LoaderTrace trace{};
@@ -268,10 +357,14 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
         if (child.created() && !trace.exit_confirmed) trace.reason = "loader_exit_unconfirmed";
         return trace;
     };
-    if (!limits.events || limits.events > 128 || !limits.modules || limits.modules > 64 ||
+    if (!limits.events || limits.events > (allocation?160U:128U) || !limits.modules || limits.modules > 64 ||
         !limits.threads || limits.threads > 16 || !limits.milliseconds || limits.milliseconds > 5000 ||
         !limits.bytes || limits.bytes > 256ULL * 1024 * 1024 || pins.size() > 64)
         return finish("loader_invalid_limits");
+    if(channels) {
+        std::array<std::byte,64> code{};
+        if(!allocation || !tables || !manager || !cd_stream_channels_code(*channels,*tables,*manager,code))return finish("cd_stream_channels_invalid_spec");
+    }
     for (const auto pin : pins) if (!pin || !pin->valid()) return finish("loader_invalid_pin");
     if (!child.error_.empty() || child.loader_started_ || !child.same_file(executable)) return finish("loader_child_identity_or_state");
     if (platform && (!application || !crt || !valid_platform_startup_spec(*platform,*crt))) return finish("platform_invalid_spec");
@@ -284,6 +377,31 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
     if (seh && (!manager || !valid_cwd_seh_spec(*seh,*manager))) return finish("cwd_seh_invalid_spec");
     if (lock && (!seh || !valid_cwd_lock_spec(*lock,*seh))) return finish("cwd_lock_invalid_spec");
     if (acquire && (!lock || !valid_cwd_acquire_spec(*acquire,*lock))) return finish("cwd_acquire_invalid_spec");
+    if (query && (!acquire || !valid_cwd_query_spec(*query,*lock) || !cwd_query_directory(query->expected_directory))) return finish("cwd_query_invalid_spec");
+    if(copy) {
+        CwdCopyCode code{};
+        if(!query || !cwd_copy_code(*copy,*query,*lock,code))return finish("cwd_copy_invalid_spec");
+    }
+    if(ready) {
+        FileManagerReadyCode code{};
+        if(!completion || !manager || !seh || !lock || !file_manager_ready_code(*ready,*completion,*lock,*seh,*manager,code))return finish("file_manager_ready_invalid_spec");
+    }
+    if(tables) {
+        CdStreamTablesCode code{};
+        if(!ready || !manager || !cd_stream_tables_code(*tables,*manager,code))return finish("cd_stream_tables_invalid_spec");
+    }
+    if(disk) {
+        CdStreamDiskCode code{};
+        if(!tables || !cd_stream_disk_code(*disk,*tables,*manager,code))return finish("cd_stream_disk_invalid_spec");
+    }
+    if(allocation) {
+        CdStreamAllocationCode code{};
+        if(!disk || !cd_stream_allocation_code(*allocation,*disk,*manager,*seh,*ready,code))return finish("cd_stream_allocation_invalid_spec");
+    }
+    if(completion) {
+        CwdReturnCode code{};
+        if(!copy || !cwd_return_code(*completion,*copy,*query,*lock,code))return finish("cwd_return_invalid_spec");
+    }
     if (application && (!crt || !proxy || !valid_application_entry_spec(*application,*crt) ||
         application->reentry_rva!=proxy->iat_target_rva)) return finish("application_invalid_spec");
     if (crt && (!tail || !valid_crt_startup_spec(*crt) || crt->io.image_base!=child.base_ ||
@@ -978,6 +1096,263 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
             (check.Dr7&0xffff20ffU)!=0x00d00055U) return false;
         auto& state=trace.cwd_acquire;state.stage=stage;state.stop_address=address;state.armed=true;return true;
     };
+    EventDispatchRegisters query_saved{};
+    std::uint32_t query_cookie{};
+    std::array<std::uint32_t,2> query_guard{};
+    const auto query_shape=[&] {
+        std::array<std::byte,18> wrapper{},path{};std::array<std::byte,28> helper{};
+        if(!acquire_shape() || !cwd_query_code(*query,*lock,wrapper,helper,path) ||
+            !exact_code(child.base_,lock->selector.call_rva+5,wrapper) || !exact_code(child.base_,query->helper_rva,helper) ||
+            !exact_code(child.base_,query->helper_rva+123,path) || !exact_code(child.base_,query->helper_rva+141,query->return_prefix))return false;
+        std::uint32_t k32{},kb{},target{},implementation{};
+        for(std::uint32_t i=0;i<trace.module_count;++i) {
+            const auto& m=trace.modules[i];
+            if(!m.admitted || !mappings.active(m.mapping_id,m.base))continue;
+            if(std::string_view(m.file.name.data())=="kernel32.dll")k32=static_cast<std::uint32_t>(m.base);
+            if(std::string_view(m.file.name.data())=="kernelbase.dll")kb=static_cast<std::uint32_t>(m.base);
+        }
+        std::array<std::byte,20> function{},body{};
+        if(!k32 || !kb || !bootstrap_export_prefix(query->function,k32,function) ||
+            !bootstrap_export_prefix(query->implementation,kb,body) || !read_word(child.base_,query->iat_rva,target) ||
+            target!=k32+query->function.rva || !read_word(k32,query->thunk_slot_rva,implementation) ||
+            implementation!=kb+query->implementation.rva || !exact_code(k32,query->function.rva,function) ||
+            !exact_code(kb,query->implementation.rva,body))return false;
+        auto& state=trace.cwd_query;
+        if((state.function_address && state.function_address!=target) ||
+            (state.implementation_address && state.implementation_address!=implementation))return false;
+        state.function_address=target;state.implementation_address=implementation;return true;
+    };
+    const auto arm_query=[&](std::uint32_t stage,std::uint32_t address,CONTEXT& c) {
+        c.ContextFlags=CONTEXT_DEBUG_REGISTERS;c.Dr0=address;c.Dr6=0;
+        if(!SetThreadContext(child.thread_,&c))return false;
+        CONTEXT check{};check.ContextFlags=CONTEXT_DEBUG_REGISTERS;
+        if(!GetThreadContext(child.thread_,&check) || check.Dr0!=address || check.Dr1!=child.base_+proxy->iat_rva ||
+            check.Dr2!=trace.proxy_base+asi->call_rva || check.Dr3!=child.base_+instance->caller.target_rva+31 ||
+            (check.Dr7&0xffff20ffU)!=0x00d00055U)return false;
+        auto& state=trace.cwd_query;state.stage=stage;state.stop_address=address;state.armed=true;return true;
+    };
+    EventDispatchRegisters copy_api_return{};
+    const auto copy_shape=[&] {
+        CwdCopyCode code{};
+        return query_shape() && cwd_copy_code(*copy,*query,*lock,code) &&
+            exact_code(child.base_,query->helper_rva+141,code.checks) &&
+            exact_code(child.base_,query->helper_rva+197,code.capacity) &&
+            exact_code(child.base_,query->helper_rva+218,code.call) &&
+            exact_code(child.base_,copy->copier_rva,code.entry) &&
+            exact_code(child.base_,copy->copier_rva+117,code.body) &&
+            exact_code(child.base_,query->helper_rva+231,copy->return_prefix);
+    };
+    const auto arm_copy=[&](std::uint32_t stage,std::uint32_t address,CONTEXT& c) {
+        c.ContextFlags=CONTEXT_DEBUG_REGISTERS;c.Dr0=address;c.Dr6=0;
+        if(!SetThreadContext(child.thread_,&c))return false;
+        CONTEXT check{};check.ContextFlags=CONTEXT_DEBUG_REGISTERS;
+        if(!GetThreadContext(child.thread_,&check) || check.Dr0!=address || check.Dr1!=child.base_+proxy->iat_rva ||
+            check.Dr2!=trace.proxy_base+asi->call_rva || check.Dr3!=child.base_+instance->caller.target_rva+31 ||
+            (check.Dr7&0xffff20ffU)!=0x00d00055U)return false;
+        auto& state=trace.cwd_copy;state.stage=stage;state.stop_address=address;state.armed=true;return true;
+    };
+    EventDispatchRegisters return_copy_saved{};
+    const auto return_shape=[&] {
+        CwdReturnCode code{};
+        return copy_shape() && cwd_return_code(*completion,*copy,*query,*lock,code) &&
+            exact_code(child.base_,query->helper_rva+231,code.cleanup) &&
+            exact_code(child.base_,query->helper_rva+63,code.epilogue) &&
+            exact_code(child.base_,completion->checker_rva,code.checker) &&
+            exact_code(child.base_,lock->selector.call_rva+23,completion->return_prefix);
+    };
+    const auto arm_return=[&](std::uint32_t stage,std::uint32_t address,CONTEXT& c) {
+        c.ContextFlags=CONTEXT_DEBUG_REGISTERS;c.Dr0=address;c.Dr6=0;
+        if(!SetThreadContext(child.thread_,&c))return false;
+        CONTEXT check{};check.ContextFlags=CONTEXT_DEBUG_REGISTERS;
+        if(!GetThreadContext(child.thread_,&check) || check.Dr0!=address || check.Dr1!=child.base_+proxy->iat_rva ||
+            check.Dr2!=trace.proxy_base+asi->call_rva || check.Dr3!=child.base_+instance->caller.target_rva+31 ||
+            (check.Dr7&0xffff20ffU)!=0x00d00055U)return false;
+        auto& state=trace.cwd_return;state.stage=stage;state.stop_address=address;state.armed=true;return true;
+    };
+    const auto ready_shape=[&] {
+        FileManagerReadyCode code{};std::uint32_t target{};
+        if(!return_shape() || !file_manager_ready_code(*ready,*completion,*lock,*seh,*manager,code) ||
+            !exact_code(child.base_,lock->selector.call_rva+23,code.wrapper) ||
+            !exact_code(child.base_,seh->cleanup_rva,code.cleanup) || !exact_code(child.base_,ready->unlock_rva,code.unlock) ||
+            !exact_code(child.base_,ready->epilogue_rva,code.epilogue) || !read_word(child.base_,ready->iat_rva,target))return false;
+        auto& state=trace.file_manager_ready;
+        if(state.function_address && state.function_address!=target)return false;
+        for(std::uint32_t i=0;i<trace.module_count;++i) {
+            const auto& m=trace.modules[i];
+            if(m.admitted && mappings.active(m.mapping_id,m.base) && std::string_view(m.file.name.data())=="ntdll.dll" &&
+                target==m.base+ready->function.rva && exact_code(m.base,ready->function.rva,ready->function.prefix)) {
+                state.function_address=target;return true;
+            }
+        }return false;
+    };
+    const auto arm_ready=[&](std::uint32_t stage,std::uint32_t address,CONTEXT& c) {
+        c.ContextFlags=CONTEXT_DEBUG_REGISTERS;c.Dr0=address;c.Dr6=0;
+        if(!SetThreadContext(child.thread_,&c))return false;
+        CONTEXT check{};check.ContextFlags=CONTEXT_DEBUG_REGISTERS;
+        if(!GetThreadContext(child.thread_,&check) || check.Dr0!=address || check.Dr1!=child.base_+proxy->iat_rva ||
+            check.Dr2!=trace.proxy_base+asi->call_rva || check.Dr3!=child.base_+instance->caller.target_rva+31 ||
+            (check.Dr7&0xffff20ffU)!=0x00d00055U)return false;
+        auto& state=trace.file_manager_ready;state.stage=stage;state.stop_address=address;state.armed=true;return true;
+    };
+    EventDispatchRegisters tables_saved{};
+    const auto tables_shape=[&] {
+        CdStreamTablesCode code{};
+        return ready_shape() && cd_stream_tables_code(*tables,*manager,code) &&
+            exact_code(child.base_,manager->manager.call_rva+5,code.caller) && exact_code(child.base_,tables->target_rva,code.body);
+    };
+    const auto tables_read=[&](CdStreamTableWindow& window) {
+        MEMORY_BASIC_INFORMATION region{};const auto address=child.base_+tables->handles_rva-4;
+        if(VirtualQueryEx(child.process_,reinterpret_cast<void*>(address),&region,sizeof(region))!=sizeof(region) ||
+            region.Type!=MEM_IMAGE || region.State!=MEM_COMMIT || reinterpret_cast<std::uintptr_t>(region.AllocationBase)!=child.base_ ||
+            !(region.Protect&(PAGE_READWRITE|PAGE_WRITECOPY|PAGE_EXECUTE_READWRITE|PAGE_EXECUTE_WRITECOPY)) ||
+            (region.Protect&(PAGE_GUARD|PAGE_NOACCESS)) || address<reinterpret_cast<std::uintptr_t>(region.BaseAddress) ||
+            address-reinterpret_cast<std::uintptr_t>(region.BaseAddress)>region.RegionSize ||
+            window.size()>region.RegionSize-(address-reinterpret_cast<std::uintptr_t>(region.BaseAddress)))return false;
+        for(std::size_t i=0;i<window.size();i+=16)if(!read_image(child.base_,tables->handles_rva-4+static_cast<DWORD>(i),
+            std::span(window).subspan(i,std::min<std::size_t>(16,window.size()-i)),false))return false;
+        return true;
+    };
+
+    EventDispatchRegisters disk_return_saved{};
+    const auto disk_shape=[&] {
+        CdStreamDiskCode code{};
+        if(!tables_shape() || !cd_stream_disk_code(*disk,*tables,*manager,code) ||
+            !exact_code(child.base_,tables->target_rva+68,code.body))return false;
+        std::uint32_t k32{},kb{},target{},implementation{};
+        for(std::uint32_t i=0;i<trace.module_count;++i) {
+            const auto& m=trace.modules[i];if(!m.admitted || !mappings.active(m.mapping_id,m.base))continue;
+            if(std::string_view(m.file.name.data())=="kernel32.dll")k32=static_cast<DWORD>(m.base);
+            if(std::string_view(m.file.name.data())=="kernelbase.dll")kb=static_cast<DWORD>(m.base);
+        }
+        std::array<std::byte,6> thunk{std::byte{0xff},std::byte{0x25}};
+        if(!k32 || !kb || k32>UINT32_MAX-16*1024*1024 || kb>UINT32_MAX-16*1024*1024)return false;
+        const auto slot=k32+disk->thunk_slot_rva;std::memcpy(thunk.data()+2,&slot,4);
+        std::array<std::byte,20> body{};
+        if(!bootstrap_export_prefix(disk->implementation,kb,body) || !exact_code(k32,disk->thunk_rva,thunk) ||
+            !read_word(child.base_,tables->disk_iat_rva,target) || target!=k32+disk->thunk_rva ||
+            !read_word(k32,disk->thunk_slot_rva,implementation) || implementation!=kb+disk->implementation.rva ||
+            !exact_code(kb,disk->implementation.rva,body))return false;
+        auto& state=trace.cd_stream_disk;
+        if((state.function_address && state.function_address!=target) ||
+            (state.implementation_address && state.implementation_address!=implementation))return false;
+        state.function_address=target;state.implementation_address=implementation;return true;
+    };
+    const auto disk_read_globals=[&](std::array<std::uint32_t,5>& values) {
+        const auto address=child.base_+disk->flags_rva-4;MEMORY_BASIC_INFORMATION region{};
+        if(VirtualQueryEx(child.process_,reinterpret_cast<void*>(address),&region,sizeof(region))!=sizeof(region) ||
+            region.State!=MEM_COMMIT || region.Type!=MEM_IMAGE || reinterpret_cast<std::uintptr_t>(region.AllocationBase)!=child.base_ ||
+            !(region.Protect&(PAGE_READWRITE|PAGE_WRITECOPY|PAGE_EXECUTE_READWRITE|PAGE_EXECUTE_WRITECOPY)) ||
+            (region.Protect&(PAGE_GUARD|PAGE_NOACCESS)) || address<reinterpret_cast<std::uintptr_t>(region.BaseAddress) ||
+            address-reinterpret_cast<std::uintptr_t>(region.BaseAddress)>region.RegionSize ||
+            20>region.RegionSize-(address-reinterpret_cast<std::uintptr_t>(region.BaseAddress)))return false;
+        auto bytes=std::as_writable_bytes(std::span(values));
+        return read_image(child.base_,disk->flags_rva-4,bytes.first(16),false) &&
+            read_image(child.base_,disk->flags_rva+12,bytes.subspan(16),false);
+    };
+    const auto arm_disk=[&](std::uint32_t stage,CONTEXT& c) {
+        auto& state=trace.cd_stream_disk;
+        const auto address=stage==1?state.function_address:stage==2?state.implementation_address:
+            static_cast<DWORD>(child.base_+tables->target_rva+(stage==3?74:132));
+        c.ContextFlags=CONTEXT_DEBUG_REGISTERS;c.Dr0=address;c.Dr6=0;
+        if(!SetThreadContext(child.thread_,&c))return false;
+        CONTEXT check{};check.ContextFlags=CONTEXT_DEBUG_REGISTERS;
+        if(!GetThreadContext(child.thread_,&check) || check.Dr0!=address || check.Dr1!=child.base_+proxy->iat_rva ||
+            check.Dr2!=trace.proxy_base+asi->call_rva || check.Dr3!=child.base_+instance->caller.target_rva+31 ||
+            (check.Dr7&0xffff20ffU)!=0x00d00055U)return false;
+        state.stage=stage;state.stop_address=address;state.armed=true;return true;
+    };
+
+    EventDispatchRegisters allocation_saved{},allocation_heap_return{};
+    std::array<std::byte,44> allocation_caller_stack{};
+    const auto allocation_shape=[&] {
+        CdStreamAllocationCode code{};std::uint32_t target{};
+        auto& state=trace.cd_stream_allocation;state.shape_failure=0;
+        const auto checked=[&](bool valid,std::uint32_t step){if(!valid)state.shape_failure=step;return valid;};
+        if(!checked(disk_shape(),1) || !checked(cd_stream_allocation_code(*allocation,*disk,*manager,*seh,*ready,code),2) ||
+            !checked(exact_code(child.base_,disk->allocator_rva,code.aligned),3) || !checked(exact_code(child.base_,allocation->malloc_rva,code.malloc),4) ||
+            !checked(exact_code(child.base_,allocation->nh_rva,code.nh),5) ||
+            !checked(exact_code(child.base_,allocation->nh_rva+43,std::array<std::byte,1>{std::byte{0xc3}}),6) ||
+            !checked(exact_code(child.base_,allocation->heap_rva,code.heap_entry),7) || !checked(exact_code(child.base_,allocation->heap_rva+70,code.heap_tail),8) ||
+            !checked(read_word(child.base_,allocation->iat_rva,target),9))return false;
+        // Cleanup scope is recorded but no exception handler execution is permitted.
+        std::array<std::byte,12> scope{};
+        if(!checked(read_image(child.base_,allocation->scope_rva,scope,false),10))return false;
+        std::array<DWORD,3> words{};std::memcpy(words.data(),scope.data(),12);
+        if(!checked(words[0]==UINT32_MAX && !words[1] && words[2]==child.base_+allocation->scope_cleanup_rva,11))return false;
+        if(!checked(!state.function_address || state.function_address==target,12))return false;
+        for(std::uint32_t i=0;i<trace.module_count;++i) {
+            const auto& m=trace.modules[i];std::array<std::byte,20> prefix{};
+            if(m.admitted && mappings.active(m.mapping_id,m.base) && std::string_view(m.file.name.data())=="ntdll.dll" &&
+                target==m.base+allocation->function.rva && bootstrap_export_prefix(allocation->function,static_cast<DWORD>(m.base),prefix) &&
+                exact_code(m.base,allocation->function.rva,prefix)){state.function_address=target;return true;}
+        }state.shape_failure=13;return false;
+    };
+    const auto allocation_globals=[&](std::array<std::uint32_t,4>& values) {
+        return read_word(child.base_,allocation->new_mode_rva,values[0]) && read_word(child.base_,allocation->threshold_rva,values[1]) &&
+            read_word(child.base_,allocation->heap_handle_rva,values[2]) && read_word(child.base_,allocation->heap_mode_rva,values[3]);
+    };
+    const auto arm_allocation=[&](std::uint32_t stage,CONTEXT& c) {
+        auto& state=trace.cd_stream_allocation;
+        const std::array<DWORD,11> rvas{0,disk->allocator_rva,allocation->heap_rva,allocation->heap_rva+22,
+            allocation->heap_rva+30,allocation->heap_rva+99,0,allocation->heap_rva+105,disk->allocator_rva+17,disk->allocator_rva+30,tables->target_rva+137};
+        const auto address=stage==6?state.function_address:static_cast<DWORD>(child.base_+rvas[stage]);
+        c.ContextFlags=CONTEXT_DEBUG_REGISTERS;c.Dr0=address;c.Dr6=0;
+        if(!SetThreadContext(child.thread_,&c))return false;
+        CONTEXT check{};check.ContextFlags=CONTEXT_DEBUG_REGISTERS;
+        if(!GetThreadContext(child.thread_,&check) || check.Dr0!=address || check.Dr1!=child.base_+proxy->iat_rva ||
+            check.Dr2!=trace.proxy_base+asi->call_rva || check.Dr3!=child.base_+instance->caller.target_rva+31 ||
+            (check.Dr7&0xffff20ffU)!=0x00d00055U)return false;
+        state.stage=stage;state.stop_address=address;state.armed=true;return true;
+    };
+    EventDispatchRegisters channels_saved{},channels_error_return{},channels_local_return{};
+    std::array<std::byte,32> channels_caller_stack{};
+    const auto channels_shape=[&] {
+        auto& state=trace.cd_stream_channels;state.shape_failure=0;
+        const auto checked=[&](bool valid,std::uint32_t step){if(!valid)state.shape_failure=step;return valid;};
+        std::array<std::byte,64> code{};
+        if(!checked(allocation_shape(),1) || !checked(cd_stream_channels_code(*channels,*tables,*manager,code),2) ||
+            !checked(exact_code(child.base_,tables->target_rva+137,code),3))return false;
+        std::array<std::byte,16> name{};constexpr char expected[]="MODELS\\GTA3.IMG";
+        if(!checked(read_image(child.base_,channels->filename_rva,name,false) && std::memcmp(name.data(),expected,16)==0,4))return false;
+        const std::array<const BootstrapExportSpec*,4> specs{&channels->error_thunk,&channels->error_implementation,&channels->local_thunk,&channels->local_implementation};
+        const std::array<std::string_view,4> modules{"kernel32.dll","ntdll.dll","kernel32.dll","kernelbase.dll"};
+        std::array<std::uint32_t,4> functions{};std::uint32_t kernel{};
+        for(unsigned n=0;n<4;++n)for(std::uint32_t i=0;i<trace.module_count;++i) {
+            const auto& item=trace.modules[i];std::array<std::byte,20> prefix{};
+            if(item.admitted && mappings.active(item.mapping_id,item.base) && std::string_view(item.file.name.data())==modules[n] &&
+                bootstrap_export_prefix(*specs[n],static_cast<DWORD>(item.base),prefix) && exact_code(item.base,specs[n]->rva,prefix)) {
+                functions[n]=static_cast<DWORD>(item.base+specs[n]->rva);if(n==0)kernel=static_cast<DWORD>(item.base);
+            }
+        }
+        if(!checked(std::all_of(functions.begin(),functions.end(),[](auto x){return x!=0;}),5))return false;
+        std::uint32_t a{},b{},c{},d{};
+        if(!checked(read_word(child.base_,channels->error_iat_rva,a) && a==functions[0] && read_word(child.base_,channels->local_iat_rva,b) && b==functions[2] &&
+            read_word(kernel,channels->error_thunk_slot_rva,c) && c==functions[1] && read_word(kernel,channels->local_thunk_slot_rva,d) && d==functions[3],6))return false;
+        if(!checked(!state.functions[0] || state.functions==functions,7))return false;
+        state.functions=functions;return true;
+    };
+    const auto arm_channels=[&](std::uint32_t stage,CONTEXT& c) {
+        auto& state=trace.cd_stream_channels;
+        const auto start=static_cast<DWORD>(child.base_+tables->target_rva+137);
+        const std::array<DWORD,10> addresses{0,start+7,state.functions[0],state.functions[1],start+13,start+41,state.functions[2],state.functions[3],start+47,start+59};
+        c.ContextFlags=CONTEXT_DEBUG_REGISTERS;c.Dr0=addresses[stage];c.Dr6=0;
+        if(!SetThreadContext(child.thread_,&c))return false;
+        CONTEXT check{};check.ContextFlags=CONTEXT_DEBUG_REGISTERS;
+        if(!GetThreadContext(child.thread_,&check) || check.Dr0!=addresses[stage] || check.Dr1!=child.base_+proxy->iat_rva ||
+            check.Dr2!=trace.proxy_base+asi->call_rva || check.Dr3!=child.base_+instance->caller.target_rva+31 ||
+            (check.Dr7&0xffff20ffU)!=0x00d00055U)return false;
+        state.stage=stage;state.stop_address=addresses[stage];state.armed=true;return true;
+    };
+    const auto arm_tables=[&](std::uint32_t stage,CONTEXT& c) {
+        const auto address=static_cast<DWORD>(child.base_+tables->target_rva+(stage==2?68:0));
+        c.ContextFlags=CONTEXT_DEBUG_REGISTERS;c.Dr0=address;c.Dr6=0;
+        if(!SetThreadContext(child.thread_,&c))return false;
+        CONTEXT check{};check.ContextFlags=CONTEXT_DEBUG_REGISTERS;
+        if(!GetThreadContext(child.thread_,&check) || check.Dr0!=address || check.Dr1!=child.base_+proxy->iat_rva ||
+            check.Dr2!=trace.proxy_base+asi->call_rva || check.Dr3!=child.base_+instance->caller.target_rva+31 ||
+            (check.Dr7&0xffff20ffU)!=0x00d00055U)return false;
+        auto& state=trace.cd_stream_tables;state.stage=stage;state.stop_address=address;state.armed=true;return true;
+    };
     CONTEXT bootstrap_saved{};
     std::array<std::byte, 224> bootstrap_envelope{};
     const auto bootstrap_shape = [&] {
@@ -1047,6 +1422,14 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
             trace.system_error = GetLastError(); return finish("loader_continue_failed");
         }
         child.pending_ = false; trace.advanced = true;
+        if (trace.cd_stream_channels.armed) trace.cd_stream_channels.continued=true;
+        if (trace.cd_stream_allocation.armed) trace.cd_stream_allocation.continued=true;
+        if (trace.cd_stream_disk.armed) trace.cd_stream_disk.continued=true;
+        if (trace.cd_stream_tables.armed) trace.cd_stream_tables.continued=true;
+        if (trace.file_manager_ready.armed) trace.file_manager_ready.continued=true;
+        if (trace.cwd_return.armed) trace.cwd_return.continued=true;
+        if (trace.cwd_copy.armed) trace.cwd_copy.continued=true;
+        if (trace.cwd_query.armed) trace.cwd_query.continued=true;
         if (trace.cwd_acquire.armed) trace.cwd_acquire.continued=true;
         if (trace.cwd_lock.armed) trace.cwd_lock.continued=true;
         if (trace.cwd_seh.armed) trace.cwd_seh.continued=true;
@@ -1143,7 +1526,7 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
             trace.last_event_address = trace.exception_address;
             if (entry && trace.initial_breakpoint_continued) {
                 CONTEXT context{}; context.ContextFlags = CONTEXT_CONTROL | CONTEXT_DEBUG_REGISTERS | CONTEXT_INTEGER;
-                const auto expected_address = trace.cwd_acquire.armed ? trace.cwd_acquire.stop_address : trace.cwd_lock.armed ? trace.cwd_lock.stop_address : trace.cwd_seh.armed ? trace.cwd_seh.stop_address : trace.file_manager_entry.armed ? trace.file_manager_entry.stop_address : trace.game_prelude.armed ? trace.game_prelude.stop_address : trace.application_routing.armed ? trace.application_routing.stop_address : trace.event_dispatch.armed ? trace.event_dispatch.stop_address : trace.instance_startup.armed ? trace.instance_startup.stop_address : trace.platform_suppression.transaction.applied ? trace.platform_suppression.return_address : trace.platform_startup.armed ? trace.platform_startup.stop_address : trace.application_entry.armed ? trace.application_entry.stop_address : trace.crt_startup.armed ? trace.crt_startup.stop_address : trace.startup_return.armed ? trace.startup_return.stop_address : trace.asi_load_continued ? trace.asi_return_address : trace.asi_scan_continued ? trace.asi_call_address : trace.binding_continued ? trace.binding_stop_address : trace.codec_continued ? trace.codec_return_address : trace.startup_continued ? trace.startup_address : trace.proxy_continued ? trace.proxy_return_address : trace.entry_address;
+                const auto expected_address = trace.cd_stream_channels.armed ? trace.cd_stream_channels.stop_address : trace.cd_stream_allocation.armed ? trace.cd_stream_allocation.stop_address : trace.cd_stream_disk.armed ? trace.cd_stream_disk.stop_address : trace.cd_stream_tables.armed ? trace.cd_stream_tables.stop_address : trace.file_manager_ready.armed ? trace.file_manager_ready.stop_address : trace.cwd_return.armed ? trace.cwd_return.stop_address : trace.cwd_copy.armed ? trace.cwd_copy.stop_address : trace.cwd_query.armed ? trace.cwd_query.stop_address : trace.cwd_acquire.armed ? trace.cwd_acquire.stop_address : trace.cwd_lock.armed ? trace.cwd_lock.stop_address : trace.cwd_seh.armed ? trace.cwd_seh.stop_address : trace.file_manager_entry.armed ? trace.file_manager_entry.stop_address : trace.game_prelude.armed ? trace.game_prelude.stop_address : trace.application_routing.armed ? trace.application_routing.stop_address : trace.event_dispatch.armed ? trace.event_dispatch.stop_address : trace.instance_startup.armed ? trace.instance_startup.stop_address : trace.platform_suppression.transaction.applied ? trace.platform_suppression.return_address : trace.platform_startup.armed ? trace.platform_startup.stop_address : trace.application_entry.armed ? trace.application_entry.stop_address : trace.crt_startup.armed ? trace.crt_startup.stop_address : trace.startup_return.armed ? trace.startup_return.stop_address : trace.asi_load_continued ? trace.asi_return_address : trace.asi_scan_continued ? trace.asi_call_address : trace.binding_continued ? trace.binding_stop_address : trace.codec_continued ? trace.codec_return_address : trace.startup_continued ? trace.startup_address : trace.proxy_continued ? trace.proxy_return_address : trace.entry_address;
                 if (trace.exception_code != EXCEPTION_SINGLE_STEP || !event.u.Exception.dwFirstChance ||
                     event.dwThreadId != GetThreadId(child.thread_))
                     return finish("entry_unexpected_exception");
@@ -1177,6 +1560,584 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
                     (context.Dr7 & (trace.startup_continued ? 0xffff20ffU : 0xffff00ffU)) != (trace.startup_continued ? watched_dr7 : 1U) ||
                     (trace.startup_continued && context.Dr1 != child.base_ + proxy->iat_rva))
                     return finish("entry_breakpoint_identity");
+
+
+                if(trace.cd_stream_channels.armed) {
+                    auto& state=trace.cd_stream_channels;const auto stage=state.stage,A=channels_saved.esp;
+                    state.shape_valid=channels_shape();if(!state.shape_valid)return finish("cd_stream_channels_shape_drift");
+                    state.frame_valid=cd_stream_channels_frame(stage,channels_saved,dispatch_registers(context),channels_error_return,channels_local_return);
+                    if(!state.frame_valid)return finish("cd_stream_channels_frame");
+                    std::array<std::byte,32> caller{};std::array<std::uint32_t,3> args{};
+                    state.arguments_valid=read_private(A+12,caller.data(),32) && caller==channels_caller_stack;
+                    if(stage<=3) {
+                        const auto count=stage==1?1U:2U;
+                        state.arguments_valid=state.arguments_valid && read_private(context.Esp,args.data(),count*4) && args[count-1]==0;
+                        if(stage!=1)state.arguments_valid=state.arguments_valid && args[0]==child.base_+tables->target_rva+150;
+                    } else if(stage>=5 && stage<=7) {
+                        const auto offset=stage==5?0U:1U;
+                        state.arguments_valid=state.arguments_valid && read_private(context.Esp,args.data(),(2+offset)*4) && args[offset]==0x40 && args[offset+1]==240;
+                        if(offset)state.arguments_valid=state.arguments_valid && args[0]==child.base_+tables->target_rva+184;
+                    } else if(stage==9)state.arguments_valid=state.arguments_valid && read_private(context.Esp,args.data(),8) && args[0]==child.base_+channels->filename_rva && !args[1];
+                    if(!state.arguments_valid)return finish("cd_stream_channels_arguments");
+                    CdStreamTableWindow table{};state.tables_valid=tables_read(table) && cd_stream_channels_tables(trace.cd_stream_tables.after,table,stage>=5);
+                    if(!state.tables_valid)return finish("cd_stream_channels_tables_drift");
+                    if(!read_image(child.base_,channels->pointer_rva-4,state.pointer_after,false))return finish("cd_stream_channels_pointer_unreadable");
+                    for(unsigned i=0;i<12;++i) {
+                        const auto expected=stage==9 && i>=4 && i<8?std::byte((state.pointer>>((i-4)*8))&255U):state.pointer_before[i];
+                        if(state.pointer_after[i]!=expected)return finish("cd_stream_channels_pointer_drift");
+                    }
+                    std::array<std::uint32_t,7> tib{};std::array<std::uint32_t,2> prior{};
+                    state.seh_preserved=seh_read_tib(tib) && tib==trace.cwd_seh.tib_before &&
+                        (tib[0]==UINT32_MAX || (read_private(tib[0],prior.data(),8) && prior==seh_prior_record));
+                    if(!state.seh_preserved)return finish("cd_stream_channels_seh_drift");
+                    std::array<std::byte,136> directory{};std::array<std::byte,32> parent{};std::array<std::byte,156> application_caller{};
+                    std::array<std::byte,16> flags{};std::array<std::uint32_t,6> object{};std::array<std::uint32_t,5> disk_globals{};
+                    state.parent_preserved=disk_read_globals(disk_globals) && disk_globals==trace.cd_stream_disk.globals_after &&
+                        manager_read_buffer(directory) && directory==trace.file_manager_ready.directory_after &&
+                        read_private(prelude_saved.esp,parent.data(),32) && parent==prelude_parent_stack &&
+                        read_private(dispatch_saved.esp,application_caller.data(),156) && std::equal(application_caller.begin(),application_caller.end(),suppression_stack.begin()+16) &&
+                        prelude_read_flags(flags) && flags==trace.game_prelude.flags_after && acquire_read_object(object) &&
+                        cwd_acquire_object(trace.cwd_acquire.object_address,trace.cwd_acquire.object_before,object,trace.cwd_acquire.thread_id,false) &&
+                        same_named_event(child.process_,trace.instance_startup.event_handle,instance->name);
+                    if(!state.parent_preserved)return finish("cd_stream_channels_parent_drift");
+                    std::array<std::uint32_t,4> heap_globals{};std::array<std::byte,32> hash{};std::uint32_t metadata{};
+                    const auto& block=trace.cd_stream_allocation.block;
+                    state.allocation_preserved=allocation_globals(heap_globals) && heap_globals==trace.cd_stream_allocation.globals &&
+                        allocation_hash(child.process_,block,hash) && hash==trace.cd_stream_allocation.block_after_hash &&
+                        read_private(block.metadata,&metadata,4) && metadata==block.raw;
+                    if(!state.allocation_preserved)return finish("cd_stream_channels_allocation_drift");
+                    if(stage==4) {
+                        channels_error_return=dispatch_registers(context);state.error_reset=read_last_error(state.error_after_reset) && state.error_after_reset==0;
+                        if(!state.error_reset)return finish("cd_stream_channels_error_not_reset");
+                    }
+                    if(stage==8) {
+                        channels_local_return=dispatch_registers(context);state.local_returned=true;state.pointer=context.Eax;
+                        if(!read_last_error(state.error_after_local))return finish("cd_stream_channels_error_unreadable");
+                        state.allocation_succeeded=state.pointer!=0;if(!state.allocation_succeeded)return finish("cd_stream_channels_allocation_failed");
+                        state.block_valid=cd_stream_channels_range(state.pointer,block) && !(state.pointer<tib[1] && tib[2]<state.pointer+240) &&
+                            !(state.pointer<tib[6]+56 && tib[6]<state.pointer+240);
+                        if(!state.block_valid)return finish("cd_stream_channels_block_rejected");
+                    }
+                    if(stage>=8) {
+                        MEMORY_BASIC_INFORMATION region{};
+                        if(VirtualQueryEx(child.process_,reinterpret_cast<void*>(state.pointer),&region,sizeof(region))!=sizeof(region) ||
+                            region.State!=MEM_COMMIT || region.Type!=MEM_PRIVATE || region.Protect!=PAGE_READWRITE ||
+                            !read_private(state.pointer,state.channels.data(),240))return finish("cd_stream_channels_block_unreadable");
+                        state.zero_initialized=cd_stream_channels_memory(state.channels);
+                        if(!state.zero_initialized)return finish("cd_stream_channels_nonzero_block");
+                    }
+                    if(stage==9){state.pointer_published=true;state.verified=true;return finish("cd_stream_channels_verified");}
+                    if(!arm_channels(stage+1,context))return finish("cd_stream_channels_arm_failed");
+                    continue;
+                }
+                if(trace.cd_stream_allocation.armed) {
+                    auto& state=trace.cd_stream_allocation;const auto stage=state.stage,a=trace.cd_stream_disk.geometry.bytes_per_sector,A=allocation_saved.esp;
+                    state.shape_valid=allocation_shape();if(!state.shape_valid)return finish("cd_stream_allocation_shape_drift");
+                    std::array<std::uint32_t,4> globals{};state.globals_preserved=allocation_globals(globals) && globals==state.globals;
+                    if(!state.globals_preserved)return finish("cd_stream_allocation_globals_drift");
+                    state.frame_valid=cd_stream_allocation_frame(stage,allocation_saved,dispatch_registers(context),a,state.block,allocation_heap_return);
+                    if(!state.frame_valid)return finish("cd_stream_allocation_frame");
+                    std::array<std::byte,44> caller_stack{};
+                    state.arguments_valid=read_private(A,caller_stack.data(),44) && caller_stack==allocation_caller_stack;
+                    DWORD ret{};state.arguments_valid=state.arguments_valid && read_private(A-4,&ret,4) && ret==child.base_+tables->target_rva+137;
+                    if(stage>=2 && stage<=7) {
+                        std::array<DWORD,8> nested{};
+                        state.arguments_valid=state.arguments_valid && read_private(A-36,nested.data(),32) &&
+                            nested==std::array<DWORD,8>{static_cast<DWORD>(child.base_+allocation->nh_rva+16),2048+a,
+                                static_cast<DWORD>(child.base_+allocation->malloc_rva+15),2048+a,0,
+                                static_cast<DWORD>(child.base_+disk->allocator_rva+17),2048+a,allocation_saved.esi};
+                    }
+                    if(stage==5 || stage==6) {
+                        std::array<DWORD,4> args{};const auto count=stage==6?4U:3U;
+                        state.arguments_valid=state.arguments_valid && read_private(context.Esp,args.data(),count*4);
+                        if(stage==6)state.arguments_valid=state.arguments_valid && args[0]==child.base_+allocation->heap_rva+105;
+                        const auto offset=stage==6?1U:0U;
+                        state.arguments_valid=state.arguments_valid && args[offset]==state.globals[2] && !args[offset+1] && args[offset+2]==2048+a;
+                    }
+                    if(!state.arguments_valid)return finish("cd_stream_allocation_arguments");
+                    if(stage==3) {
+                        if(((context.EFlags&0x40U)!=0)!=(state.globals[3]==3))return finish("cd_stream_allocation_heap_branch");
+                        state.branch_verified=state.globals[3]==1;
+                    }
+                    if(stage==4) {
+                        if(state.globals[3]!=3 || (context.EFlags&0x41U))return finish("cd_stream_allocation_threshold_branch");
+                        state.branch_verified=true;
+                    }
+                    std::array<std::uint32_t,7> tib{},expected_tib=trace.cwd_seh.tib_before;
+                    const bool active=stage>=3 && stage<=7;
+                    if(active)expected_tib[0]=A-56;
+                    state.seh_preserved=seh_read_tib(tib) && tib==expected_tib;
+                    if(active) {
+                        std::array<DWORD,11> heap_frame{};
+                        state.seh_preserved=state.seh_preserved && read_private(A-80,heap_frame.data(),44) &&
+                            heap_frame[0]==allocation_saved.edi && heap_frame[1]==a && heap_frame[2]==allocation_saved.ebx && heap_frame[4]==A-80 &&
+                            heap_frame[6]==trace.cwd_seh.tib_before[0] && heap_frame[7]==child.base_+seh->handler_rva &&
+                            heap_frame[8]==child.base_+allocation->scope_rva && heap_frame[9]==UINT32_MAX && heap_frame[10]==allocation_saved.ebp;
+                    }
+                    std::array<std::uint32_t,2> prior{};state.prior_record_preserved=trace.cwd_seh.tib_before[0]==UINT32_MAX ||
+                        (read_private(trace.cwd_seh.tib_before[0],prior.data(),8) && prior==seh_prior_record);
+                    if(!state.seh_preserved || !state.prior_record_preserved)return finish("cd_stream_allocation_seh_drift");
+                    CdStreamTableWindow table{};std::array<std::uint32_t,5> disk_globals{};std::array<std::byte,136> directory{};
+                    std::array<std::byte,32> parent{};std::array<std::byte,156> caller{};std::array<std::byte,16> flags{};std::array<std::uint32_t,6> object{};
+                    state.parent_preserved=tables_read(table) && table==trace.cd_stream_tables.after &&
+                        disk_read_globals(disk_globals) && disk_globals==trace.cd_stream_disk.globals_after &&
+                        manager_read_buffer(directory) && directory==trace.file_manager_ready.directory_after &&
+                        read_private(prelude_saved.esp,parent.data(),32) && parent==prelude_parent_stack &&
+                        read_private(dispatch_saved.esp,caller.data(),156) && std::equal(caller.begin(),caller.end(),suppression_stack.begin()+16) &&
+                        prelude_read_flags(flags) && flags==trace.game_prelude.flags_after && acquire_read_object(object) &&
+                        cwd_acquire_object(trace.cwd_acquire.object_address,trace.cwd_acquire.object_before,object,trace.cwd_acquire.thread_id,false) &&
+                        same_named_event(child.process_,trace.instance_startup.event_handle,instance->name);
+                    if(!state.parent_preserved)return finish("cd_stream_allocation_parent_drift");
+                    if(stage==7) {
+                        state.api_returned=true;state.allocation_succeeded=context.Eax!=0;
+                        if(!state.allocation_succeeded)return finish("cd_stream_allocation_failed");
+                        allocation_heap_return=dispatch_registers(context);
+                        state.block_valid=cd_stream_allocation_layout(context.Eax,a,state.block);
+                        if(!state.block_valid || (state.block.raw<tib[1] && tib[2]<state.block.raw+state.block.bytes) ||
+                            (state.block.raw<tib[6]+56 && tib[6]<state.block.raw+state.block.bytes))return finish("cd_stream_allocation_block_rejected");
+                        state.block_valid=allocation_hash(child.process_,state.block,state.block_before_hash) &&
+                            read_private(state.block.metadata,&state.metadata_before,4);
+                        if(!state.block_valid)return finish("cd_stream_allocation_block_unreadable");
+                        // HeapAlloc does not define GetLastError on failure; retained only as a diagnostic on success.
+                        if(!read_last_error(state.last_error))return finish("cd_stream_allocation_error_read");
+                    }
+                    if(stage>=8) {
+                        state.content_preserved=allocation_hash(child.process_,state.block,state.block_after_hash) && state.block_before_hash==state.block_after_hash;
+                        state.metadata_valid=read_private(state.block.metadata,&state.metadata_after,4) &&
+                            state.metadata_after==(stage==10?state.block.raw:state.metadata_before);
+                        if(!state.content_preserved || !state.metadata_valid)return finish("cd_stream_allocation_content_drift");
+                    }
+                    if(stage==10) {
+                        state.verified=true;if(!channels)return finish("cd_stream_allocation_verified");
+                        auto& next=trace.cd_stream_channels;next.shape_valid=channels_shape();
+                        if(!next.shape_valid)return finish("cd_stream_channels_precondition_shape");
+                        channels_saved=dispatch_registers(context);std::uint32_t count{},pointer{};
+                        if(!read_private(context.Esp+12,channels_caller_stack.data(),32) || !read_private(context.Esp+40,&count,4) || count!=5 ||
+                            !read_image(child.base_,channels->pointer_rva-4,next.pointer_before,false) || !read_word(child.base_,channels->pointer_rva,pointer) || pointer ||
+                            !read_last_error(next.error_before))return finish("cd_stream_channels_precondition_state");
+                        if(!arm_channels(1,context))return finish("cd_stream_channels_arm_failed");
+                        continue;
+                    }
+                    const auto next=stage==3 && state.globals[3]==1?5U:stage+1;
+                    if(!arm_allocation(next,context))return finish("cd_stream_allocation_arm_failed");
+                    continue;
+                }
+                if(trace.cd_stream_disk.armed) {
+                    auto& state=trace.cd_stream_disk;const auto stage=state.stage;
+                    state.shape_valid=disk_shape();if(!state.shape_valid)return finish("cd_stream_disk_shape_drift");
+                    state.frame_valid=cd_stream_disk_frame(stage,tables_saved,dispatch_registers(context),
+                        static_cast<DWORD>(child.base_+tables->handles_rva),state.geometry,&disk_return_saved);
+                    if(!state.frame_valid)return finish("cd_stream_disk_frame");
+                    std::array<std::uint32_t,7> locals{};
+                    state.arguments_valid=read_private(tables_saved.esp-28,locals.data(),28) && locals[0]==tables_saved.edi &&
+                        locals[5]==child.base_+manager->manager.call_rva+12 && locals[6]==5;
+                    if(stage<=2) {
+                        std::array<std::uint32_t,6> args{};
+                        state.arguments_valid=state.arguments_valid && read_private(context.Esp,args.data(),24) &&
+                            args==std::array<std::uint32_t,6>{static_cast<DWORD>(child.base_+tables->target_rva+74),0,
+                                tables_saved.esp-12,tables_saved.esp-24,tables_saved.esp-16,tables_saved.esp-20};
+                    }
+                    if(stage==4) {
+                        std::array<std::uint32_t,4> args{};
+                        state.arguments_valid=state.arguments_valid && read_private(context.Esp,args.data(),16) &&
+                            args==std::array<std::uint32_t,4>{2048,state.geometry.bytes_per_sector,0,tables_saved.esi} &&
+                            locals[1]==state.geometry.bytes_per_sector && locals[2]==state.geometry.total_clusters &&
+                            locals[3]==state.geometry.free_clusters && locals[4]==state.geometry.sectors_per_cluster;
+                    }
+                    if(!state.arguments_valid)return finish("cd_stream_disk_arguments");
+                    state.globals_valid=disk_read_globals(state.globals_after) &&
+                        cd_stream_disk_memory(state.globals_before,state.globals_after,cd_stream_disk_flags(state.geometry.bytes_per_sector),stage==4);
+                    if(!state.globals_valid)return finish("cd_stream_disk_globals_drift");
+                    CdStreamTableWindow current_tables{};
+                    state.tables_preserved=tables_read(current_tables) && current_tables==trace.cd_stream_tables.after;
+                    std::array<std::byte,32> parent{};std::array<std::byte,156> caller{};std::uint32_t outer{};
+                    state.caller_preserved=read_private(tables_saved.esp,&outer,4) && outer==child.base_+routing->initializer.call_rva+5 &&
+                        read_private(prelude_saved.esp,parent.data(),parent.size()) && parent==prelude_parent_stack &&
+                        read_private(dispatch_saved.esp,caller.data(),caller.size()) && std::equal(caller.begin(),caller.end(),suppression_stack.begin()+16);
+                    std::array<std::byte,136> directory{};state.manager_preserved=manager_read_buffer(directory) && directory==trace.file_manager_ready.directory_after;
+                    std::array<std::uint32_t,7> tib{};state.seh_preserved=seh_read_tib(tib) && tib==trace.cwd_seh.tib_before;
+                    std::array<std::uint32_t,6> object{};state.lock_preserved=acquire_read_object(object) &&
+                        cwd_acquire_object(trace.cwd_acquire.object_address,trace.cwd_acquire.object_before,object,trace.cwd_acquire.thread_id,false);
+                    std::array<std::byte,16> flags{};state.localisation_preserved=prelude_read_flags(flags) && flags==trace.game_prelude.flags_after;
+                    std::uint32_t error{};state.last_error_read=read_last_error(error);
+                    if(!state.tables_preserved || !state.caller_preserved || !state.manager_preserved || !state.seh_preserved ||
+                        !state.lock_preserved || !state.localisation_preserved || !state.last_error_read ||
+                        (stage<=2 && error!=trace.cwd_query.last_error_after) || (stage==4 && error!=state.last_error) ||
+                        !same_named_event(child.process_,trace.instance_startup.event_handle,instance->name))return finish("cd_stream_disk_parent_drift");
+                    if(stage==3) {
+                        disk_return_saved=dispatch_registers(context);
+                        state.api_returned=true;state.api_result=context.Eax;state.last_error=error;
+                        state.query_succeeded=context.Eax!=0;
+                        // Failed output parameters are unspecified: never decode or consume them.
+                        const auto verdict=cd_stream_disk_query_result(context.Eax,{locals[1],locals[2],locals[3],locals[4]},state.geometry);
+                        if(verdict==CdStreamDiskQueryResult::failed)return finish("cd_stream_disk_query_failed");
+                        state.geometry_valid=verdict==CdStreamDiskQueryResult::accepted;
+                        if(!state.geometry_valid)return finish("cd_stream_disk_geometry_rejected");
+                    }
+                    if(stage==4){
+                        state.verified=true;if(!allocation)return finish("cd_stream_disk_verified");
+                        auto& next=trace.cd_stream_allocation;next.shape_valid=allocation_shape();
+                        if(!next.shape_valid)return finish("cd_stream_allocation_precondition_shape");
+                        next.request_valid=allocation_globals(next.globals) && cd_stream_allocation_request(state.geometry.bytes_per_sector,next.globals);
+                        if(!next.request_valid)return finish("cd_stream_allocation_request_rejected");
+                        allocation_saved=dispatch_registers(context);
+                        if(!read_private(context.Esp,allocation_caller_stack.data(),44))return finish("cd_stream_allocation_precondition_stack");
+                        if(!arm_allocation(1,context))return finish("cd_stream_allocation_arm_failed");
+                        continue;
+                    }
+                    if(!arm_disk(stage+1,context))return finish("cd_stream_disk_arm_failed");
+                    continue;
+                }
+                if(trace.cd_stream_tables.armed) {
+                    auto& state=trace.cd_stream_tables;const auto stage=state.stage;
+                    state.shape_valid=tables_shape();if(!state.shape_valid)return finish("cd_stream_tables_shape_drift");
+                    state.frame_valid=cd_stream_tables_frame(stage,tables_saved,dispatch_registers(context),static_cast<DWORD>(child.base_+tables->handles_rva));
+                    if(!state.frame_valid)return finish("cd_stream_tables_frame");
+                    state.memory_read=tables_read(state.after);
+                    state.tables_valid=state.memory_read && cd_stream_tables_memory(state.before,state.after,stage==2);
+                    if(!state.tables_valid)return finish("cd_stream_tables_memory_drift");
+                    std::array<std::uint32_t,2> call{};
+                    state.arguments_valid=read_private(tables_saved.esp-8,call.data(),8) &&
+                        call[0]==child.base_+manager->manager.call_rva+12 && call[1]==5;
+                    if(stage==2) {
+                        std::array<std::uint32_t,6> args{};
+                        state.arguments_valid=state.arguments_valid && read_private(context.Esp,args.data(),24) &&
+                            args==std::array<std::uint32_t,6>{0,tables_saved.esp-12,tables_saved.esp-24,tables_saved.esp-16,tables_saved.esp-20,tables_saved.edi};
+                    }
+                    if(!state.arguments_valid)return finish("cd_stream_tables_arguments");
+                    std::array<std::byte,32> parent{};std::array<std::byte,156> caller{};
+                    std::uint32_t outer_return{};
+                    state.caller_preserved=read_private(tables_saved.esp,&outer_return,4) && outer_return==child.base_+routing->initializer.call_rva+5 &&
+                        read_private(prelude_saved.esp,parent.data(),parent.size()) && parent==prelude_parent_stack &&
+                        read_private(dispatch_saved.esp,caller.data(),caller.size()) && std::equal(caller.begin(),caller.end(),suppression_stack.begin()+16);
+                    if(!state.caller_preserved)return finish("cd_stream_tables_caller_drift");
+                    std::array<std::byte,136> directory{};state.manager_preserved=manager_read_buffer(directory) && directory==trace.file_manager_ready.directory_after;
+                    std::array<std::uint32_t,7> tib{};state.seh_preserved=seh_read_tib(tib) && tib==trace.cwd_seh.tib_before;
+                    std::array<std::uint32_t,6> object{};state.lock_preserved=acquire_read_object(object) &&
+                        cwd_acquire_object(trace.cwd_acquire.object_address,trace.cwd_acquire.object_before,object,trace.cwd_acquire.thread_id,false);
+                    std::array<std::byte,16> flags{};state.localisation_preserved=prelude_read_flags(flags) && flags==trace.game_prelude.flags_after;
+                    std::uint32_t error{};state.last_error_preserved=read_last_error(error) && error==trace.cwd_query.last_error_after;
+                    if(!state.manager_preserved || !state.seh_preserved || !state.lock_preserved || !state.localisation_preserved || !state.last_error_preserved ||
+                        !same_named_event(child.process_,trace.instance_startup.event_handle,instance->name))return finish("cd_stream_tables_parent_drift");
+                    if(stage==2){
+                        state.verified=true;
+                        if(!disk)return finish("cd_stream_tables_verified");
+                        auto& next=trace.cd_stream_disk;next.shape_valid=disk_shape();
+                        if(!next.shape_valid)return finish("cd_stream_disk_precondition_shape");
+                        if(!disk_read_globals(next.globals_before))return finish("cd_stream_disk_precondition_memory");
+                        if(!arm_disk(1,context))return finish("cd_stream_disk_arm_failed");
+                        continue;
+                    }
+                    if(!arm_tables(2,context))return finish("cd_stream_tables_arm_failed");
+                    continue;
+                }
+                if(trace.file_manager_ready.armed) {
+                    auto& state=trace.file_manager_ready;const auto stage=state.stage;
+                    const std::uint32_t base=static_cast<std::uint32_t>(child.base_),t=query_saved.esp,root=base+manager->buffer_rva;
+                    const auto length=trace.cwd_query.returned_length;
+                    state.shape_valid=ready_shape();if(!state.shape_valid)return finish("file_manager_ready_shape_drift");
+                    state.frame_valid=file_manager_ready_frame(stage,query_saved,manager_saved,dispatch_registers(context),root,length);
+                    if(!state.frame_valid)return finish("file_manager_ready_frame");
+                    std::array<std::byte,16> slot{};std::array<std::uint32_t,6> object{};
+                    if(!lock_read_slot(slot) || slot!=trace.cwd_lock.slot_after || !acquire_read_object(object) ||
+                        !cwd_acquire_object(trace.cwd_acquire.object_address,trace.cwd_acquire.object_before,object,trace.cwd_acquire.thread_id,stage<=2))
+                        return finish("file_manager_ready_lock_drift");
+                    if(stage>=3)state.lock_released=true;
+                    std::array<std::uint32_t,7> tib{};std::array<std::uint32_t,2> prior{};
+                    if(!seh_read_tib(tib) || tib!=(stage<5?trace.cwd_seh.tib_after:trace.cwd_seh.tib_before))return finish("file_manager_ready_seh_drift");
+                    state.prior_record_preserved=trace.cwd_seh.tib_before[0]==UINT32_MAX ||
+                        (read_private(trace.cwd_seh.tib_before[0],prior.data(),8) && prior==seh_prior_record);
+                    if(!state.prior_record_preserved)return finish("file_manager_ready_prior_record_drift");
+                    if(stage<5) {
+                        std::array<std::uint32_t,4> record{};std::uint32_t result{};
+                        if(!read_private(t+28,record.data(),16) || record[0]!=trace.cwd_seh.tib_before[0] ||
+                            record[1]!=base+seh->handler_rva || record[2]!=base+seh->scope_rva || record[3]!=UINT32_MAX ||
+                            !read_private(t+16,&result,4) || result!=root)return finish("file_manager_ready_wrapper_state");
+                    } else state.seh_removed=true;
+                    std::array<std::uint32_t,6> stack{};
+                    state.arguments_valid=false;
+                    if(stage<=2) {
+                        const auto offset=stage==1?0U:1U;
+                        state.arguments_valid=read_private(context.Esp,stack.data(),(5+offset)*4) &&
+                            (!offset || stack[0]==base+ready->unlock_rva+19) && stack[offset]==trace.cwd_acquire.object_address &&
+                            stack[offset+1]==query_saved.ebp && stack[offset+2]==base+seh->cleanup_rva+7 &&
+                            stack[offset+3]==7 && stack[offset+4]==base+lock->selector.call_rva+38;
+                    } else if(stage==3) {
+                        state.arguments_valid=read_private(context.Esp,stack.data(),16) && stack[0]==query_saved.ebp &&
+                            stack[1]==base+seh->cleanup_rva+7 && stack[2]==7 && stack[3]==base+lock->selector.call_rva+38;
+                    } else if(stage==4 || stage==5) {
+                        state.arguments_valid=read_private(context.Esp,stack.data(),4) &&
+                            stack[0]==(stage==4?base+lock->selector.call_rva+46:base+manager->manager.target_rva+16);
+                    } else if(stage==6) {
+                        state.arguments_valid=read_private(context.Esp,stack.data(),16) && stack[0]==root && stack[1]==128 &&
+                            stack[2]==manager_saved.edi && stack[3]==state.return_address;
+                    } else if(stage<=8) {
+                        state.arguments_valid=read_private(context.Esp,stack.data(),8) && stack[0]==manager_saved.edi && stack[1]==state.return_address;
+                    } else state.arguments_valid=true; // Full caller envelope below includes the next return.
+                    if(!state.arguments_valid)return finish("file_manager_ready_arguments");
+                    std::array<std::byte,32> parent_stack{};std::array<std::byte,156> caller{};
+                    state.caller_preserved=read_private(prelude_saved.esp,parent_stack.data(),parent_stack.size()) && parent_stack==prelude_parent_stack &&
+                        read_private(dispatch_saved.esp,caller.data(),caller.size()) && std::equal(caller.begin(),caller.end(),suppression_stack.begin()+16);
+                    if(!state.caller_preserved)return finish("file_manager_ready_caller_drift");
+                    state.buffer_valid=manager_read_buffer(state.directory_after) &&
+                        file_manager_ready_buffer(trace.cwd_copy.destination_after,state.directory_after,length,stage>=8);
+                    if(!state.buffer_valid)return finish("file_manager_ready_buffer_drift");
+                    if(stage>=8)state.suffix_written=true;
+                    std::uint32_t error{};state.last_error_preserved=read_last_error(error) && error==trace.cwd_query.last_error_after;
+                    if(!state.last_error_preserved)return finish("file_manager_ready_last_error_drift");
+                    std::array<std::byte,16> flags{};state.localisation_preserved=prelude_read_flags(flags) && flags==trace.game_prelude.flags_after;
+                    if(!state.localisation_preserved)return finish("file_manager_ready_localisation_drift");
+                    if(!same_named_event(child.process_,trace.instance_startup.event_handle,instance->name))return finish("file_manager_ready_instance_identity");
+                    if(stage>=6)state.wrapper_returned=true;
+                    if(stage==9){
+                        state.manager_returned=true;state.verified=true;
+                        if(!tables)return finish("file_manager_ready_verified");
+                        auto& next_state=trace.cd_stream_tables;
+                        next_state.shape_valid=tables_shape();if(!next_state.shape_valid)return finish("cd_stream_tables_precondition_shape");
+                        next_state.memory_read=tables_read(next_state.before);if(!next_state.memory_read)return finish("cd_stream_tables_precondition_memory");
+                        tables_saved=dispatch_registers(context);
+                        if(tables_saved.esp<65600 || (tables_saved.flags&0x500U))return finish("cd_stream_tables_precondition_frame");
+                        if(!arm_tables(1,context))return finish("cd_stream_tables_arm_failed");
+                        continue;
+                    }
+                    const std::array<DWORD,8> next{state.function_address,base+ready->unlock_rva+19,base+ready->epilogue_rva,
+                        base+lock->selector.call_rva+46,base+manager->manager.target_rva+16,base+manager->manager.target_rva+40,
+                        base+manager->manager.target_rva+49,state.return_address};
+                    if(!arm_ready(stage+1,next[stage-1],context))return finish("file_manager_ready_arm_failed");
+                    continue;
+                }
+                if(trace.cwd_return.armed) {
+                    auto& state=trace.cwd_return;const auto& query_state=trace.cwd_query;
+                    state.shape_valid=return_shape();if(!state.shape_valid)return finish("cwd_return_shape_drift");
+                    state.frame_valid=cwd_return_frame(state.stage,query_saved,return_copy_saved,dispatch_registers(context),query_cookie,trace.cwd_copy.destination_address);
+                    if(!state.frame_valid)return finish("cwd_return_frame");
+                    if(state.stage==1)state.arguments_cleaned=true;
+                    else if(state.stage==2)state.cookie_call_reached=true;
+                    else if(state.stage==3)state.checker_entered=true;
+                    else if(state.stage==4)state.cookie_matched=true;
+                    else if(state.stage==5)state.checker_returned=true;
+                    else if(state.stage==6)state.helper_returned=true;
+                    const auto helper_return=static_cast<DWORD>(child.base_+lock->selector.call_rva+23);
+                    std::array<std::uint32_t,21> stack{};
+                    state.stack_preserved=read_private(acquire_saved.esp,stack.data(),84) &&
+                        cwd_query_stack(7,trace.cwd_acquire.stack_after,stack,trace.cwd_copy.destination_address,helper_return);
+                    if(!state.stack_preserved)return finish("cwd_return_stack_drift");
+                    std::array<std::uint32_t,7> tib{};std::array<std::uint32_t,2> prior{};
+                    state.seh_preserved=seh_read_tib(tib) && tib==trace.cwd_seh.tib_after && query_saved.esp-304>=tib[2];
+                    state.prior_record_preserved=trace.cwd_seh.tib_before[0]==UINT32_MAX ||
+                        (read_private(trace.cwd_seh.tib_before[0],prior.data(),8) && prior==seh_prior_record);
+                    if(!state.seh_preserved || !state.prior_record_preserved)return finish("cwd_return_seh_drift");
+                    std::array<std::byte,16> slot{};std::array<std::uint32_t,6> object{};
+                    state.lock_preserved=lock_read_slot(slot) && slot==trace.cwd_lock.slot_after &&
+                        acquire_read_object(object) && object==trace.cwd_acquire.object_after;
+                    if(!state.lock_preserved)return finish("cwd_return_lock_drift");
+                    std::uint32_t cookie{},encoded{},ebx{},ebp{};
+                    state.cookie_preserved=read_word(child.base_,query->cookie_rva,cookie) && cookie==query_cookie &&
+                        read_private(query_saved.esp-20,&encoded,4) && encoded==(query_cookie^helper_return) &&
+                        read_private(query_saved.esp-288,&ebx,4) && ebx==(state.stage<=2?0U:static_cast<DWORD>(child.base_+query->helper_rva+75)) &&
+                        read_private(query_saved.esp-16,&ebp,4) && ebp==query_saved.ebp;
+                    if(!state.cookie_preserved)return finish("cwd_return_cookie_drift");
+                    std::array<std::byte,32> parent_stack{};std::array<std::byte,156> caller{};
+                    state.caller_preserved=read_private(prelude_saved.esp,parent_stack.data(),parent_stack.size()) && parent_stack==prelude_parent_stack &&
+                        read_private(dispatch_saved.esp,caller.data(),caller.size()) && std::equal(caller.begin(),caller.end(),suppression_stack.begin()+16);
+                    if(!state.caller_preserved)return finish("cwd_return_caller_drift");
+                    std::uint32_t error{};state.last_error_preserved=read_last_error(error) && error==query_state.last_error_after;
+                    if(!state.last_error_preserved)return finish("cwd_return_last_error_drift");
+                    std::array<std::byte,260> source{};std::array<std::uint32_t,2> guard{};
+                    state.source_snapshot_preserved=read_private(trace.cwd_copy.source_address,source.data(),source.size()) && source==query_state.directory;
+                    if(!state.source_snapshot_preserved)return finish("cwd_return_source_drift");
+                    state.guard_preserved=read_private(trace.cwd_copy.source_address+260,guard.data(),8) && guard==query_guard;
+                    if(!state.guard_preserved)return finish("cwd_return_guard_drift");
+                    std::array<std::byte,136> destination{};
+                    state.destination_preserved=manager_read_buffer(destination) && destination==trace.cwd_copy.destination_after;
+                    if(!state.destination_preserved)return finish("cwd_return_destination_drift");
+                    std::array<std::byte,16> flags{};
+                    state.localisation_preserved=prelude_read_flags(flags) && flags==trace.game_prelude.flags_after;
+                    if(!state.localisation_preserved)return finish("cwd_return_localisation_drift");
+                    if(!same_named_event(child.process_,trace.instance_startup.event_handle,instance->name))return finish("cwd_return_instance_identity");
+                    std::array<std::uint32_t,4> arguments{};
+                    if(!read_private(query_saved.esp-12,arguments.data(),16) || arguments[0]!=state.return_address || arguments[1]!=0 ||
+                        arguments[2]!=trace.cwd_copy.destination_address || arguments[3]!=128)return finish("cwd_return_helper_arguments");
+                    if(state.stage==6) {
+                        state.source_retired=true;state.verified=true;
+                        if(!ready)return finish("cwd_return_verified");
+                        auto& next=trace.file_manager_ready;next.shape_valid=ready_shape();
+                        if(!next.shape_valid)return finish("file_manager_ready_precondition_shape");
+                        next.return_address=static_cast<DWORD>(child.base_+manager->manager.call_rva+5);
+                        if(!arm_ready(1,static_cast<DWORD>(child.base_+ready->unlock_rva+13),context))return finish("file_manager_ready_arm_failed");
+                        continue;
+                    }
+                    const auto address=state.stage==1?static_cast<DWORD>(child.base_+query->helper_rva+70):
+                        state.stage==2?state.checker_address:state.stage==3?state.checker_address+6:
+                        state.stage==4?static_cast<DWORD>(child.base_+query->helper_rva+75):state.return_address;
+                    if(!arm_return(state.stage+1,address,context))return finish("cwd_return_arm_failed");
+                    continue;
+                }
+                if(trace.cwd_copy.armed) {
+                    auto& state=trace.cwd_copy;const auto& query_state=trace.cwd_query;
+                    if(state.stage==1)state.pointer_branch_reached=true;
+                    else if(state.stage==2)state.capacity_branch_reached=true;
+                    else if(state.stage==3)state.call_reached=true;
+                    else if(state.stage==4)state.function_entered=true;
+                    else if(state.stage==5)state.function_returned=true;
+                    else return finish("cwd_copy_stage");
+                    state.shape_valid=copy_shape();if(!state.shape_valid)return finish("cwd_copy_shape_drift");
+                    state.frame_valid=cwd_copy_frame(state.stage,query_saved,copy_api_return,dispatch_registers(context),
+                        state.source_address,state.destination_address,query_state.returned_length);
+                    if(!state.frame_valid)return finish("cwd_copy_frame");
+                    std::array<std::uint32_t,3> args{};
+                    state.arguments_valid=state.stage<=2;
+                    if(state.stage>=3) {
+                        const auto words=state.stage==4?3U:2U;
+                        state.arguments_valid=read_private(context.Esp,args.data(),words*4) &&
+                            args[words-2]==state.destination_address && args[words-1]==state.source_address &&
+                            (state.stage!=4 || args[0]==child.base_+query->helper_rva+231);
+                    }
+                    if(!state.arguments_valid)return finish("cwd_copy_arguments");
+                    const auto helper_return=static_cast<DWORD>(child.base_+lock->selector.call_rva+23);
+                    std::array<std::uint32_t,21> stack{};
+                    state.stack_preserved=read_private(acquire_saved.esp,stack.data(),84) &&
+                        cwd_query_stack(7,trace.cwd_acquire.stack_after,stack,state.destination_address,helper_return);
+                    if(!state.stack_preserved)return finish("cwd_copy_stack_drift");
+                    std::array<std::uint32_t,7> tib{};std::array<std::uint32_t,2> prior{};
+                    state.seh_preserved=seh_read_tib(tib) && tib==trace.cwd_seh.tib_after && query_saved.esp-304>=tib[2];
+                    state.prior_record_preserved=trace.cwd_seh.tib_before[0]==UINT32_MAX ||
+                        (read_private(trace.cwd_seh.tib_before[0],prior.data(),8) && prior==seh_prior_record);
+                    if(!state.seh_preserved || !state.prior_record_preserved)return finish("cwd_copy_seh_drift");
+                    std::array<std::byte,16> slot{};std::array<std::uint32_t,6> object{};
+                    state.lock_preserved=lock_read_slot(slot) && slot==trace.cwd_lock.slot_after &&
+                        acquire_read_object(object) && object==trace.cwd_acquire.object_after;
+                    if(!state.lock_preserved)return finish("cwd_copy_lock_drift");
+                    std::uint32_t cookie{},encoded{},ebx{},ebp{};
+                    state.cookie_preserved=read_word(child.base_,query->cookie_rva,cookie) && cookie==query_cookie &&
+                        read_private(query_saved.esp-20,&encoded,4) && encoded==(query_cookie^helper_return) &&
+                        read_private(query_saved.esp-288,&ebx,4) && !ebx &&
+                        read_private(query_saved.esp-16,&ebp,4) && ebp==query_saved.ebp;
+                    if(!state.cookie_preserved)return finish("cwd_copy_cookie_drift");
+                    std::array<std::byte,32> parent_stack{};std::array<std::byte,156> caller{};
+                    state.caller_preserved=read_private(prelude_saved.esp,parent_stack.data(),parent_stack.size()) && parent_stack==prelude_parent_stack &&
+                        read_private(dispatch_saved.esp,caller.data(),caller.size()) && std::equal(caller.begin(),caller.end(),suppression_stack.begin()+16);
+                    if(!state.caller_preserved)return finish("cwd_copy_caller_drift");
+                    std::uint32_t error{};state.last_error_preserved=read_last_error(error) && error==query_state.last_error_after;
+                    if(!state.last_error_preserved)return finish("cwd_copy_last_error_drift");
+                    std::array<std::byte,260> source{};std::array<std::uint32_t,2> guard{};
+                    state.source_preserved=read_private(state.source_address,source.data(),source.size()) && source==query_state.directory;
+                    if(!state.source_preserved)return finish("cwd_copy_source_drift");
+                    state.guard_preserved=read_private(state.source_address+260,guard.data(),8) && guard==query_guard;
+                    if(!state.guard_preserved)return finish("cwd_copy_guard_drift");
+                    state.destination_valid=manager_read_buffer(state.destination_after) &&
+                        cwd_copy_buffer(state.destination_before,state.destination_after,source,query_state.returned_length,state.stage==5);
+                    if(!state.destination_valid)return finish("cwd_copy_destination_drift");
+                    std::array<std::byte,16> flags{};
+                    state.localisation_preserved=prelude_read_flags(flags) && flags==trace.game_prelude.flags_after;
+                    if(!state.localisation_preserved)return finish("cwd_copy_localisation_drift");
+                    if(!same_named_event(child.process_,trace.instance_startup.event_handle,instance->name))return finish("cwd_copy_instance_identity");
+                    if(state.stage==5) {
+                        state.copied_bytes=query_state.returned_length+1;state.copied=true;state.verified=true;
+                        if(completion) {
+                            auto& next=trace.cwd_return;next.shape_valid=return_shape();
+                            if(!next.shape_valid)return finish("cwd_return_precondition_shape");
+                            return_copy_saved=dispatch_registers(context);
+                            next.checker_address=static_cast<DWORD>(child.base_+completion->checker_rva);
+                            next.return_address=static_cast<DWORD>(child.base_+lock->selector.call_rva+23);
+                            if(!arm_return(1,static_cast<DWORD>(child.base_+query->helper_rva+63),context))return finish("cwd_return_arm_failed");
+                            continue;
+                        }
+                        return finish("cwd_copy_verified");
+                    }
+                    const auto address=state.stage==1?static_cast<DWORD>(child.base_+query->helper_rva+200):
+                        state.stage==2?static_cast<DWORD>(child.base_+query->helper_rva+226):
+                        state.stage==3?state.function_address:static_cast<DWORD>(child.base_+query->helper_rva+231);
+                    if(!arm_copy(state.stage+1,address,context))return finish("cwd_copy_arm_failed");
+                    continue;
+                }
+                if(trace.cwd_query.armed) {
+                    auto& state=trace.cwd_query;
+                    if(state.stage==1)state.wrapper_call_reached=true;
+                    else if(state.stage==2)state.helper_entered=true;
+                    else if(state.stage==3)state.branch_reached=true;
+                    else if(state.stage==4)state.query_path_reached=true;
+                    else if(state.stage==5)state.call_reached=true;
+                    else if(state.stage==6)state.function_entered=true;
+                    else if(state.stage==7)state.function_returned=true;
+                    else return finish("cwd_query_stage");
+                    state.shape_valid=query_shape();if(!state.shape_valid)return finish("cwd_query_shape_drift");
+                    const auto helper_return=static_cast<DWORD>(child.base_+lock->selector.call_rva+23);
+                    state.frame_valid=cwd_query_frame(state.stage,query_saved,dispatch_registers(context),query_cookie,helper_return);
+                    if(!state.frame_valid)return finish("cwd_query_frame");
+                    std::array<std::uint32_t,21> stack{};
+                    state.stack_valid=read_private(acquire_saved.esp,stack.data(),84) &&
+                        cwd_query_stack(state.stage,trace.cwd_acquire.stack_after,stack,static_cast<DWORD>(child.base_+manager->buffer_rva),helper_return);
+                    if(!state.stack_valid)return finish("cwd_query_stack_drift");
+                    std::array<std::uint32_t,7> tib{};std::array<std::uint32_t,2> prior{};
+                    state.seh_preserved=seh_read_tib(tib) && tib==trace.cwd_seh.tib_after;
+                    state.prior_record_preserved=trace.cwd_seh.tib_before[0]==UINT32_MAX ||
+                        (read_private(trace.cwd_seh.tib_before[0],prior.data(),8) && prior==seh_prior_record);
+                    if(!state.seh_preserved || !state.prior_record_preserved)return finish("cwd_query_seh_drift");
+                    std::array<std::byte,16> slot{};std::array<std::uint32_t,6> object{};
+                    state.lock_preserved=lock_read_slot(slot) && slot==trace.cwd_lock.slot_after && acquire_read_object(object) && object==trace.cwd_acquire.object_after;
+                    if(!state.lock_preserved)return finish("cwd_query_lock_drift");
+                    std::uint32_t cookie{};
+                    state.cookie_preserved=read_word(child.base_,query->cookie_rva,cookie) && cookie==query_cookie;
+                    if(state.stage>=3) {
+                        std::uint32_t encoded{},saved_ebx{},saved_ebp{};
+                        state.cookie_preserved=state.cookie_preserved && read_private(query_saved.esp-20,&encoded,4) && encoded==(query_cookie^helper_return);
+                        if(!read_private(query_saved.esp-288,&saved_ebx,4) || saved_ebx ||
+                            !read_private(query_saved.esp-16,&saved_ebp,4) || saved_ebp!=query_saved.ebp)return finish("cwd_query_helper_stack");
+                    }
+                    if(!state.cookie_preserved)return finish("cwd_query_cookie_drift");
+                    std::array<std::byte,32> parent_stack{};std::array<std::byte,156> caller{};std::uint32_t error{};
+                    state.caller_preserved=read_private(prelude_saved.esp,parent_stack.data(),parent_stack.size()) && parent_stack==prelude_parent_stack &&
+                        read_private(dispatch_saved.esp,caller.data(),caller.size()) && std::equal(caller.begin(),caller.end(),suppression_stack.begin()+16);
+                    if(!state.caller_preserved || !read_last_error(error))return finish("cwd_query_caller_drift");
+                    state.last_error_after=error;
+                    if(state.stage<7 && error!=state.last_error_before)return finish("cwd_query_last_error_drift");
+                    std::array<std::byte,136> root{};std::array<std::byte,16> flags{};
+                    state.root_preserved=manager_read_buffer(root) && root==trace.file_manager_entry.buffer_after;
+                    state.localisation_preserved=prelude_read_flags(flags) && flags==trace.game_prelude.flags_after;
+                    if(!state.root_preserved || !state.localisation_preserved)return finish("cwd_query_outer_buffer_drift");
+                    if(!same_named_event(child.process_,trace.instance_startup.event_handle,instance->name))return finish("cwd_query_instance_identity");
+                    if(state.stage==5 || state.stage==6) {
+                        state.buffer_address=query_saved.esp-284;
+                        if(state.buffer_address<tib[2] || state.buffer_address>tib[1] || 268>tib[1]-state.buffer_address)return finish("cwd_query_buffer_bounds");
+                        std::array<std::uint32_t,3> args{};const auto words=state.stage==5?2U:3U;
+                        if(!read_private(context.Esp,args.data(),words*4) || args[words-2]!=260 || args[words-1]!=state.buffer_address ||
+                            (state.stage==6 && args[0]!=child.base_+query->helper_rva+141))return finish("cwd_query_arguments");
+                        std::array<std::uint32_t,2> guard{};
+                        if(!read_private(state.buffer_address+260,guard.data(),8))return finish("cwd_query_guard_read");
+                        if(state.stage==5)query_guard=guard;
+                        else if(guard!=query_guard)return finish("cwd_query_guard_drift");
+                    }
+                    if(state.stage==7) {
+                        std::array<std::uint32_t,2> guard{};
+                        state.guard_preserved=read_private(state.buffer_address+260,guard.data(),8) && guard==query_guard;
+                        if(!state.guard_preserved)return finish("cwd_query_guard_drift");
+                        state.returned_length=context.Eax;
+                        state.buffer_read=read_private(state.buffer_address,state.directory.data(),state.directory.size());
+                        if(!state.buffer_read)return finish("cwd_query_buffer_read");
+                        const auto reason=cwd_query_result(context.Eax,state.directory,query->expected_directory);
+                        if(!reason.empty())return finish(reason);
+                        state.path_verified=true;state.verified=true;
+                        if(copy) {
+                            auto& next=trace.cwd_copy;next.shape_valid=copy_shape();
+                            if(!next.shape_valid)return finish("cwd_copy_precondition_shape");
+                            copy_api_return=dispatch_registers(context);next.source_address=state.buffer_address;
+                            next.destination_address=static_cast<DWORD>(child.base_+manager->buffer_rva);
+                            next.function_address=static_cast<DWORD>(child.base_+copy->copier_rva);
+                            next.destination_before=trace.file_manager_entry.buffer_after;
+                            if(!arm_copy(1,static_cast<DWORD>(child.base_+query->helper_rva+158),context))return finish("cwd_copy_arm_failed");
+                            continue;
+                        }
+                        return finish("cwd_query_verified");
+                    }
+                    const auto address=state.stage==1?static_cast<DWORD>(child.base_+query->helper_rva):
+                        state.stage==2?static_cast<DWORD>(child.base_+query->helper_rva+26):
+                        state.stage==3?static_cast<DWORD>(child.base_+query->helper_rva+123):
+                        state.stage==4?static_cast<DWORD>(child.base_+query->helper_rva+135):
+                        state.stage==5?state.function_address:static_cast<DWORD>(child.base_+query->helper_rva+141);
+                    if(!arm_query(state.stage+1,address,context))return finish("cwd_query_arm_failed");
+                    continue;
+                }
                 if(trace.cwd_acquire.armed){
                     auto& state=trace.cwd_acquire;
                     if(state.stage==1)state.branch_reached=true;
@@ -1218,7 +2179,16 @@ LoaderTrace LoaderObservation::run_impl(SuspendedImage& child, void* executable,
                     std::array<std::byte,16> flags{};state.localisation_preserved=prelude_read_flags(flags) && flags==trace.game_prelude.flags_after;
                     if (!state.localisation_preserved) return finish("cwd_acquire_localisation_drift");
                     if (!same_named_event(child.process_,trace.instance_startup.event_handle,instance->name)) return finish("cwd_acquire_instance_identity");
-                    if(state.stage==5){state.verified=true;return finish("cwd_acquire_verified");}
+                    if(state.stage==5) {
+                        state.verified=true;
+                        if(!query)return finish("cwd_acquire_verified");
+                        trace.cwd_query.shape_valid=query_shape();
+                        if(!trace.cwd_query.shape_valid)return finish("cwd_query_precondition_shape");
+                        query_saved=dispatch_registers(context);
+                        if(!read_word(child.base_,query->cookie_rva,query_cookie) || !read_last_error(trace.cwd_query.last_error_before))return finish("cwd_query_precondition_memory");
+                        if(!arm_query(1,static_cast<DWORD>(child.base_+lock->selector.call_rva+18),context))return finish("cwd_query_arm_failed");
+                        continue;
+                    }
                     const auto address=state.stage==1?static_cast<DWORD>(child.base_+lock->selector.target_rva+40):
                         state.stage==2?state.function_address:state.stage==3?static_cast<DWORD>(child.base_+lock->selector.target_rva+46):static_cast<DWORD>(child.base_+lock->selector.call_rva+5);
                     if(!arm_acquire(state.stage+1,address,context))return finish("cwd_acquire_arm_failed");

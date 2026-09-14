@@ -3,8 +3,8 @@
 #include "saex/engine/game_prelude.hpp"
 #include "saex/engine/application_routing_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_routing_digest == "d2794efb7784cb53b20d693533f5ab67c6f05a8fbd4c2d77264942910c408f66");
+static_assert(reviewed_routing_digest == "b97ecbac6dc05cc18e90af42274e1b148e741fc62012cddce98b86a90809e88e");
 inline constexpr std::string_view reviewed_prelude_id="gta-sa.f01a00ce.game-prelude-v1";
-inline constexpr std::string_view reviewed_prelude_digest="eee50036b97098d00b2c3be58df01fa3724c04123884a3fdc4a75e4305ccab4d";
+inline constexpr std::string_view reviewed_prelude_digest="ab85c8782ca66f94bd52dc6137452c6b07aed12b38725f76b788240bf82c7bc6";
 inline constexpr GamePreludeSpec reviewed_prelude_spec{FrameTargetSpec{4194304U,18313216U,1293136U,3339184U,{std::byte{0xe8}, std::byte{0x5b}, std::byte{0x38}, std::byte{0x1f}, std::byte{0x00}},{std::byte{0xc3}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}, std::byte{0x90}}},FrameTargetSpec{4194304U,18313216U,1293141U,1495424U,{std::byte{0xe8}, std::byte{0x26}, std::byte{0x16}, std::byte{0x03}, std::byte{0x00}},{std::byte{0x32}, std::byte{0xc0}, std::byte{0xc6}, std::byte{0x05}, std::byte{0xec}, std::byte{0xb7}, std::byte{0xb9}, std::byte{0x00}, std::byte{0x01}, std::byte{0xa2}, std::byte{0xed}, std::byte{0xb7}, std::byte{0xb9}, std::byte{0x00}, std::byte{0xa2}, std::byte{0xee}}},7976940U,{std::byte{0xe8}, std::byte{0x91}, std::byte{0xcb}, std::byte{0xff}, std::byte{0xff}, std::byte{0x6a}, std::byte{0x05}, std::byte{0xe8}, std::byte{0x0a}, std::byte{0xb0}, std::byte{0xec}, std::byte{0xff}, std::byte{0x83}, std::byte{0xc4}, std::byte{0x04}, std::byte{0xe8}}};
 }

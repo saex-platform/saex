@@ -176,3 +176,47 @@ Yayın kısa ömürlü dal → PR → yedi zorunlu kontrol → squash merge akı
 Ortak [test reçetesi](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği), fixture sistem export alanlarını host PE metadata'sından kuracak şekilde düzeltildi. Üretim JSON/generated policy dosyaları korunur. Bu düzeltmenin yerel ve hosted tekrar sonuçları yayın kaydına eklenecektir.
 
 `7654a09` için temiz yerel x86 Debug tam akışı **41 native/79 managed/254 Python** ile geçti. [İkinci hosted build](https://github.com/saex-platform/saex/actions/runs/34802108937) beş kontrolün ardından x86 işlerinde `system unrelocated export contract` verdi. Exact prefix test reçeteleri için HIGHLOW host adres normalizasyonu eklendi; üretim kodu ve policy dosyaları yine değişmedi.
+
+## Kod 0.1.32 — Cwd query bağlantısı
+
+0.1.32 query kaynakları yerel geliştirmedir. Portable CI tanımı genişledi; bu çalışmada push/PR/merge veya hosted CI başlatılmadı. Önceki 0.1.31 hosted sonuçları bu yeni kaynağın doğrulaması değildir. [Sözleşme, kaynak ve güncel kanıt](d1-cwd-query.md).
+
+## 0.1.33 — Windows profil bağı
+
+[26200.9445 incelemesi](d1-system-profile-9445.md), bu bileşenin bağlı olduğu OS pinleri/API reçeteleri ve parent SHA-256 zincirini günceller. Bileşenin GTA durak/izin sınırı aynı kalır; önceki runtime sonuçları eski profil bağlamındadır. Yeni dosyalarla fixture ve gerçek GTA kanıtının kapsamı profil raporunda ayrıca izlenir. Eski OS pinlerine otomatik fallback yoktur; kaynak ve generated policy birlikte yeniden derlenir.
+
+## 0.1.34 — Doğal cwd copy bağı
+
+[Ayrı copy kesiti](d1-cwd-copy.md), query'den sonra native kontrol/CALL/dönüş ve gerçek hedef içerik kanıtını ekler. Önceki komutların terminali korunur; helper/unlock/SEH sökümü yeni izin kapsamına girmez. Source/guard, caller/SEH/kilit/cookie denetimleri ve yeni test/GTA kanıtının kapsamı ilgili rapordadır. C ABI 1, OS modül pinleri, GNS/otorite ve production kapıları aynı kalır; C++ observer yeniden derlenir.
+
+## 0.1.35 — Cwd helper dönüş bağı
+
+[Ayrı return kesiti](d1-cwd-return.md) copy sonrasındaki iki POP, cookie checker eşitliği ve doğal LEAVE/RET'i açar. Önceki terminal izinleri korunur; wrapper/unlock/SEH işlemleri henüz açılmaz. Kaynak stack ömrü, CALL ile değişen saved slot, hedef/caller/kilit/SEH ve hata retleri sözleşmede açıklanır. C++ trace yeniden derlenir; C ABI 1, OS pinleri, GNS/otorite ve production kapıları aynı kalır. Yeni fixture/gerçek GTA kanıtı ilgili raporda ayrı izlenir.
+
+## 0.1.36 — Dosya yöneticisinin tamamlanması
+
+0.1.36 kaynağına portable ready policy/suite, x86 fixture ve yerel Run-SAEX aracı eklendi. CI portable generator/test listesi güncellendi. Bu yerel geliştirme hosted CI veya yayın sonucu değildir; remote/push/release/deployment yapılmadı. [Sözleşme, kullanıcı komutu ve doğrulama](d1-file-manager-ready.md).
+
+## Kod 0.1.37 — Streaming tablo kesitiyle bağlantı
+
+[CdStream tablo sözleşmesi](d1-cd-stream-tables.md) ortak observer/CLI ve fixture zincirine ayrı bir üst mod ekler. Bu belgenin eski komut ve checkpoint sınırı korunur; yalnız `--observe-cd-stream-tables` tam manager dönüşünden sonra iki tablo döngüsünü ve disk argüman hazırlığını açar. Sonuç yeni `cdStreamTablesObservation` alanında izlenir; eski kayıtlar final durum değil önceki checkpoint snapshot'ıdır. C++ trace tüketicileri yeniden derlenir; C ABI 1, GNS, OS pinleri ve production IPC sınırı değişmez. Yeni portable/native testler ile eski mod regresyonları standart build'e dahildir; gerçek GTA ve platform bazındaki final kanıt ana raporda tutulur.
+
+Bu değişiklik yereldir; önceki hosted CI/yayın sonuçları 0.1.37 için tekrar kullanılamaz. Remote, push, deployment veya server restart yapılmadı.
+
+## Kod 0.1.38 — Disk sonucu ve allocation önkoşulu
+
+[Disk hazırlığı sözleşmesi](d1-cd-stream-disk.md) önceki native zincire ayrı `--observe-cd-stream-disk` modu ekler. BOOL başarısızsa dört output kullanılmadan ret; başarılı ve kabul edilen mantıksal geometride doğal bayrak/argüman hazırlığı, 0x406BF4 allocation CALL önünde doğrulanır. Eski modların terminal ve snapshot anlamı korunur. C++ trace tüketicileri yeniden derlenir; bootstrap C ABI 1, OS pinleri, GNS/HTTPS, network otoritesi ve sandbox kapsamı değişmez. Gerçek allocation, fiziksel hizalama, dosya okuma ve thread/renderer hazır kanıtı bu değişiklikten çıkarılamaz. Portable hata kararı ile native/gerçek GTA kanıtının ayrımı yeni raporun kabul tablosunda izlenir.
+
+Bu yerel değişiklik için remote/push/PR/hosted CI çalıştırılmadı; önceki yayın kanıtı yeni kod için tekrar kullanılamaz.
+
+## Kod 0.1.39 — Hizalı tamponun doğal dönüşü
+
+[Allocation sözleşmesi](d1-cd-stream-allocation.md) ayrı `--observe-cd-stream-allocation` API/CLI ile MallocAlign → CRT → HeapAlloc → back-pointer → 0x406BF9 doğal dönüşünü ekler. Heap modu/new-handler/SBH dalı yürütmeden önce denetlenir; NULL, taşma, metadata ve payload bütünlüğü guard'ları vardır. Eski alt modların terminalleri ve snapshot anlamı korunur; yeni mod 160, eskiler 128 olay üst sınırındadır. C++ trace tüketicileri yeniden derlenir; bootstrap C ABI 1, OS pinleri, GNS/HTTPS ve sandbox kapsamı değişmez. İlk gerçek GTA allocation geçti; güncel toplu kanıt yeni sözleşmede izlenir. Native free, I/O/thread, renderer ve D1/D2 hazır kabul edilmez.
+
+Bu kesit yereldir; remote, push, PR veya hosted CI çalıştırılmadı. Önceki yayın kanıtı 0.1.39 için yeniden kullanılmaz.
+
+## Kod 0.1.40 — Kanal belleği kesiti
+
+[Yeni sözleşme](d1-cd-stream-channels.md) `run_cd_stream_channels` / `--observe-cd-stream-channels` ile SetLastError ve LocalAlloc doğal yolunu, 5 × 48 sıfır byte ve global pointer kaydını ekler. Terminal 0x406C34, arşiv CALL önüdür. Önceki allocation/parent kayıtları kendi duraklarının snapshot anlamını korur; canlı tabloda yalnız kanal sayısı/etkin sayı DWORD çifti değişebilir. C++ trace tüketicileri yeniden derlenir; C ABI 1 ve mevcut OS pinleri aynıdır. Allocation ve yeni mod 160, daha eski modlar 128 olay sınırındadır. Native free, dosya açma/okuma, thread, renderer ve D1/D2 kapıları açıktır. Güncel test ve GTA kanıtı yeni sözleşmede tutulur.
+
+Bu değişiklik yereldir; remote/push/PR veya hosted CI çalıştırılmadı.

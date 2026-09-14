@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "gta-sa.f01a00ce.windows-26200.loader-mapping-v1",
+  "id": "gta-sa.f01a00ce.windows-26200-9445.loader-mapping-v1",
   "stage": "first-exception-only",
   "engineSha256": "f01a00ce950fa40ca1ed59df0e789848c6edcf6405456274965885d0929343ac",
   "reviewDocument": "docs/development/d1-loader-policy.md",
@@ -8,22 +8,22 @@
     {
       "origin": "system-x86",
       "name": "advapi32.dll",
-      "bytes": 538888,
-      "sha256": "265a7530ffc6adf8a37e4fb9fa6d01770d2f4110b7de18455065503f3ca388ca",
+      "bytes": 537816,
+      "sha256": "06e6ee5fcd0601e181e5dd8f9a6328dd79b6bcc8fcdfc2b1a7832f0556d0d049",
       "basis": "gta-static-import"
     },
     {
       "origin": "system-x86",
       "name": "apphelp.dll",
-      "bytes": 710280,
-      "sha256": "85d8b3d7a05378b778094dbb226f7bf1d929fe4a0b370b6e61b3a366eeda0aef",
+      "bytes": 710832,
+      "sha256": "a8109618c3bf3623be23e8e18f1e7184538600c953169297fd0009ed77564c6e",
       "basis": "compatibility-infrastructure"
     },
     {
       "origin": "system-x86",
       "name": "combase.dll",
-      "bytes": 2723592,
-      "sha256": "f45e74e3f784bdb765c562c138a81aa3daf297b11600e9035df874eae73be456",
+      "bytes": 2711704,
+      "sha256": "3f152587249ff6623eb0023cf52cad64aac02f6d8117d8754349f83768f9a6f8",
       "basis": "transitive-static-import"
     },
     {
@@ -43,22 +43,22 @@
     {
       "origin": "system-x86",
       "name": "gdi32full.dll",
-      "bytes": 949464,
-      "sha256": "51f85c77c33506f36a9c159994f1fdc7504bc7e7f4e5f4996997ae3690bbcf78",
+      "bytes": 950488,
+      "sha256": "579857a52f8e9cccff64a4c1c1eb5d2a4a8c6e19c30eab16bef63ed6d61e8806",
       "basis": "api-set-host-candidate"
     },
     {
       "origin": "system-x86",
       "name": "kernel32.dll",
-      "bytes": 683312,
-      "sha256": "4ef63ecfe99158e16a387028be295308b00618cec64d94f016f99b79ffe84e05",
+      "bytes": 687472,
+      "sha256": "bafd9e061964642802d62f1eb694e7e4af60de739a8df1a492f90006dc5680f3",
       "basis": "loader-system"
     },
     {
       "origin": "system-x86",
       "name": "kernelbase.dll",
-      "bytes": 2962280,
-      "sha256": "10dcab84a598fa39859f5b967d8dec98b9eecca1419f2c6fde2803e40cb6004f",
+      "bytes": 2974168,
+      "sha256": "85ad413ff860898f9e511f2e63c0e30f7aed1275fd1fd44fa90801211d328253",
       "basis": "loader-system"
     },
     {
@@ -71,57 +71,57 @@
     {
       "origin": "system-x86",
       "name": "msvcp_win.dll",
-      "bytes": 505808,
-      "sha256": "52fa16b01616d083a198aba230588bf947f84e33f5e79535f65c8d48b6219814",
+      "bytes": 505792,
+      "sha256": "2c3dd2c830375591addea061588f8183bcafdba501c638526b85215465ac905a",
       "basis": "transitive-static-import"
     },
     {
       "origin": "system-x86",
       "name": "msvcrt.dll",
-      "bytes": 809504,
-      "sha256": "d72870f695fc49e1cb9f4fc3f45e202a7effa26474067b0e328ce31affd4a437",
+      "bytes": 809472,
+      "sha256": "23a918921c545140d189ce6dc68590bacdeb0ab2f3e3a9a2d722c5aff45ce64f",
       "basis": "transitive-static-import"
     },
     {
       "origin": "system-x86",
       "name": "ntdll.dll",
-      "bytes": 1821376,
-      "sha256": "665df97f10439d9333e1390f5a9873b6af24d396e6bef6b0316ff1ed0f2418de",
+      "bytes": 1822400,
+      "sha256": "7e15bd30890e9bf93b47fc894a68b2445618ee7528eb39584a263b21e112f9df",
       "basis": "loader-system"
     },
     {
       "origin": "system-x86",
       "name": "ole32.dll",
-      "bytes": 1400328,
-      "sha256": "05a52b6fae47a3719fdad41c4c80d39497ea91a21c09eede6cfc1d9f34e34d3b",
+      "bytes": 1406032,
+      "sha256": "d178e227ede5073ecfed4528199b03327e1c2edff9ddd09d79d4af821fdde968",
       "basis": "gta-static-import"
     },
     {
       "origin": "system-x86",
       "name": "rpcrt4.dll",
-      "bytes": 772264,
-      "sha256": "f4ac5be29a308bd5e65df9004e73ac74d3cc0a067387a591eb259ae499ec96ed",
+      "bytes": 772776,
+      "sha256": "6e3f4e700f03dc415d0a52ffdaac0ce3dfe80a42cd5e27dd304ccc11afea11d8",
       "basis": "transitive-static-import"
     },
     {
       "origin": "system-x86",
       "name": "sechost.dll",
-      "bytes": 539872,
-      "sha256": "09f7906ef4a531c547927a7992adfb77fab05dae5b8052a5ef5a931f6b35b03e",
+      "bytes": 538352,
+      "sha256": "bfb478f918ee80d1945237cb15db42e2c5e2e324fa00211de37511c1cc720ad4",
       "basis": "transitive-static-import"
     },
     {
       "origin": "system-x86",
       "name": "ucrtbase.dll",
-      "bytes": 1114216,
-      "sha256": "c1024cd6c9be74752d682bbf391a92514869621f1b249d08811e102f034b43a0",
+      "bytes": 1114240,
+      "sha256": "60c5a497b52de80a3a0677564270dbea7e486086637debd567b4dffb28584c1b",
       "basis": "api-set-host-candidate"
     },
     {
       "origin": "system-x86",
       "name": "user32.dll",
-      "bytes": 1916288,
-      "sha256": "b3cc6f999873061683021abd4aeea6551f0a56a642c6f90c77744e10488248d9",
+      "bytes": 1972624,
+      "sha256": "bff75906f4abcc050cf85e38e20090ea0edf7dc33e0ed60cb74cf9e1bc007527",
       "basis": "gta-static-import"
     },
     {
@@ -141,22 +141,22 @@
     {
       "origin": "system-x86",
       "name": "win32u.dll",
-      "bytes": 108104,
-      "sha256": "8cf8d9ba313e690e4f0ec59feea42feb9539d053caccdc6e0c62fa9d2b471672",
+      "bytes": 108120,
+      "sha256": "7183521868938b0f6c131ef58288aed6cb55e4bde34d27d9612616ddc4dc2b33",
       "basis": "transitive-static-import"
     },
     {
       "origin": "system-x86",
       "name": "winmm.dll",
       "bytes": 195912,
-      "sha256": "d4e679bcc39588ed6bd52251d7beb57169d4a62d255d2596c0872476d8db870a",
+      "sha256": "eefb711e78a3e2031ff2015d04471da7258945f40bce2dd54433f664c2d667bf",
       "basis": "gta-static-import"
     },
     {
       "origin": "system-x86",
       "name": "ws2_32.dll",
-      "bytes": 429416,
-      "sha256": "33dfca33070a9e42c6d1924d74135c04a86fa47f6c8c236bb8960e1f9b051742",
+      "bytes": 426296,
+      "sha256": "4da35234f9306c1de886560eb34ec105e80a2da3917f59de66b349e969b3dbc5",
       "basis": "gta-static-import"
     }
   ]

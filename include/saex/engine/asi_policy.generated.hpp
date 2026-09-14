@@ -2,13 +2,13 @@
 #pragma once
 #include "saex/engine/binding_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_binding_policy_digest == "92856899cf2250668e1b644d9ec2c111b01e72eba46643bb4631285ee3de84eb", "ASI binding drift");
-inline constexpr std::string_view reviewed_asi_policy_id = "gta-sa.f01a00ce.windows-26200.asi-return-v1";
-inline constexpr std::string_view reviewed_asi_policy_digest = "42947538ada61d7a163ff3a085c17b5218a8d702a7fe44445cfd2a2be154b1e8";
+static_assert(reviewed_binding_policy_digest == "97959fa701ac22cfb309110ae9e67f21a113cc8808b7b6e90ea68300d5b40cf2", "ASI binding drift");
+inline constexpr std::string_view reviewed_asi_policy_id = "gta-sa.f01a00ce.windows-26200-9445.asi-return-v1";
+inline constexpr std::string_view reviewed_asi_policy_digest = "ac29aeefa1b2a2ccb54777a9c96ee40248f90b244c51e0587eca8912664407c7";
 inline constexpr std::string_view reviewed_asi_artifact_name = "saex_bootstrap.asi";
 inline constexpr AsiStopSpec reviewed_asi_spec{nullptr, 6724, 6747, {std::byte{0x46}, std::byte{0x3b}, std::byte{0xf7}, std::byte{0x75}, std::byte{0xb3}, std::byte{0x8b}, std::byte{0x85}, std::byte{0x64}, std::byte{0xfd}, std::byte{0xff}, std::byte{0xff}, std::byte{0x8b}, std::byte{0xb5}, std::byte{0x60}, std::byte{0xfd}, std::byte{0xff}}, {std::byte{0x85}, std::byte{0xc0}, std::byte{0x74}, std::byte{0x44}, std::byte{0x90}, std::byte{0x8d}, std::byte{0x48}, std::byte{0xff}, std::byte{0x8b}, std::byte{0x85}, std::byte{0x5c}, std::byte{0xfd}, std::byte{0xff}, std::byte{0xff}, std::byte{0x03}, std::byte{0xce}}, {}};
 inline constexpr std::array<LoaderPinSpec, 1> reviewed_asi_commonModules{{
-    LoaderPinSpec{LoaderOrigin::system_x86, "bcrypt.dll", 114240ULL, {std::byte{0xd7}, std::byte{0x13}, std::byte{0xce}, std::byte{0x8c}, std::byte{0xca}, std::byte{0xda}, std::byte{0x35}, std::byte{0xdc}, std::byte{0xdc}, std::byte{0x92}, std::byte{0x11}, std::byte{0x84}, std::byte{0x84}, std::byte{0x2a}, std::byte{0x73}, std::byte{0x16}, std::byte{0x91}, std::byte{0x1c}, std::byte{0x51}, std::byte{0x51}, std::byte{0xa4}, std::byte{0x48}, std::byte{0x64}, std::byte{0xcb}, std::byte{0xfb}, std::byte{0x3d}, std::byte{0x02}, std::byte{0xc7}, std::byte{0x13}, std::byte{0x6d}, std::byte{0x5e}, std::byte{0xc0}}},
+    LoaderPinSpec{LoaderOrigin::system_x86, "bcrypt.dll", 114240ULL, {std::byte{0x13}, std::byte{0x7c}, std::byte{0xec}, std::byte{0x75}, std::byte{0x06}, std::byte{0xfd}, std::byte{0xb0}, std::byte{0x11}, std::byte{0xed}, std::byte{0x03}, std::byte{0xc5}, std::byte{0xa7}, std::byte{0xb5}, std::byte{0x1c}, std::byte{0x6e}, std::byte{0xa1}, std::byte{0x68}, std::byte{0xcc}, std::byte{0x75}, std::byte{0xec}, std::byte{0x43}, std::byte{0x59}, std::byte{0xb8}, std::byte{0xdc}, std::byte{0x3f}, std::byte{0x83}, std::byte{0x85}, std::byte{0x56}, std::byte{0x22}, std::byte{0xd8}, std::byte{0x6b}, std::byte{0xc3}}},
 }};
 inline constexpr std::array<LoaderPinSpec, 3> reviewed_asi_debugModules{{
     LoaderPinSpec{LoaderOrigin::system_x86, "msvcp140d.dll", 739408ULL, {std::byte{0x55}, std::byte{0x88}, std::byte{0xcb}, std::byte{0x05}, std::byte{0x46}, std::byte{0xbf}, std::byte{0xfe}, std::byte{0x35}, std::byte{0x7e}, std::byte{0x86}, std::byte{0x4e}, std::byte{0x2d}, std::byte{0xf9}, std::byte{0xbf}, std::byte{0x91}, std::byte{0x9d}, std::byte{0xfe}, std::byte{0x41}, std::byte{0xf4}, std::byte{0xd0}, std::byte{0x8d}, std::byte{0xee}, std::byte{0x14}, std::byte{0x96}, std::byte{0x24}, std::byte{0x67}, std::byte{0xcb}, std::byte{0xf8}, std::byte{0x03}, std::byte{0x88}, std::byte{0x0b}, std::byte{0x4f}}},

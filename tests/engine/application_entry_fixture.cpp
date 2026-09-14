@@ -1,7 +1,33 @@
 #include "loader_fixture_marker.hpp"
+#if defined(SAEX_CWD_COPY_FIXTURE)
+#include <cstdio>
+#include <cstring>
+#endif
 extern "C" __declspec(dllimport) void __cdecl proxy_iat_target();
 extern "C" __declspec(dllimport) unsigned char application_once;
 extern "C" {
+#if defined(SAEX_CD_STREAM_TABLES_FIXTURE)
+__declspec(align(4)) unsigned char stream_table_window[2192]{};
+#endif
+
+#if defined(SAEX_CD_STREAM_ALLOCATION_FIXTURE)
+__declspec(dllexport,align(4)) unsigned allocation_heap_handle{};
+#endif
+#if defined(SAEX_CD_STREAM_CHANNELS_FIXTURE)
+__declspec(dllexport,align(4)) FARPROC channels_error_slot{},channels_local_slot{};
+__declspec(dllexport,align(4)) unsigned channels_pointer_window[3]{0xaabbccdd,
+#if defined(SAEX_CHANNELS_PREEXISTING)
+1,
+#else
+0,
+#endif
+0xddccbbaa};
+#if defined(SAEX_CHANNELS_BAD_NAME)
+__declspec(dllexport) char channels_filename[]="XODELS\\GTA3.IMG";
+#else
+__declspec(dllexport) char channels_filename[]="MODELS\\GTA3.IMG";
+#endif
+#endif
 #define PREFIX __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop \
     __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop
 __declspec(dllexport,align(4096)) unsigned char startup_sample[4096]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
@@ -21,7 +47,11 @@ __declspec(dllexport,align(4096)) unsigned char file_manager_buffer[4096]{0x11,0
 extern __declspec(dllexport) const unsigned char file_manager_suffix[2]{0x5c,0};
 #if defined(SAEX_CWD_SEH_FIXTURE)
 __declspec(naked) void cwd_seh_handler() { __asm call event_app_canary PREFIX __asm ret }
+#if defined(SAEX_FILE_MANAGER_READY_FIXTURE)
+void cwd_seh_cleanup();
+#else
 __declspec(naked) void cwd_seh_cleanup() { __asm call event_app_canary PREFIX __asm ret }
+#endif
 struct CwdScope { unsigned previous;void* filter;void (*cleanup)(); };
 const CwdScope cwd_seh_scope{0xffffffffU,nullptr,&cwd_seh_cleanup};
 // This fixture intentionally reproduces manual x86 registration. The observer
@@ -63,18 +93,70 @@ __declspec(align(4096)) unsigned cwd_lock_table[1024]{0,1,0,1,0,0,0,1,0,1,0,0,0,
     1,0};
 #if defined(SAEX_CWD_ACQUIRE_FIXTURE)
 FARPROC cwd_acquire_slot{};
+#if defined(SAEX_FILE_MANAGER_READY_FIXTURE)
+FARPROC cwd_release_slot{};
+__declspec(naked) void cwd_unlock() {
+    __asm push ebp
+    __asm mov ebp,esp
+    __asm mov eax,[ebp+8]
+    __asm push dword ptr [eax*8+cwd_lock_table]
+    __asm call dword ptr [cwd_release_slot]
+    __asm pop ebp
+    __asm ret
+}
+__declspec(naked) void cwd_seh_cleanup() {
+    __asm push 7
+    __asm call cwd_unlock
+    __asm pop ecx
+    __asm ret
+}
+#pragma warning(push)
+#pragma warning(disable:4733)
+__declspec(naked) void cwd_seh_epilogue() {
+    __asm mov ecx,[ebp-10h]
+    __asm mov dword ptr fs:[0],ecx
+    __asm pop ecx
+    __asm pop edi
+    __asm pop esi
+    __asm pop ebx
+    __asm leave
+    __asm push ecx
+    __asm ret
+}
+#pragma warning(pop)
+#endif
 #if defined(SAEX_CWD_ACQUIRE_IMAGE)
 CRITICAL_SECTION cwd_acquire_static{};
 #endif
 void cwd_acquire_initialize() {
+#if defined(SAEX_CD_STREAM_CHANNELS_FIXTURE)
+    channels_error_slot=GetProcAddress(GetModuleHandleW(L"kernel32.dll"),"SetLastError");
+    channels_local_slot=GetProcAddress(GetModuleHandleW(L"kernel32.dll"),"LocalAlloc");
+    if(!channels_error_slot || !channels_local_slot)ExitProcess(97);
+#endif
+#if defined(SAEX_CD_STREAM_ALLOCATION_FIXTURE)
+    allocation_heap_handle=reinterpret_cast<unsigned>(GetProcessHeap());
+#endif
 #if defined(SAEX_CWD_ACQUIRE_IMAGE)
     auto* object=&cwd_acquire_static;
 #else
     auto* object=static_cast<CRITICAL_SECTION*>(VirtualAlloc(nullptr,4096,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE));
 #endif
     if(!object || !InitializeCriticalSectionAndSpinCount(object,4000))ExitProcess(97);
+    #if defined(SAEX_CD_STREAM_TABLES_FIXTURE)
+    for(auto& v:stream_table_window)v=0xa7;
+#endif
     cwd_acquire_slot=GetProcAddress(GetModuleHandleW(L"ntdll.dll"),"RtlEnterCriticalSection");
     if(!cwd_acquire_slot)ExitProcess(97);
+#if defined(SAEX_FILE_MANAGER_READY_FIXTURE)
+    cwd_release_slot=GetProcAddress(GetModuleHandleW(L"ntdll.dll"),"RtlLeaveCriticalSection");
+    if(!cwd_release_slot)ExitProcess(97);
+#endif
+#if defined(SAEX_CWD_QUERY_FIXTURE)
+    extern FARPROC cwd_query_slot;
+    cwd_query_slot=GetProcAddress(GetModuleHandleW(L"kernel32.dll"),"GetCurrentDirectoryA");
+    if(!cwd_query_slot)ExitProcess(97);
+#endif
     cwd_lock_table[14]=reinterpret_cast<unsigned>(object);
 #if defined(SAEX_CWD_ACQUIRE_EMPTY)
     cwd_lock_table[14]=0;
@@ -118,6 +200,577 @@ __declspec(naked) void cwd_lock_selector() {
 #endif
 }
 #endif
+#if defined(SAEX_CWD_QUERY_FIXTURE)
+#if defined(SAEX_CWD_COPY_FIXTURE)
+__declspec(naked) char* __cdecl cwd_copy_function(char*,const char*) {
+    __asm _emit 0x57
+    __asm _emit 0x8b
+    __asm _emit 0x7c
+    __asm _emit 0x24
+    __asm _emit 0x08
+    __asm _emit 0xeb
+    __asm _emit 0x6e
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm _emit 0x8b
+    __asm _emit 0x4c
+    __asm _emit 0x24
+    __asm _emit 0x0c
+    __asm _emit 0xf7
+    __asm _emit 0xc1
+    __asm _emit 0x03
+    __asm _emit 0x00
+    __asm _emit 0x00
+    __asm _emit 0x00
+    __asm _emit 0x74
+    __asm _emit 0x1d
+    __asm _emit 0x8a
+    __asm _emit 0x11
+    __asm _emit 0x83
+    __asm _emit 0xc1
+    __asm _emit 0x01
+    __asm _emit 0x84
+    __asm _emit 0xd2
+    __asm _emit 0x74
+    __asm _emit 0x66
+    __asm _emit 0x88
+    __asm _emit 0x17
+    __asm _emit 0x83
+    __asm _emit 0xc7
+    __asm _emit 0x01
+    __asm _emit 0xf7
+    __asm _emit 0xc1
+    __asm _emit 0x03
+    __asm _emit 0x00
+    __asm _emit 0x00
+    __asm _emit 0x00
+    __asm _emit 0x75
+    __asm _emit 0xea
+    __asm _emit 0xeb
+    __asm _emit 0x05
+    __asm _emit 0x89
+    __asm _emit 0x17
+    __asm _emit 0x83
+    __asm _emit 0xc7
+    __asm _emit 0x04
+    __asm _emit 0xba
+    __asm _emit 0xff
+    __asm _emit 0xfe
+    __asm _emit 0xfe
+    __asm _emit 0x7e
+    __asm _emit 0x8b
+    __asm _emit 0x01
+    __asm _emit 0x03
+    __asm _emit 0xd0
+    __asm _emit 0x83
+    __asm _emit 0xf0
+    __asm _emit 0xff
+    __asm _emit 0x33
+    __asm _emit 0xc2
+    __asm _emit 0x8b
+    __asm _emit 0x11
+    __asm _emit 0x83
+    __asm _emit 0xc1
+    __asm _emit 0x04
+    __asm _emit 0xa9
+    __asm _emit 0x00
+    __asm _emit 0x01
+    __asm _emit 0x01
+    __asm _emit 0x81
+    __asm _emit 0x74
+    __asm _emit 0xe1
+    __asm _emit 0x84
+    __asm _emit 0xd2
+    __asm _emit 0x74
+    __asm _emit 0x34
+    __asm _emit 0x84
+    __asm _emit 0xf6
+    __asm _emit 0x74
+    __asm _emit 0x27
+    __asm _emit 0xf7
+    __asm _emit 0xc2
+    __asm _emit 0x00
+    __asm _emit 0x00
+    __asm _emit 0xff
+    __asm _emit 0x00
+    __asm _emit 0x74
+    __asm _emit 0x12
+    __asm _emit 0xf7
+    __asm _emit 0xc2
+    __asm _emit 0x00
+    __asm _emit 0x00
+    __asm _emit 0x00
+    __asm _emit 0xff
+    __asm _emit 0x74
+    __asm _emit 0x02
+    __asm _emit 0xeb
+    __asm _emit 0xc7
+    __asm _emit 0x89
+    __asm _emit 0x17
+    __asm _emit 0x8b
+    __asm _emit 0x44
+    __asm _emit 0x24
+    __asm _emit 0x08
+    __asm _emit 0x5f
+    __asm _emit 0xc3
+    __asm _emit 0x66
+    __asm _emit 0x89
+    __asm _emit 0x17
+    __asm _emit 0x8b
+    __asm _emit 0x44
+    __asm _emit 0x24
+    __asm _emit 0x08
+    __asm _emit 0xc6
+    __asm _emit 0x47
+    __asm _emit 0x02
+    __asm _emit 0x00
+    __asm _emit 0x5f
+    __asm _emit 0xc3
+    __asm _emit 0x66
+    __asm _emit 0x89
+    __asm _emit 0x17
+    __asm _emit 0x8b
+    __asm _emit 0x44
+    __asm _emit 0x24
+    __asm _emit 0x08
+    __asm _emit 0x5f
+    __asm _emit 0xc3
+    __asm _emit 0x88
+    __asm _emit 0x17
+    __asm _emit 0x8b
+    __asm _emit 0x44
+    __asm _emit 0x24
+    __asm _emit 0x08
+    __asm _emit 0x5f
+    __asm _emit 0xc3
+}
+int cwd_copy_control() {
+    unsigned cases{};
+    for(unsigned length=3;length<=126;++length)for(unsigned sa=0;sa<4;++sa)for(unsigned da=0;da<4;++da) {
+        alignas(4) char source[268],before[268],destination[140];
+        std::memset(source,0x55,sizeof(source));std::memset(destination,0x66,sizeof(destination));
+        for(unsigned i=0;i<length;++i)source[4+sa+i]=static_cast<char>('A'+i%23);
+        source[4+sa+length]=0;std::memcpy(before,source,sizeof(source));
+        const auto result=cwd_copy_function(destination+4+da,source+4+sa);
+        if(result!=destination+4+da || std::memcmp(source,before,sizeof(source)))return 110;
+        for(unsigned i=0;i<sizeof(destination);++i) {
+            const auto expected=i>=4+da && i-4-da<=length?source[4+sa+i-4-da]:char(0x66);
+            if(destination[i]!=expected)return 111;
+        }
+        ++cases;
+    }
+    std::printf("PASS cwd copier body: %u length/alignment cases; source and destination guards preserved\n",cases);
+    return 0;
+}
+#endif
+unsigned cwd_query_cookie=0xaabbccdd;
+#if defined(SAEX_CWD_RETURN_FIXTURE)
+__declspec(naked) void cwd_cookie_check() {
+    __asm cmp ecx,[cwd_query_cookie]
+    __asm _emit 0x75
+    __asm _emit 0x01
+    __asm ret
+    __asm jmp event_app_canary
+}
+#endif
+FARPROC cwd_query_slot{};
+__declspec(naked) void cwd_query_helper() {
+    __asm {
+        push ebp
+        mov ebp,esp
+        sub esp,10ch
+        mov eax,[cwd_query_cookie]
+        xor eax,[ebp+4]
+        push ebx
+        mov ebx,[ebp+8]
+        test ebx,ebx
+        mov [ebp-4],eax
+        _emit 0x74
+        _emit 0x5f
+        call event_app_canary
+    }
+#if defined(SAEX_CWD_RETURN_FIXTURE)
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm {
+        mov ecx,[ebp-4]
+        xor ecx,[ebp+4]
+        pop ebx
+        call cwd_cookie_check
+        leave
+        ret
+    }
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+#else
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+#endif
+    __asm {
+        lea eax,[ebp-10ch]
+        push eax
+        push 104h
+        call dword ptr [cwd_query_slot]
+    }
+#if defined(SAEX_CWD_COPY_FIXTURE)
+    __asm _emit 0x85
+    __asm _emit 0xc0
+    __asm _emit 0x74
+    __asm _emit 0xac
+    __asm _emit 0x40
+    __asm _emit 0x3d
+    __asm _emit 0x04
+    __asm _emit 0x01
+    __asm _emit 0x00
+    __asm _emit 0x00
+    __asm _emit 0x77
+    __asm _emit 0xa4
+    __asm _emit 0x8b
+    __asm _emit 0x4d
+    __asm _emit 0x0c
+    __asm _emit 0x85
+    __asm _emit 0xc9
+    __asm _emit 0x75
+    __asm _emit 0x25
+    __asm call event_app_canary
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm _emit 0x3b
+    __asm _emit 0x45
+    __asm _emit 0x10
+    __asm _emit 0x7e
+    __asm _emit 0x10
+    __asm call event_app_canary
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm nop
+    __asm {
+        lea eax,[ebp-10ch]
+        push eax
+        push ecx
+        call cwd_copy_function
+    }
+#endif
+#if defined(SAEX_CWD_RETURN_FIXTURE)
+    __asm pop ecx
+    __asm pop ecx
+    __asm _emit 0xe9
+    __asm _emit 0x51
+    __asm _emit 0xff
+    __asm _emit 0xff
+    __asm _emit 0xff
+#endif
+    __asm call event_app_canary
+    PREFIX
+    __asm ret
+}
+#endif
 __declspec(dllexport,naked) void file_manager_cwd() {
     __asm push 0ch
     __asm push offset cwd_seh_scope
@@ -125,6 +778,23 @@ __declspec(dllexport,naked) void file_manager_cwd() {
 #if defined(SAEX_CWD_LOCK_FIXTURE)
     __asm push 7
     __asm call cwd_lock_selector
+#endif
+#if defined(SAEX_CWD_QUERY_FIXTURE)
+    __asm pop ecx
+    __asm and dword ptr [ebp-4],0
+    __asm push dword ptr [ebp+0ch]
+    __asm push dword ptr [ebp+8]
+    __asm push 0
+    __asm call cwd_query_helper
+#endif
+#if defined(SAEX_FILE_MANAGER_READY_FIXTURE)
+    __asm add esp,0ch
+    __asm mov [ebp-1ch],eax
+    __asm or dword ptr [ebp-4],-1
+    __asm call cwd_seh_cleanup
+    __asm mov eax,[ebp-1ch]
+    __asm call cwd_seh_epilogue
+    __asm _emit 0xc3
 #endif
     __asm call event_app_canary
     PREFIX
@@ -174,6 +844,194 @@ __declspec(dllexport,naked) void prelude_localisation() {
         ret
     }
 }
+#if defined(SAEX_CD_STREAM_TABLES_FIXTURE)
+#if defined(SAEX_CD_STREAM_DISK_FIXTURE)
+decltype(&GetDiskFreeSpaceA) stream_disk_slot=&GetDiskFreeSpaceA;
+__declspec(dllexport,align(4)) unsigned long stream_disk_globals[5]{11,22,33,44,55};
+#else
+void (*stream_disk_slot)()=&event_app_canary;
+#endif
+#if defined(SAEX_CD_STREAM_ALLOCATION_FIXTURE)
+__declspec(dllexport,align(4)) unsigned allocation_new_mode=
+#if defined(SAEX_ALLOCATION_NEWH)
+    1;
+#else
+    0;
+#endif
+__declspec(dllexport,align(4)) unsigned allocation_threshold=
+#if defined(SAEX_ALLOCATION_BLOCKED)
+    131072;
+#else
+    1016;
+#endif
+__declspec(dllexport,align(4)) unsigned allocation_heap_mode=
+#if defined(SAEX_ALLOCATION_SBH) || defined(SAEX_ALLOCATION_BLOCKED)
+    3;
+#else
+    1;
+#endif
+__declspec(dllexport) decltype(&HeapAlloc) allocation_api_slot=&HeapAlloc;
+__declspec(dllexport,naked) void allocation_cleanup() { __asm call event_app_canary __asm ret }
+extern __declspec(dllexport) const CwdScope allocation_scope{0xffffffffU,nullptr,&allocation_cleanup};
+// The rejected SBH/new-handler branches end in a canary. Their bytes do not
+// grant permission; the observer checks branch flags before either path.
+__declspec(dllexport,naked) void allocation_heap() {
+    __asm {
+        push 0ch
+        push offset allocation_scope
+        call cwd_seh_prologue
+        mov esi,[ebp+8]
+        cmp dword ptr [allocation_heap_mode],3
+        jne allocation_heap_tail
+        cmp esi,[allocation_threshold]
+        ja allocation_heap_tail
+        call event_app_canary
+    }
+    __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop
+    __asm {
+    allocation_heap_tail:
+        test esi,esi
+        jne allocation_heap_size
+        inc esi
+    allocation_heap_size:
+        cmp dword ptr [allocation_heap_mode],1
+        je allocation_heap_args
+        add esi,0fh
+        and esi,0fffffff0h
+    allocation_heap_args:
+        push esi
+        push 0
+        push dword ptr [allocation_heap_handle]
+        call dword ptr [allocation_api_slot]
+        call cwd_seh_epilogue
+        ret
+    }
+}
+__declspec(dllexport,naked) void allocation_nh() {
+    __asm {
+        cmp dword ptr [esp+4],0ffffffe0h
+        ja allocation_nh_null
+        push dword ptr [esp+4]
+        call allocation_heap
+        test eax,eax
+        pop ecx
+        jne allocation_nh_return
+        call event_app_canary
+    }
+    __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop __asm nop
+    __asm {
+    allocation_nh_null:
+        xor eax,eax
+    allocation_nh_return:
+        ret
+    }
+}
+__declspec(dllexport,naked) void allocation_malloc() {
+    __asm {
+        push dword ptr [allocation_new_mode]
+        push dword ptr [esp+8]
+        call allocation_nh
+        pop ecx
+        pop ecx
+        ret
+    }
+}
+__declspec(dllexport,naked) void allocation_aligned() {
+    __asm {
+        mov eax,[esp+4]
+        push esi
+        mov esi,[esp+0ch]
+        add eax,esi
+        push eax
+        call allocation_malloc
+        mov ecx,eax
+        lea eax,[ecx+esi]
+        add esp,4
+        dec esi
+        not esi
+        and eax,esi
+        mov [eax-4],ecx
+        pop esi
+        ret
+    }
+}
+#endif
+__declspec(naked) void stream_tables_target() {
+    __asm {
+        sub esp,10h
+        push edi
+        mov ecx,20h
+        xor eax,eax
+        mov edi,offset stream_table_window+4
+        mov edx,offset stream_table_window+140
+        rep stosd
+        jmp stream_names_loop
+        _emit 0x8d
+        _emit 0xa4
+        _emit 0x24
+        _emit 0
+        _emit 0
+        _emit 0
+        _emit 0
+    stream_names_loop:
+        mov byte ptr [edx],0
+        add edx,40h
+        cmp edx,offset stream_table_window+2188
+        jl stream_names_loop
+        lea eax,[esp+8]
+        push eax
+        lea ecx,[esp+10h]
+        push ecx
+        lea edx,[esp+0ch]
+        push edx
+        lea eax,[esp+1ch]
+        push eax
+        push 0
+        call dword ptr [stream_disk_slot]
+    }
+#if defined(SAEX_CD_STREAM_DISK_FIXTURE)
+    __asm {
+        mov ecx,[esp+4]
+        xor eax,eax
+        cmp ecx,800h
+        ja stream_large_sector
+        mov eax,20000000h
+    stream_large_sector:
+        push esi
+        push 0
+        push ecx
+        or eax,40000000h
+        push 800h
+        mov dword ptr [stream_disk_globals+12],1
+        mov dword ptr [stream_disk_globals+4],eax
+        mov dword ptr [stream_disk_globals+8],0
+    }
+#endif
+#if defined(SAEX_CD_STREAM_ALLOCATION_FIXTURE)
+    __asm call allocation_aligned
+#endif
+#if defined(SAEX_CD_STREAM_CHANNELS_FIXTURE)
+    __asm {
+        add esp,0ch
+        push 0
+        mov edi,eax
+        call dword ptr [channels_error_slot]
+        mov eax,[esp+1ch]
+        lea ecx,[eax+eax*2]
+        shl ecx,4
+        push ecx
+        push 40h
+        mov dword ptr [stream_table_window+136],0
+        mov dword ptr [stream_table_window+132],eax
+        call dword ptr [channels_local_slot]
+        push 0
+        push offset channels_filename
+        mov dword ptr [channels_pointer_window+4],eax
+    }
+#endif
+    __asm call event_app_canary
+}
+#endif
 __declspec(dllexport,naked) void routing_initializer() {
     __asm call prelude_empty
     __asm call prelude_localisation
@@ -182,7 +1040,14 @@ __declspec(dllexport,naked) void routing_initializer() {
 #else
     __asm call event_app_canary
 #endif
+#if defined(SAEX_CD_STREAM_TABLES_FIXTURE)
+    __asm push 5
+    __asm call stream_tables_target
+#endif
     PREFIX
+#if defined(SAEX_FILE_MANAGER_READY_FIXTURE)
+    __asm call event_app_canary
+#endif
     __asm ret
 }
 #else
@@ -237,7 +1102,23 @@ __declspec(dllexport,naked) void event_dispatch_target() {
 }
 #endif
 #if defined(SAEX_INSTANCE_FIXTURE)
-#if defined(SAEX_CWD_ACQUIRE_FIXTURE)
+#if defined(SAEX_CD_STREAM_CHANNELS_FIXTURE)
+__declspec(dllexport) char instance_name[]="Local\\SAEX.CdStreamChannelsFixture.v1";
+#elif defined(SAEX_CD_STREAM_ALLOCATION_FIXTURE)
+__declspec(dllexport) char instance_name[]="Local\\SAEX.CdStreamAllocationFixture.v1";
+#elif defined(SAEX_CD_STREAM_DISK_FIXTURE)
+__declspec(dllexport) char instance_name[]="Local\\SAEX.CdStreamDiskFixture.v1";
+#elif defined(SAEX_CD_STREAM_TABLES_FIXTURE)
+__declspec(dllexport) char instance_name[]="Local\\SAEX.CdStreamTablesFixture.v1";
+#elif defined(SAEX_FILE_MANAGER_READY_FIXTURE)
+__declspec(dllexport) char instance_name[]="Local\\SAEX.FileManagerReadyFixture.v1";
+#elif defined(SAEX_CWD_RETURN_FIXTURE)
+__declspec(dllexport) char instance_name[]="Local\\SAEX.CwdReturnFixture.v1";
+#elif defined(SAEX_CWD_COPY_FIXTURE)
+__declspec(dllexport) char instance_name[]="Local\\SAEX.CwdCopyFixture.v1";
+#elif defined(SAEX_CWD_QUERY_FIXTURE)
+__declspec(dllexport) char instance_name[]="Local\\SAEX.CwdQueryFixture.v1";
+#elif defined(SAEX_CWD_ACQUIRE_FIXTURE)
 __declspec(dllexport) char instance_name[]="Local\\SAEX.CwdAcquireFixture.v1";
 #elif defined(SAEX_CWD_LOCK_FIXTURE)
 __declspec(dllexport) char instance_name[]="Local\\SAEX.CwdLockFixture.v1";
@@ -486,6 +1367,9 @@ __declspec(dllexport,naked) void crt_io_call() {
 #undef PREFIX
 }
 int main(int argc,char**) {
+#if defined(SAEX_CWD_COPY_FIXTURE)
+    if(argc==4)return cwd_copy_control();
+#endif
 #if defined(SAEX_APPLICATION_ROUTING_FIXTURE)
     if (argc==3) {
 #if defined(SAEX_CWD_ACQUIRE_FIXTURE)

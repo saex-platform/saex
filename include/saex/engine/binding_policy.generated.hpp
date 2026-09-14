@@ -2,9 +2,9 @@
 #pragma once
 #include "saex/engine/codec_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_codec_policy_digest == "425272040c068e1e73b0cc1a9c43f9328b4dd13a2a00441efdbebe0a2372348d", "binding codec drift");
-inline constexpr std::string_view reviewed_binding_policy_id = "gta-sa.f01a00ce.windows-26200.codec-bindings-v1";
-inline constexpr std::string_view reviewed_binding_policy_digest = "92856899cf2250668e1b644d9ec2c111b01e72eba46643bb4631285ee3de84eb";
+static_assert(reviewed_codec_policy_digest == "35bf28c6927e31dc3415f7f3890a277217556e27b551f8ee3e65342cbd1c62a2", "binding codec drift");
+inline constexpr std::string_view reviewed_binding_policy_id = "gta-sa.f01a00ce.windows-26200-9445.codec-bindings-v1";
+inline constexpr std::string_view reviewed_binding_policy_digest = "97959fa701ac22cfb309110ae9e67f21a113cc8808b7b6e90ea68300d5b40cf2";
 inline constexpr std::array<BindingSlotSpec, 8> reviewed_binding_slots{{
     BindingSlotSpec{"ov_open_callbacks", 25608, 4352},
     BindingSlotSpec{"ov_clear", 25640, 4096},
