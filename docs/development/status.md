@@ -6,7 +6,7 @@ Sürüm: mimari v0.38 / kod 0.1.31, D1 foundation + native dependency + N2 prefl
 
 ### Kod 0.1.31 kaynak eşitlemesi
 
-İlk hosted koşuda Windows x86 Debug/Release, 13 fixture grubundaki yerel sistem export varsayımını reddetti. [Test reçetesi düzeltmesi](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği) üretim policy/hash kapsamını değiştirmeden uygulandı; yerel tam tekrar 41 native/79 managed/254 Python ile geçti. İkinci hosted koşudaki HIGHLOW farkı için test reçetesi adres normalizasyonu eklendi; Server 2022 GetLastError komut biçimi reddi sonrası x86 hosted ortamı Windows Server 2025 olarak seçildi. Hosted sonuç [yayın raporunda](github-publication.md) izlenir.
+İlk hosted koşuda Windows x86 Debug/Release, 13 fixture grubundaki yerel sistem export varsayımını reddetti. [Test reçetesi düzeltmesi](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği) üretim policy/hash kapsamını değiştirmeden uygulandı; yerel tam tekrar 41 native/79 managed/254 Python ile geçti. İkinci hosted koşudaki HIGHLOW farkı için test reçetesi adres normalizasyonu eklendi; Server 2022 GetLastError komut biçimi reddi sonrası x86 hosted ortamı Windows Server 2025 / VS 2026 ve v143 olarak seçildi; yerel VS 2022 varsayılanı korunur. Hosted sonuç [yayın raporunda](github-publication.md) izlenir.
 
 14 Eylül 2026: Yerelde biriken 0.1.14–0.1.31 kaynakları ve bütün ilgili test/belgeler, 0.1.13 public tabanı üzerine yayın için hazırlanır. [Yayın kapsamı ve doğrulama kaydı](github-publication.md#kod-0131-kaynak-eşitlemesi--14-eylül-2026). Aşağıdaki 0.1.13 hosted sonuçları tarihsel kanıttır; güncel 0.1.31 kontrolleri ayrı kaydedilir. Ürün sürümü, D1/D2 kapıları ve gerçek GTA raporlarının kapsamı bu yayın çalışmasıyla değişmez.
 

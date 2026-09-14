@@ -17,7 +17,7 @@ jobs:
   windows:
     name: Windows ${{ matrix.architecture }} ${{ matrix.configuration }}
     # x86 observers require the modern inline kernel32 GetLastError contract.
-    runs-on: ${{ matrix.architecture == 'x86' && 'windows-2025' || 'windows-2022' }}
+    runs-on: ${{ matrix.architecture == 'x86' && 'windows-2025-vs2026' || 'windows-2022' }}
     timeout-minutes: 25
     strategy:
       fail-fast: false
@@ -46,7 +46,10 @@ jobs:
         env:
           SAEX_ARCHITECTURE: ${{ matrix.architecture }}
           SAEX_CONFIGURATION: ${{ matrix.configuration }}
-        run: ./tools/build.ps1 -Architecture $env:SAEX_ARCHITECTURE -Configuration $env:SAEX_CONFIGURATION
+        run: |
+          $taskBuildOptions = @{ Architecture = $env:SAEX_ARCHITECTURE; Configuration = $env:SAEX_CONFIGURATION }
+          if ($env:SAEX_ARCHITECTURE -eq 'x86') { $taskBuildOptions.VisualStudio = '2026' }
+          ./tools/build.ps1 @taskBuildOptions
       - name: Test logs
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
