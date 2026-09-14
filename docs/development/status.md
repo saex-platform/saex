@@ -307,3 +307,7 @@ Dört Windows akışı geçti: x86 Debug/Release 41 native suite, 79 managed, 25
 ## 0.1.31 GitHub kabul kaydı
 
 [PR #10](https://github.com/saex-platform/saex/pull/10) yedi zorunlu kontrolü geçerek main dalına birleştirildi. x86 hosted Windows Server 2025 / VS 2026 / v143, tek Python executable seçimi ve yayın envanterinin ayrıntıları [yayın raporunda](github-publication.md) korunur. 0.1.40 geliştirmesi bu güncel tabanla birleştirildi.
+
+## 14 Eylül 2026 — Linux fixture derleme düzeltmesi
+
+0.1.40 GitHub yayınında GCC strict uyarısı, file-manager portable testindeki tek satırlık döngü/terminator yazımını reddetti. Döngü gövdesi süslü parantezle açıklaştırıldı ve terminator ayrı satıra alındı; test koşulları, üretim davranışı ve strict -Werror aynı kaldı. İlk hosted ret [yayın raporunda](github-publication.md) tutulur.

@@ -283,3 +283,7 @@ Karar: mevcut CRT lock sonrası yalnız drive-zero helper ve GetCurrentDirectory
 ## ADR-75 — Streaming kanal belleği
 
 0.1.40/v0.47. Doğrulanmış aligned allocation dönüşünden sonra SetLastError(0) ve LocalAlloc(LPTR,240) yalnız ayrı explicit modda yürütülür. Sabit 5 × 48 kontrol belleğinin NULL/sınır/sıfır kontrolleri ve pointer global kaydı zorunludur; arşiv CALL önünde 0x406C34 terminali kullanılır. Eski parent kayıtları tarihsel snapshot olarak kalır; live tablo yalnız iki DWORD sayacı değiştirebilir. LocalAlloc doğal eşlemesi LocalFree, aligned tamponun eşlemesi FreeAlign/HeapFree'dir; child teardown bunları doğrulamaz. C++ trace yeniden derlenir; C ABI 1 ve ağ/otorite değişmez. Mevcut 160 olay tavanı genişletilmez. [Sözleşme ve kabul](../development/d1-cd-stream-channels.md).
+
+## 14 Eylül 2026 — Linux fixture derleme düzeltmesi
+
+0.1.40 GitHub yayınında GCC strict uyarısı, file-manager portable testindeki tek satırlık döngü/terminator yazımını reddetti. Döngü gövdesi süslü parantezle açıklaştırıldı ve terminator ayrı satıra alındı; test koşulları, üretim davranışı ve strict -Werror aynı kaldı. İlk hosted ret [yayın raporunda](../development/github-publication.md) tutulur.

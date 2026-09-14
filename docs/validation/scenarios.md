@@ -368,3 +368,7 @@ Doğal HeapAlloc ve CRT dönüşüyle 0x406BF9'a ulaşılmalı; raw/metadata/pay
 ## AC-90 alt kesiti — 0.1.40 kanal belleği
 
 SetLastError gerçek dönüşünde child LastErrorValue 0; LocalAlloc çağrısında LPTR/240; sonuçta ayrı, okunabilir 240 sıfır byte ve doğru pointer global kaydı doğrulanmalıdır. Eski aligned allocation, parent state ve SEH korunur; terminal CdStreamOpen önünde 0x406C34. Yanlış spec/API/body/filename, önceden dolu pointer, owner/event/limit ve legacy terminal negatifleri; post-terminal canary kontrolü ve 12 warm çevrim gerekir. NULL/overflow/nonzero portable testleri gerçek OS allocation failure veya canlı tamper enjeksiyonu değildir. Doğal free, I/O ve thread lifecycle açık olduğundan AC-90 bütünü kapanmaz. [Kanıt düzeyleri](../development/d1-cd-stream-channels.md).
+
+## 14 Eylül 2026 — Linux fixture derleme düzeltmesi
+
+0.1.40 GitHub yayınında GCC strict uyarısı, file-manager portable testindeki tek satırlık döngü/terminator yazımını reddetti. Döngü gövdesi süslü parantezle açıklaştırıldı ve terminator ayrı satıra alındı; test koşulları, üretim davranışı ve strict -Werror aynı kaldı. İlk hosted ret [yayın raporunda](../development/github-publication.md) tutulur.

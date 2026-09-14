@@ -26,7 +26,8 @@ int main(){try {
     }
     for(unsigned length=3;length<=126;++length) {
         std::array<std::byte,136> before{};before.fill(std::byte{0x66});
-        for(unsigned i=0;i<length;++i)before[i+4]=std::byte{0x61};before[length+4]=std::byte{};
+        for(unsigned i=0;i<length;++i) { before[i+4]=std::byte{0x61}; }
+        before[length+4]=std::byte{};
         check(file_manager_ready_buffer(before,before,length,false));auto after=before;after[length+4]=std::byte{0x5c};after[length+5]=std::byte{};
         check(file_manager_ready_buffer(before,after,length,true));check(!file_manager_ready_buffer(before,before,length,true));
         for(unsigned at:{0U,3U,4U,length+4,length+5,132U,135U}){auto changed=after;changed[at]^=std::byte{1};check(!file_manager_ready_buffer(before,changed,length,true));}
