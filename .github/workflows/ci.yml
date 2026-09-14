@@ -16,7 +16,8 @@ concurrency:
 jobs:
   windows:
     name: Windows ${{ matrix.architecture }} ${{ matrix.configuration }}
-    runs-on: windows-2022
+    # x86 observers require the modern inline kernel32 GetLastError contract.
+    runs-on: ${{ matrix.architecture == 'x86' && 'windows-2025' || 'windows-2022' }}
     timeout-minutes: 25
     strategy:
       fail-fast: false
