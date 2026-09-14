@@ -249,3 +249,5 @@ Ayrı event-dispatch modu, instance dönüşünden doğal olay dağıtıcısı C
 ## Visual Studio 2026 ile foundation doğrulaması
 
 `tools/build.ps1 -Architecture x86 -Configuration Debug -VisualStudio 2026` seçeneği CMake 4.2 veya üstüyle `Visual Studio 18 2026` generator'ını ve kurulu `v143` C++ toolset'ini seçer. Yerel varsayılan VS 2022 preset'i korunur. GitHub x86 işleri bu açık seçeneği kullanır; eksik generator/toolset güvenli derleme hatasıdır. Pinned native SDK işinin exact MSVC/CMake/SDK lock'u bu foundation seçeneğinden etkilenmez.
+
+Python executable yolu PATH önceliğindeki ilk Application sonucundan alınır; birden fazla Python/WindowsApps alias eşleşmesi tek CMake yoluna birleştirilmez. `-Python` ile verilen açık dosya yolu aynı şekilde kullanılabilir.

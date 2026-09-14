@@ -47,7 +47,7 @@ try {
         $taskConfigureArgs += @('-G', 'Visual Studio 18 2026', '-T', 'v143')
     }
     if ($Architecture -eq 'x86') {
-        $taskPythonPath = (Get-Command -Name $Python -CommandType Application -ErrorAction Stop).Source
+        $taskPythonPath = (Get-Command -Name $Python -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
         $taskConfigureArgs += "-DPython3_EXECUTABLE=$taskPythonPath"
     }
     Invoke-Checked 'cmake' $taskConfigureArgs
