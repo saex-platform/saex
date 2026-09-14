@@ -3,7 +3,8 @@ param(
     [ValidateSet('x64', 'x86')][string]$Architecture = 'x64',
     [ValidateSet('Debug', 'Release')][string]$Configuration = 'Debug',
     [string]$Python = 'python',
-    [string]$DocumentationBase = ''
+    [string]$DocumentationBase = '',
+    [ValidateSet('2022', '2026')][string]$VisualStudio = '2022'
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
@@ -50,8 +51,11 @@ try {
     Invoke-Checked $Python @('tools/cd_stream_allocation_policy.py', '--check')
     Invoke-Checked $Python @('tools/cd_stream_channels_policy.py', '--check')
     $taskConfigureArgs = @('--preset', "windows-$Architecture")
+    if ($VisualStudio -eq '2026') {
+        $taskConfigureArgs += @('-G', 'Visual Studio 18 2026', '-T', 'v143')
+    }
     if ($Architecture -eq 'x86') {
-        $taskPythonPath = (Get-Command -Name $Python -CommandType Application -ErrorAction Stop).Source
+        $taskPythonPath = (Get-Command -Name $Python -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
         $taskConfigureArgs += "-DPython3_EXECUTABLE=$taskPythonPath"
     }
     Invoke-Checked 'cmake' $taskConfigureArgs

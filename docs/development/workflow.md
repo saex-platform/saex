@@ -139,7 +139,7 @@ Source bilinçli değişince python tools/entry_policy.py çalışır. Standart 
 
 [Kaynak yayını sözleşmesi](github-publication.md) yeni workflow, lisans, marka ve topluluk dosyalarının sahibidir. Standart Windows build sekiz GitHub event/base testi daha çalıştırır. `python tools/ci.py docs` gerçek PR base/push-before SHA ile doküman eşlemesini doğrular; sıfır ilk-push ve bozuk event ayrı ele alınır. `python tools/ci.py linux` portable C++/C# fixture ve generator corpus'unu yürütür; Windows/GTA runtime kapsamını taşımaz.
 
-GitHub hosted Windows matrisi x64/x86 Debug/Release; Linux matrisi x64 Debug'dır. Sır taraması Gitleaks 8.30.1'in SHA-256 ile doğrulanmış binary'siyle Git geçmişini redacted olarak tarar. Opt-in SDK işi exact CMake/MSVC/SDK lock'u gevşetmez. Her platformun yerel/GitHub sonuçları yayın kaydında ayrı tutulur. Başarı rozeti veya required check ancak gerçek workflow sonucuna bağlanır.
+GitHub hosted Windows matrisi x64 Debug/Release için `windows-2022`, x86 Debug/Release için `windows-2025-vs2026`; Linux matrisi x64 Debug'dır. x86 fixture zinciri, incelenmiş inline kernel32 GetLastError komut biçimini gerektirir; Server 2022'nin farklı API uygulaması destek kabul edilmez. Windows 2025 ortamındaki sonuç ayrıca doğrulanır; bu runner seçimi gerçek GTA için yeni OS/hash onayı vermez. Sır taraması Gitleaks 8.30.1'in SHA-256 ile doğrulanmış binary'siyle Git geçmişini redacted olarak tarar. Opt-in SDK işi exact CMake/MSVC/SDK lock'u gevşetmez. Her platformun yerel/GitHub sonuçları yayın kaydında ayrı tutulur. Başarı rozeti veya required check ancak gerçek workflow sonucuna bağlanır.
 
 Kullanıcıya özgü Python yolları genel kurulum örneklerinden çıkarıldı. `C:\Python312\python.exe` yalnız örnek yoldur; gerçek kurulu Python 3 yolu `-Python` ile seçilir. Kaynak/ABI/GTA davranışı değişmedi.
 
@@ -289,3 +289,11 @@ Normal build GTA başlatmaz. Açık motor denemesi `--observe-cd-stream-allocati
 ## Kod 0.1.40 — Kanal belleği doğrulama akışı
 
 Standart build `cd_stream_channels_policy.py --check`, sekiz policy testi, portable corpus ve üç fixture kullanan x86 native suite çalıştırır. Probe CLI gate testi yeni modun bilinmeyen executable/argüman/relative cwd/legacy null davranışını denetler. Normal build GTA başlatmaz. Explicit `--observe-cd-stream-channels` ve Run-SAEX terminali 0x406C34'tür; runner 13 kontrol/20 hash girdisi ve üç policy digest eşleşmesi raporlar. Allocation/yeni mod tavanı 160, önceki modlar 128 kalır. C++ trace yeniden derlenir; CLI ayrı çağrı frame'lerini korur. [GTA, test ve failure sınırı](d1-cd-stream-channels.md).
+
+
+
+## Visual Studio 2026 ile foundation doğrulaması
+
+`tools/build.ps1 -Architecture x86 -Configuration Debug -VisualStudio 2026` seçeneği CMake 4.2 veya üstüyle `Visual Studio 18 2026` generator'ını ve kurulu `v143` C++ toolset'ini seçer. Yerel varsayılan VS 2022 preset'i korunur. GitHub x86 işleri bu açık seçeneği kullanır; eksik generator/toolset güvenli derleme hatasıdır. Pinned native SDK işinin exact MSVC/CMake/SDK lock'u bu foundation seçeneğinden etkilenmez.
+
+Python executable yolu PATH önceliğindeki ilk Application sonucundan alınır; birden fazla Python/WindowsApps alias eşleşmesi tek CMake yoluna birleştirilmez. `-Python` ile verilen açık dosya yolu aynı şekilde kullanılabilir.

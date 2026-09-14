@@ -220,3 +220,17 @@ Bu kesit yereldir; remote, push, PR veya hosted CI çalıştırılmadı. Önceki
 [Yeni sözleşme](d1-cd-stream-channels.md) `run_cd_stream_channels` / `--observe-cd-stream-channels` ile SetLastError ve LocalAlloc doğal yolunu, 5 × 48 sıfır byte ve global pointer kaydını ekler. Terminal 0x406C34, arşiv CALL önüdür. Önceki allocation/parent kayıtları kendi duraklarının snapshot anlamını korur; canlı tabloda yalnız kanal sayısı/etkin sayı DWORD çifti değişebilir. C++ trace tüketicileri yeniden derlenir; C ABI 1 ve mevcut OS pinleri aynıdır. Allocation ve yeni mod 160, daha eski modlar 128 olay sınırındadır. Native free, dosya açma/okuma, thread, renderer ve D1/D2 kapıları açıktır. Güncel test ve GTA kanıtı yeni sözleşmede tutulur.
 
 Bu değişiklik yereldir; remote/push/PR veya hosted CI çalıştırılmadı.
+
+[Üçüncü hosted koşuda](https://github.com/saex-platform/saex/actions/runs/34802632385) önceki startup zinciri geçti; dokuz x86 grup Server 2022'nin farklı GetLastError komut biçiminde reddedildi. Yerelde son adres normalizasyonu ile 41/41 native grup geçti. x86 işleri, GitHub'ın [Windows Server 2025 görüntüsüne](https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md) taşındı; x64 Server 2022 işleri korundu. Hiçbir test/required check kaldırılmadı, üretim kontrolü gevşetilmedi. Yeni runner sonucu PR #10 kontrollerinde ayrıca izlenir.
+
+Windows 2025 etiketinin ilk [koşusu](https://github.com/saex-platform/saex/actions/runs/34803139723), VS 2022 bulunmadığı için configure aşamasında durdu. Runner kaydı `windows-2025-vs2026`, CMake 4.4.3 ve VS 2026 içeriyordu. Etiket açıkça seçildi; foundation script'ine VS 2026 generator + kurulu v143 toolset seçeneği eklendi. Varsayılan yerel VS 2022 ve ayrı native SDK kilitleri korunur.
+
+### Kaynak teslim envanteri ve kabul kaydı
+
+İlk 394 dosyanın tamamı PR #10 kaynağında mevcuttur; yeni test yardımcısıyla 395 dosya teslim edilir. Manifest karşılaştırması eksik dosya veya beklenmeyen fark göstermedi; 24 engine JSON dosyasının exact byte/hash değeri korundu. Kaynak ve Git geçmişi Gitleaks taramalarında bulgu vermedi. Doküman kapısı 110 Markdown, 1833 yerel bağlantı ve 6 JSON örneğini doğruladı.
+
+Yerel temiz checkout'ta ilk fixture düzeltmesi 41 native/79 managed/254 Python ile tam akışı geçti; son adres normalizasyonu 41/41 native grupta tekrar doğrulandı. Son hosted commit için beş build, Documentation ve Secret scan sonuçları [PR kontrollerindedir](https://github.com/saex-platform/saex/pull/10/checks); korumalı main'e kabul ve squash commit kimliği [birleştirme kaydındadır](https://github.com/saex-platform/saex/pull/10). Tarihsel başarısız koşular üstte tutulur; bunlar son commit'in sonucu yerine kullanılamaz.
+
+Organizasyon profili banner'ı [.github PR #1](https://github.com/saex-platform/.github/pull/1) ile ana kaynak deposunun canonical SVG'sine bağlandı; yinelenen profil görseli artık gösterilmez. Yayın sırasında yeniden başlayan cwd-query geliştirmesi bu 0.1.31 anlık görüntüsünden ayrıdır ve kaynak çalışma alanında korunur. Bu rapor yeni GTA çalıştırması veya oynanabilir binary release iddiası taşımaz.
+
+VS 2026/v143 configure aşaması [sonraki koşuda](https://github.com/saex-platform/saex/actions/runs/34803447972) geçti; Python keşfi iki executable yolunu birleştirdiği için FindPython3 reddetti. Foundation script PATH önceliğindeki ilk Application sonucunu seçer; WindowsApps alias'ı ikinci yol olarak CMake'e eklenmez.

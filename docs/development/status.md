@@ -298,3 +298,7 @@ Dört Windows akışı geçti: x86 Debug/Release 41 native suite, 79 managed, 25
 ## 0.1.37 — Bootstrap fixture stack regresyonu
 
 İlk tam Debug kontrolünde 51/52 suite geçti; bootstrap lifecycle fixture çalıştırıcısı **0xC00000FD (stack overflow)** ile çıktı. Ortak trace'e tablo snapshot'ları eklenince eski testteki çok sayıda değer olarak tutulan büyük sonuç ve ternary temporary x86 stack sınırını aştı. Test çalıştırıcısı sonuçları heap üzerinde tutacak ve tek dispatch return slot'u kullanacak şekilde düzeltildi. Test senaryoları, üretim stack reserve, native izinler ve doğrulamalar gevşetilmedi. Hata `cd-stream-bootstrap-failure.json` ve ilk tam Debug log'unda korunur; hedefli tekrar ve tam sonuçlar final kanıtta kaydedilir.
+
+## 0.1.31 GitHub kabul kaydı
+
+[PR #10](https://github.com/saex-platform/saex/pull/10) yedi zorunlu kontrolü geçerek main dalına birleştirildi. x86 hosted Windows Server 2025 / VS 2026 / v143, tek Python executable seçimi ve yayın envanterinin ayrıntıları [yayın raporunda](github-publication.md) korunur. 0.1.40 geliştirmesi bu güncel tabanla birleştirildi.
