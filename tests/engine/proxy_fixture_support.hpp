@@ -77,7 +77,7 @@ struct Fixture {
     }
     std::uint32_t symbol(std::string_view wanted) const {
         const auto exports = at<IMAGE_EXPORT_DIRECTORY>(raw<DWORD>(pe + 24 + 96));
-        require(exports.NumberOfNames <= 32, "fixture export bound");
+        require(exports.NumberOfNames <= 64, "fixture export bound");
         for (DWORD i = 0; i < exports.NumberOfNames; ++i)
             if (name(at<DWORD>(exports.AddressOfNames + 4 * i)) == wanted)
                 return at<DWORD>(exports.AddressOfFunctions + 4 * at<WORD>(exports.AddressOfNameOrdinals + 2 * i));

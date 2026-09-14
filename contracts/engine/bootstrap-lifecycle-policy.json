@@ -1,13 +1,22 @@
 {
   "schemaVersion": 1,
-  "id": "gta-sa.f01a00ce.windows-26200.bootstrap-lifecycle-v1",
+  "id": "gta-sa.f01a00ce.windows-26200-9445.bootstrap-lifecycle-v1",
   "stage": "owned-main-thread-bootstrap-lifecycle",
-  "asiPolicySha256": "42947538ada61d7a163ff3a085c17b5218a8d702a7fe44445cfd2a2be154b1e8",
+  "asiPolicySha256": "ac29aeefa1b2a2ccb54777a9c96ee40248f90b244c51e0587eca8912664407c7",
   "reviewDocument": "docs/development/d1-bootstrap-lifecycle.md",
-  "callSequence": ["Query", "Initialize", "Query", "Initialize", "Stop", "Query", "Initialize", "Stop"],
+  "callSequence": [
+    "Query",
+    "Initialize",
+    "Query",
+    "Initialize",
+    "Stop",
+    "Query",
+    "Initialize",
+    "Stop"
+  ],
   "cryptoModule": {
     "name": "bcryptprimitives.dll",
-    "bytes": 501112,
-    "sha256": "c0fba4406bf9ca909f6f463f08189d6eb47238d7bb590d58344af8cadd6bda8e"
+    "bytes": 501136,
+    "sha256": "dfd29f2c1f28034949f0a3716a99f00816bda0bffd48a5a2750be4569e7d21ee"
   }
 }

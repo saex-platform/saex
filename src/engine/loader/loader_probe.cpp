@@ -16,10 +16,11 @@
 #include "saex/engine/startup_return_policy.generated.hpp"
 #include "saex/engine/crt_startup_policy.generated.hpp"
 #include "saex/engine/application_entry_policy.generated.hpp"
-#include "saex/engine/cwd_acquire_policy.generated.hpp"
+#include "saex/engine/cd_stream_channels_policy.generated.hpp"
 #include "saex/engine/windows_file_observation.hpp"
 #include "saex/engine/launch_context.hpp"
 #include <iostream>
+#include <bit>
 #include <algorithm>
 #include <string>
 
@@ -43,14 +44,19 @@ std::string json_path(std::wstring_view value) {
     }
     return result + '"';
 }
+// Keep each value-returning observation in its own call frame. MSVC /Od can
+// reserve a distinct large temporary for every branch in one dispatch lambda.
+template<class F> __declspec(noinline) void observe_into(saex::engine::LoaderTrace& target,F&& action) {
+    target=action();
+}
 void print(const saex::engine::LoaderTrace& trace, std::uint32_t pid, std::string_view engine_hash,
-    bool reviewed, std::string_view failed_module, const saex::engine::LaunchContext* context, bool entry_mode, bool proxy_mode, bool startup_mode, bool codec_mode, bool binding_mode, bool asi_mode, bool bootstrap_mode, bool frame_mode, bool tail_mode, bool crt_mode, bool application_mode, bool platform_mode, bool suppression_mode, bool instance_mode, bool dispatch_mode, bool routing_mode, bool prelude_mode, bool manager_mode, bool seh_mode, bool lock_mode, bool acquire_mode) {
+    bool reviewed, std::string_view failed_module, const saex::engine::LaunchContext* context, bool entry_mode, bool proxy_mode, bool startup_mode, bool codec_mode, bool binding_mode, bool asi_mode, bool bootstrap_mode, bool frame_mode, bool tail_mode, bool crt_mode, bool application_mode, bool platform_mode, bool suppression_mode, bool instance_mode, bool dispatch_mode, bool routing_mode, bool prelude_mode, bool manager_mode, bool seh_mode, bool lock_mode, bool acquire_mode, bool query_mode, bool copy_mode, bool return_mode, bool ready_mode, bool tables_mode, bool disk_mode, bool allocation_mode, bool channels_mode) {
     const auto policy = reviewed ? saex::engine::reviewed_loader_policy_id : "windows-loader-three-file-observation-v1";
     const auto digest = reviewed ? saex::engine::reviewed_loader_policy_digest : "";
     // A continued thread may fail before the next checkpoint; continuation alone is not execution proof.
     const char* body_execution = !trace.platform_startup.continued ? "false" : trace.platform_startup.call_reached ? "true" : "null";
-    std::cout << std::boolalpha << "{\"scope\":\"" << (acquire_mode ? "bounded-cwd-acquire" : lock_mode ? "bounded-cwd-lock" : seh_mode ? "bounded-cwd-seh" : manager_mode ? "bounded-file-manager-entry" : prelude_mode ? "bounded-game-prelude" : routing_mode ? "bounded-application-routing" : dispatch_mode ? "bounded-event-dispatch" : instance_mode ? "bounded-instance-startup" : suppression_mode ? "bounded-platform-suppression" : platform_mode ? "bounded-platform-startup" : application_mode ? "bounded-application-entry" : crt_mode ? "bounded-crt-initializer-boundary" : tail_mode ? "bounded-natural-startup-return" : frame_mode ? "bounded-frame-target-observation" : bootstrap_mode ? "bounded-bootstrap-lifecycle-observation" : asi_mode ? "bounded-asi-return-observation" : binding_mode ? "bounded-codec-bindings-observation" : codec_mode ? "bounded-codec-return-observation" : startup_mode ? "bounded-startup-call-observation" : proxy_mode ? "bounded-proxy-return-observation" : entry_mode ? "bounded-entry-boundary-observation" : "bounded-loader-mapping-observation")
-        << "\",\"schemaVersion\":1,\"canAttach\":false,"
+    std::cout << std::boolalpha << "{\"scope\":\"" << (channels_mode ? "bounded-cd-stream-channels" : allocation_mode ? "bounded-cd-stream-allocation" : disk_mode ? "bounded-cd-stream-disk" : tables_mode ? "bounded-cd-stream-tables" : ready_mode ? "bounded-file-manager-ready" : return_mode ? "bounded-cwd-return" : copy_mode ? "bounded-cwd-copy" : query_mode ? "bounded-cwd-query" : acquire_mode ? "bounded-cwd-acquire" : lock_mode ? "bounded-cwd-lock" : seh_mode ? "bounded-cwd-seh" : manager_mode ? "bounded-file-manager-entry" : prelude_mode ? "bounded-game-prelude" : routing_mode ? "bounded-application-routing" : dispatch_mode ? "bounded-event-dispatch" : instance_mode ? "bounded-instance-startup" : suppression_mode ? "bounded-platform-suppression" : platform_mode ? "bounded-platform-startup" : application_mode ? "bounded-application-entry" : crt_mode ? "bounded-crt-initializer-boundary" : tail_mode ? "bounded-natural-startup-return" : frame_mode ? "bounded-frame-target-observation" : bootstrap_mode ? "bounded-bootstrap-lifecycle-observation" : asi_mode ? "bounded-asi-return-observation" : binding_mode ? "bounded-codec-bindings-observation" : codec_mode ? "bounded-codec-return-observation" : startup_mode ? "bounded-startup-call-observation" : proxy_mode ? "bounded-proxy-return-observation" : entry_mode ? "bounded-entry-boundary-observation" : "bounded-loader-mapping-observation")
+        << "\",\"schemaVersion\":1,\"checkpointRecordsAreSnapshots\":true,\"canAttach\":false,"
         << "\"initializationVerified\":false,\"policy\":\"" << policy << "\",\"policySourceDigest\":\"" << digest
         << "\",\"failedPolicyModule\":\"" << failed_module << "\",\"engineSha256\":\"" << engine_hash
         << "\",\"childCreated\":" << (pid != 0) << ",\"childPid\":" << pid << ",\"childExitConfirmed\":" << trace.exit_confirmed
@@ -68,11 +74,211 @@ void print(const saex::engine::LoaderTrace& trace, std::uint32_t pid, std::strin
             << (context->valid() ? hex(context->environment_hash()) : "") << "\",\"environmentEntries\":" << context->entry_count()
             << ",\"environmentCodeUnits\":" << context->environment().size() << '}';
     } else std::cout << "null";
+
+
+    std::cout << ",\"cdStreamChannelsObservation\":";
+    if(channels_mode) {
+        const auto& s=trace.cd_stream_channels;
+        std::cout << "{\"policy\":\"" << saex::engine::reviewed_cd_stream_channels_id << "\",\"policySourceDigest\":\"" << saex::engine::reviewed_cd_stream_channels_digest << "\""
+            << ",\"stage\":" << s.stage << ",\"stopAddress\":" << s.stop_address << ",\"shapeFailure\":" << s.shape_failure
+            << ",\"pointer\":" << s.pointer << ",\"channelCount\":5,\"channelBytes\":240"
+            << ",\"errorBefore\":" << s.error_before << ",\"errorAfterReset\":" << s.error_after_reset << ",\"errorAfterLocal\":" << s.error_after_local
+            << ",\"fileOpenAllowed\":false,\"nativeFreeVerified\":false,\"streamingReady\":false";
+        std::cout << ",\"armed\":" << s.armed;
+        std::cout << ",\"continued\":" << s.continued;
+        std::cout << ",\"shapeValid\":" << s.shape_valid;
+        std::cout << ",\"argumentsValid\":" << s.arguments_valid;
+        std::cout << ",\"frameValid\":" << s.frame_valid;
+        std::cout << ",\"errorReset\":" << s.error_reset;
+        std::cout << ",\"localReturned\":" << s.local_returned;
+        std::cout << ",\"allocationSucceeded\":" << s.allocation_succeeded;
+        std::cout << ",\"blockValid\":" << s.block_valid;
+        std::cout << ",\"zeroInitialized\":" << s.zero_initialized;
+        std::cout << ",\"pointerPublished\":" << s.pointer_published;
+        std::cout << ",\"tablesValid\":" << s.tables_valid;
+        std::cout << ",\"parentPreserved\":" << s.parent_preserved;
+        std::cout << ",\"allocationPreserved\":" << s.allocation_preserved;
+        std::cout << ",\"sehPreserved\":" << s.seh_preserved;
+        std::cout << ",\"verified\":" << s.verified;
+        std::cout << ",\"pointerBeforeHex\":\"" << hex(s.pointer_before) << "\",\"pointerAfterHex\":\"" << hex(s.pointer_after)
+            << "\",\"channelsHex\":\"" << hex(s.channels) << "\"}";
+    } else std::cout << "null";
+    std::cout << ",\"cdStreamAllocationObservation\":";
+    if(allocation_mode) {
+        const auto& s=trace.cd_stream_allocation;
+        std::cout << "{\"policy\":\"" << saex::engine::reviewed_cd_stream_allocation_id << "\",\"policySourceDigest\":\"" << saex::engine::reviewed_cd_stream_allocation_digest << "\""
+            << ",\"stage\":" << s.stage << ",\"stopAddress\":" << s.stop_address << ",\"functionAddress\":" << s.function_address
+            << ",\"newHandlerMode\":" << s.globals[0] << ",\"sbhThreshold\":" << s.globals[1] << ",\"heapHandle\":" << s.globals[2] << ",\"heapMode\":" << s.globals[3]
+            << ",\"rawAddress\":" << s.block.raw << ",\"alignedAddress\":" << s.block.aligned << ",\"metadataAddress\":" << s.block.metadata << ",\"allocationBytes\":" << s.block.bytes
+            << ",\"metadataBefore\":" << s.metadata_before << ",\"metadataAfter\":" << s.metadata_after << ",\"lastErrorDiagnostic\":" << s.last_error
+            << ",\"shapeFailure\":" << s.shape_failure
+            << ",\"nativeFreeVerified\":false,\"streamingReady\":false,\"nextInitializationCallAllowed\":false"
+            << ",\"armed\":" << s.armed
+            << ",\"continued\":" << s.continued
+            << ",\"shapeValid\":" << s.shape_valid
+            << ",\"requestValid\":" << s.request_valid
+            << ",\"frameValid\":" << s.frame_valid
+            << ",\"argumentsValid\":" << s.arguments_valid
+            << ",\"globalsPreserved\":" << s.globals_preserved
+            << ",\"branchVerified\":" << s.branch_verified
+            << ",\"apiReturned\":" << s.api_returned
+            << ",\"allocationSucceeded\":" << s.allocation_succeeded
+            << ",\"blockValid\":" << s.block_valid
+            << ",\"metadataValid\":" << s.metadata_valid
+            << ",\"contentPreserved\":" << s.content_preserved
+            << ",\"parentPreserved\":" << s.parent_preserved
+            << ",\"sehPreserved\":" << s.seh_preserved
+            << ",\"priorRecordPreserved\":" << s.prior_record_preserved
+            << ",\"verified\":" << s.verified
+            << ",\"blockBeforeHash\":\"" << hex(s.block_before_hash) << "\",\"blockAfterHash\":\"" << hex(s.block_after_hash) << "\"}";
+    } else std::cout << "null";
+    std::cout << ",\"cdStreamDiskObservation\":";
+    if(disk_mode) {
+        const auto& s=trace.cd_stream_disk;
+        std::cout << "{\"policy\":\"" << saex::engine::reviewed_cd_stream_disk_id << "\",\"policySourceDigest\":\"" << saex::engine::reviewed_cd_stream_disk_digest << "\""
+            << ",\"stage\":" << s.stage << ",\"stopAddress\":" << s.stop_address
+            << ",\"functionAddress\":" << s.function_address << ",\"implementationAddress\":" << s.implementation_address
+            << ",\"apiResult\":" << s.api_result << ",\"lastError\":" << s.last_error
+            << ",\"sectorsPerCluster\":" << s.geometry.sectors_per_cluster << ",\"bytesPerSector\":" << s.geometry.bytes_per_sector
+            << ",\"freeClusters\":" << s.geometry.free_clusters << ",\"totalClusters\":" << s.geometry.total_clusters
+            << ",\"allocationCallAllowed\":false,\"physicalAlignmentVerified\":false,\"streamingReady\":false"
+            << ",\"armed\":" << s.armed
+            << ",\"continued\":" << s.continued
+            << ",\"shapeValid\":" << s.shape_valid
+            << ",\"frameValid\":" << s.frame_valid
+            << ",\"argumentsValid\":" << s.arguments_valid
+            << ",\"apiReturned\":" << s.api_returned
+            << ",\"querySucceeded\":" << s.query_succeeded
+            << ",\"geometryValid\":" << s.geometry_valid
+            << ",\"globalsValid\":" << s.globals_valid
+            << ",\"tablesPreserved\":" << s.tables_preserved
+            << ",\"callerPreserved\":" << s.caller_preserved
+            << ",\"managerPreserved\":" << s.manager_preserved
+            << ",\"sehPreserved\":" << s.seh_preserved
+            << ",\"lockPreserved\":" << s.lock_preserved
+            << ",\"localisationPreserved\":" << s.localisation_preserved
+            << ",\"lastErrorRead\":" << s.last_error_read
+            << ",\"verified\":" << s.verified
+            << ",\"globalsBeforeHex\":\"" << hex(std::bit_cast<std::array<std::byte,20>>(s.globals_before)) << "\",\"globalsAfterHex\":\"" << hex(std::bit_cast<std::array<std::byte,20>>(s.globals_after)) << "\"}";
+    } else std::cout << "null";
+    std::cout << ",\"cdStreamTablesObservation\":";
+    if(tables_mode) {
+        const auto& s=trace.cd_stream_tables;
+        std::cout << "{\"policy\":\"" << saex::engine::reviewed_cd_stream_tables_id << "\",\"policySourceDigest\":\"" << saex::engine::reviewed_cd_stream_tables_digest << "\""
+            << ",\"stage\":" << s.stage << ",\"stopAddress\":" << s.stop_address
+            << ",\"diskQueryCallAllowed\":false,\"streamingThreadStarted\":false,\"streamingReady\":false"
+            << ",\"armed\":" << s.armed
+            << ",\"continued\":" << s.continued
+            << ",\"shapeValid\":" << s.shape_valid
+            << ",\"frameValid\":" << s.frame_valid
+            << ",\"memoryRead\":" << s.memory_read
+            << ",\"tablesValid\":" << s.tables_valid
+            << ",\"argumentsValid\":" << s.arguments_valid
+            << ",\"callerPreserved\":" << s.caller_preserved
+            << ",\"managerPreserved\":" << s.manager_preserved
+            << ",\"sehPreserved\":" << s.seh_preserved
+            << ",\"lockPreserved\":" << s.lock_preserved
+            << ",\"localisationPreserved\":" << s.localisation_preserved
+            << ",\"lastErrorPreserved\":" << s.last_error_preserved
+            << ",\"verified\":" << s.verified
+            << ",\"beforeHex\":\"" << hex(s.before) << "\",\"afterHex\":\"" << hex(s.after) << "\"}";
+    } else std::cout << "null";
+    std::cout << ",\"fileManagerReadyObservation\":";
+    if(ready_mode) {
+        const auto& s=trace.file_manager_ready;
+        std::cout << "{\"policy\":\"" << saex::engine::reviewed_file_manager_ready_id << "\",\"policySourceDigest\":\"" << saex::engine::reviewed_file_manager_ready_digest << "\""
+            << ",\"stage\":" << s.stage
+            << ",\"stopAddress\":" << s.stop_address
+            << ",\"functionAddress\":" << s.function_address
+            << ",\"returnAddress\":" << s.return_address
+            << ",\"continued\":" << s.continued
+            << ",\"shapeValid\":" << s.shape_valid
+            << ",\"frameValid\":" << s.frame_valid
+            << ",\"argumentsValid\":" << s.arguments_valid
+            << ",\"lockReleased\":" << s.lock_released
+            << ",\"sehRemoved\":" << s.seh_removed
+            << ",\"priorRecordPreserved\":" << s.prior_record_preserved
+            << ",\"callerPreserved\":" << s.caller_preserved
+            << ",\"bufferValid\":" << s.buffer_valid
+            << ",\"suffixWritten\":" << s.suffix_written
+            << ",\"wrapperReturned\":" << s.wrapper_returned
+            << ",\"managerReturned\":" << s.manager_returned
+            << ",\"localisationPreserved\":" << s.localisation_preserved
+            << ",\"lastErrorPreserved\":" << s.last_error_preserved
+            << ",\"verified\":" << s.verified
+            << ",\"directoryHex\":\"" << hex(s.directory_after) << "\"}";
+    } else std::cout << "null";
+    std::cout << ",\"cwdReturnObservation\":";
+    if(return_mode) {
+        const auto& s=trace.cwd_return;
+        std::cout << "{\"policy\":\"" << saex::engine::reviewed_cwd_return_id << "\",\"policySourceDigest\":\"" << saex::engine::reviewed_cwd_return_digest
+            << "\",\"helperReturnAllowed\":true,\"unlockVerified\":false,\"sehRemovalVerified\":false"
+            << ",\"stage\":" << s.stage
+            << ",\"stopAddress\":" << s.stop_address
+            << ",\"checkerAddress\":" << s.checker_address
+            << ",\"returnAddress\":" << s.return_address
+            << ",\"continued\":" << s.continued
+            << ",\"argumentsCleaned\":" << s.arguments_cleaned
+            << ",\"cookieCallReached\":" << s.cookie_call_reached
+            << ",\"checkerEntered\":" << s.checker_entered
+            << ",\"cookieMatched\":" << s.cookie_matched
+            << ",\"checkerReturned\":" << s.checker_returned
+            << ",\"helperReturned\":" << s.helper_returned
+            << ",\"shapeValid\":" << s.shape_valid
+            << ",\"frameValid\":" << s.frame_valid
+            << ",\"stackPreserved\":" << s.stack_preserved
+            << ",\"sourceSnapshotPreserved\":" << s.source_snapshot_preserved
+            << ",\"sourceRetired\":" << s.source_retired
+            << ",\"destinationPreserved\":" << s.destination_preserved
+            << ",\"sehPreserved\":" << s.seh_preserved
+            << ",\"priorRecordPreserved\":" << s.prior_record_preserved
+            << ",\"callerPreserved\":" << s.caller_preserved
+            << ",\"lockPreserved\":" << s.lock_preserved
+            << ",\"cookiePreserved\":" << s.cookie_preserved
+            << ",\"guardPreserved\":" << s.guard_preserved
+            << ",\"localisationPreserved\":" << s.localisation_preserved
+            << ",\"lastErrorPreserved\":" << s.last_error_preserved
+            << ",\"verified\":" << s.verified
+            << '}';
+    } else std::cout << "null";
+    std::cout << ",\"cwdCopyObservation\":";
+    if(copy_mode) {
+        const auto& s=trace.cwd_copy;
+        std::cout << "{\"policy\":\"" << saex::engine::reviewed_cwd_copy_id << "\",\"policySourceDigest\":\"" << saex::engine::reviewed_cwd_copy_digest
+            << "\",\"copyAllowed\":true,\"helperReturnAllowed\":" << return_mode << ",\"helperReturnVerified\":" << trace.cwd_return.verified << ",\"unlockVerified\":false,\"sehRemovalVerified\":false,\"destinationCapacity\":128"
+            << ",\"stage\":" << s.stage << ",\"stopAddress\":" << s.stop_address << ",\"functionAddress\":" << s.function_address
+            << ",\"sourceAddress\":" << s.source_address << ",\"destinationAddress\":" << s.destination_address << ",\"copiedBytes\":" << s.copied_bytes
+            << ",\"continued\":" << s.continued << ",\"pointerBranchReached\":" << s.pointer_branch_reached << ",\"capacityBranchReached\":" << s.capacity_branch_reached
+            << ",\"callReached\":" << s.call_reached << ",\"functionEntered\":" << s.function_entered << ",\"functionReturned\":" << s.function_returned
+            << ",\"shapeValid\":" << s.shape_valid << ",\"frameValid\":" << s.frame_valid << ",\"argumentsValid\":" << s.arguments_valid
+            << ",\"stackPreserved\":" << s.stack_preserved << ",\"sourcePreserved\":" << s.source_preserved << ",\"destinationValid\":" << s.destination_valid
+            << ",\"sehPreserved\":" << s.seh_preserved << ",\"priorRecordPreserved\":" << s.prior_record_preserved << ",\"callerPreserved\":" << s.caller_preserved
+            << ",\"lockPreserved\":" << s.lock_preserved << ",\"cookiePreserved\":" << s.cookie_preserved << ",\"guardPreserved\":" << s.guard_preserved
+            << ",\"localisationPreserved\":" << s.localisation_preserved << ",\"lastErrorPreserved\":" << s.last_error_preserved
+            << ",\"copied\":" << s.copied << ",\"verified\":" << s.verified << '}';
+    } else std::cout << "null";
+    std::cout << ",\"cwdQueryObservation\":";
+    if(query_mode) {
+        const auto& s=trace.cwd_query;
+        std::cout << "{\"policy\":\"" << saex::engine::reviewed_cwd_query_id << "\",\"policySourceDigest\":\"" << saex::engine::reviewed_cwd_query_digest
+            << "\",\"directoryApiAllowed\":true,\"copyAllowed\":" << copy_mode << ",\"unlockVerified\":false,\"sehRemovalVerified\":false"
+            << ",\"stage\":" << s.stage << ",\"stopAddress\":" << s.stop_address << ",\"functionAddress\":" << s.function_address
+            << ",\"implementationAddress\":" << s.implementation_address << ",\"bufferAddress\":" << s.buffer_address
+            << ",\"returnedLength\":" << s.returned_length << ",\"lastErrorBefore\":" << s.last_error_before << ",\"lastErrorAfter\":" << s.last_error_after
+            << ",\"continued\":" << s.continued << ",\"wrapperCallReached\":" << s.wrapper_call_reached << ",\"helperEntered\":" << s.helper_entered
+            << ",\"branchReached\":" << s.branch_reached << ",\"queryPathReached\":" << s.query_path_reached << ",\"callReached\":" << s.call_reached
+            << ",\"functionEntered\":" << s.function_entered << ",\"functionReturned\":" << s.function_returned
+            << ",\"shapeValid\":" << s.shape_valid << ",\"frameValid\":" << s.frame_valid << ",\"stackValid\":" << s.stack_valid
+            << ",\"sehPreserved\":" << s.seh_preserved << ",\"priorRecordPreserved\":" << s.prior_record_preserved << ",\"callerPreserved\":" << s.caller_preserved
+            << ",\"rootPreserved\":" << s.root_preserved << ",\"localisationPreserved\":" << s.localisation_preserved << ",\"lockPreserved\":" << s.lock_preserved
+            << ",\"cookiePreserved\":" << s.cookie_preserved << ",\"guardPreserved\":" << s.guard_preserved << ",\"bufferRead\":" << s.buffer_read
+            << ",\"pathVerified\":" << s.path_verified << ",\"verified\":" << s.verified << '}';
+    } else std::cout << "null";
     std::cout << ",\"cwdAcquireObservation\":";
     if(acquire_mode){
         const auto& s=trace.cwd_acquire;
         std::cout << "{\"policy\":\"" << saex::engine::reviewed_cwd_acquire_id << "\",\"policySourceDigest\":\"" << saex::engine::reviewed_cwd_acquire_digest
-            << "\",\"directoryApiAllowed\":false,\"lazyInitializationAllowed\":false,\"unlockVerified\":false,\"cwdReturnVerified\":false"
+            << "\",\"directoryApiAllowed\":" << query_mode << ",\"lazyInitializationAllowed\":false,\"unlockVerified\":false,\"cwdReturnVerified\":false"
             << ",\"stage\":" << s.stage << ",\"stopAddress\":" << s.stop_address << ",\"objectAddress\":" << s.object_address << ",\"functionAddress\":" << s.function_address << ",\"ownerThreadId\":" << s.thread_id
             << ",\"objectMemoryType\":" << s.object_memory_type << ",\"objectProtection\":" << s.object_protection
             << ",\"lockCountBefore\":" << s.object_before[1] << ",\"lockCountAfter\":" << s.object_after[1] << ",\"recursionBefore\":" << s.object_before[2] << ",\"recursionAfter\":" << s.object_after[2]
@@ -97,7 +303,7 @@ void print(const saex::engine::LoaderTrace& trace, std::uint32_t pid, std::strin
     if (seh_mode) {
         const auto& s=trace.cwd_seh;
         std::cout << "{\"policy\":\"" << saex::engine::reviewed_cwd_seh_id << "\",\"policySourceDigest\":\"" << saex::engine::reviewed_cwd_seh_digest
-            << "\",\"lockPathAllowed\":" << lock_mode << ",\"directoryApiAllowed\":false,\"cwdReturnVerified\":false,\"unwindVerified\":false"
+            << "\",\"lockPathAllowed\":" << lock_mode << ",\"directoryApiAllowed\":" << query_mode << ",\"cwdReturnVerified\":false,\"unwindVerified\":false"
             << ",\"stage\":" << s.stage << ",\"stopAddress\":" << s.stop_address << ",\"recordAddress\":" << s.record_address
             << ",\"previousHead\":" << s.tib_before[0] << ",\"currentHead\":" << s.tib_after[0]
             << ",\"continued\":" << s.continued << ",\"wrapperEntryReached\":" << s.wrapper_entry_reached << ",\"prologueEntryReached\":" << s.prologue_entry_reached
@@ -419,7 +625,15 @@ void print(const saex::engine::LoaderTrace& trace, std::uint32_t pid, std::strin
 }
 }
 int wmain(int argc, wchar_t** argv) {
-    const bool acquire_mode = argc == 4 && std::wstring_view(argv[1]) == L"--observe-cwd-acquire";
+    const bool channels_mode = argc == 4 && std::wstring_view(argv[1]) == L"--observe-cd-stream-channels";
+    const bool allocation_mode = channels_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-cd-stream-allocation");
+    const bool disk_mode = allocation_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-cd-stream-disk");
+    const bool tables_mode = disk_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-cd-stream-tables");
+    const bool ready_mode = tables_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-file-manager-ready");
+    const bool return_mode = ready_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-cwd-return");
+    const bool copy_mode = return_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-cwd-copy");
+    const bool query_mode = copy_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-cwd-query");
+    const bool acquire_mode = query_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-cwd-acquire");
     const bool lock_mode = acquire_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-cwd-lock");
     const bool seh_mode = lock_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-cwd-seh");
     const bool manager_mode = seh_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-file-manager-entry");
@@ -443,7 +657,7 @@ int wmain(int argc, wchar_t** argv) {
     const bool controlled = entry_mode || (argc == 4 && std::wstring_view(argv[1]) == L"--observe-context-loader");
     if (!controlled && (argc != 3 || (std::wstring_view(argv[1]) != L"--observe-loader" && std::wstring_view(argv[1]) != L"--observe-reviewed-loader"))) {
         std::cerr << "Usage: saex_engine_loader_probe --observe-loader|--observe-reviewed-loader <gta_sa.exe>\n"
-            << "       saex_engine_loader_probe --observe-context-loader|--observe-entry-boundary|--observe-proxy-return|--observe-startup-call|--observe-codec-return|--observe-codec-bindings|--observe-asi-return|--observe-bootstrap-lifecycle|--observe-frame-target|--observe-startup-return|--observe-crt-startup|--observe-application-entry|--observe-platform-startup|--observe-platform-suppression|--observe-instance-startup|--observe-event-dispatch|--observe-application-routing|--observe-game-prelude|--observe-file-manager-entry|--observe-cwd-seh|--observe-cwd-lock|--observe-cwd-acquire <gta_sa.exe> <absolute-working-directory>\n"; return 2;
+            << "       saex_engine_loader_probe --observe-context-loader|--observe-entry-boundary|--observe-proxy-return|--observe-startup-call|--observe-codec-return|--observe-codec-bindings|--observe-asi-return|--observe-bootstrap-lifecycle|--observe-frame-target|--observe-startup-return|--observe-crt-startup|--observe-application-entry|--observe-platform-startup|--observe-platform-suppression|--observe-instance-startup|--observe-event-dispatch|--observe-application-routing|--observe-game-prelude|--observe-file-manager-entry|--observe-cwd-seh|--observe-cwd-lock|--observe-cwd-acquire|--observe-cwd-query|--observe-cwd-copy|--observe-cwd-return|--observe-file-manager-ready|--observe-cd-stream-tables|--observe-cd-stream-disk|--observe-cd-stream-allocation|--observe-cd-stream-channels <gta_sa.exe> <absolute-working-directory>\n"; return 2;
     }
     using namespace saex::engine;
     const bool reviewed = controlled || std::wstring_view(argv[1]) == L"--observe-reviewed-loader";
@@ -451,29 +665,36 @@ int wmain(int argc, wchar_t** argv) {
     bool exit_confirmed{};
     std::unique_ptr<LaunchContext> context;
     const auto emit = [&](const LoaderTrace& trace, std::uint32_t child_pid, std::string_view hash, std::string_view failed = {}) {
-        print(trace, child_pid, hash, reviewed, failed, context.get(), entry_mode, proxy_mode, startup_mode, codec_mode, binding_mode, asi_mode, bootstrap_mode, frame_mode, tail_mode, crt_mode, application_mode, platform_mode, suppression_mode, instance_mode, dispatch_mode, routing_mode, prelude_mode, manager_mode, seh_mode, lock_mode, acquire_mode);
+        print(trace, child_pid, hash, reviewed, failed, context.get(), entry_mode, proxy_mode, startup_mode, codec_mode, binding_mode, asi_mode, bootstrap_mode, frame_mode, tail_mode, crt_mode, application_mode, platform_mode, suppression_mode, instance_mode, dispatch_mode, routing_mode, prelude_mode, manager_mode, seh_mode, lock_mode, acquire_mode, query_mode, copy_mode, return_mode, ready_mode, tables_mode, disk_mode, allocation_mode, channels_mode);
+    };
+    // A full history record is large. Keep CLI rejection and observation records
+    // on the heap, leaving the default x86 stack for the bounded observer itself.
+    const auto reject = [&](std::string_view reason, std::string_view hash = {}, std::string_view failed = {}) {
+        auto result = std::make_unique<LoaderTrace>();
+        result->reason = reason; result->exit_confirmed = exit_confirmed;
+        emit(*result, pid, hash, failed); return 1;
     };
     try {
         if (controlled) {
             context = std::make_unique<LaunchContext>(argv[3]);
-            if (!context->valid()) { LoaderTrace result{}; result.reason = context->error(); emit(result, 0, ""); return 1; }
+            if (!context->valid()) { return reject(context->error(), ""); }
         }
         std::array<wchar_t, 32768> buffer{};
         const auto absolute_size = GetFullPathNameW(argv[2], static_cast<DWORD>(buffer.size()), buffer.data(), nullptr);
-        if (!absolute_size || absolute_size > 32764) { LoaderTrace result{}; result.reason = "loader_executable_path"; emit(result, 0, ""); return 1; }
+        if (!absolute_size || absolute_size > 32764) { return reject("loader_executable_path", ""); }
         const std::wstring executable_path(buffer.data());
         WindowsFileObservation executable(executable_path.c_str());
-        if (!executable.error().empty()) { LoaderTrace result{}; result.reason = executable.error(); emit(result, 0, ""); return 1; }
+        if (!executable.error().empty()) { return reject(executable.error(), ""); }
         const auto hash = hex(executable.hash());
         EntryStopSpec entry{};
         if (entry_mode) {
             entry.rva = executable.layout().entry_rva;
             const auto offset = raw_offset(executable.layout(), entry.rva, entry.expected.size());
-            if (!offset) { LoaderTrace result{}; result.reason = "entry_file_range"; emit(result, 0, hash); return 1; }
+            if (!offset) { return reject("entry_file_range", hash); }
             std::copy_n(executable.bytes().begin() + *offset, entry.expected.size(), entry.expected.begin());
         }
         const auto size = GetSystemDirectoryW(buffer.data(), static_cast<UINT>(buffer.size()));
-        if (!size || size >= buffer.size()) { LoaderTrace result{}; result.reason = "loader_system_directory"; emit(result, 0, hash); return 1; }
+        if (!size || size >= buffer.size()) { return reject("loader_system_directory", hash); }
         // In this x86 process Windows resolves System32 to the x86 system directory.
         // These three retained files permit mapping observation only. No local DLLs,
         // arbitrary OS directory wildcard, server-provided policy or mod allowlist.
@@ -491,11 +712,11 @@ int wmain(int argc, wchar_t** argv) {
                 : entry_mode ? std::span<const LoaderPinSpec>(reviewed_entry_specs) : std::span<const LoaderPinSpec>(reviewed_loader_specs);
             if (asi_mode) {
                 if (CompareStringOrdinal(game.c_str(), -1, context->directory().c_str(), -1, TRUE) != CSTR_EQUAL) {
-                    LoaderTrace result{}; result.reason = "asi_context_mismatch"; emit(result, 0, hash); return 1;
+                    return reject("asi_context_mismatch", hash);
                 }
                 const auto path = game + L"\\saex_bootstrap.asi";
                 if (path.size() >= 260 || std::any_of(path.begin(), path.end(), [](wchar_t c) { return c < 32 || c > 126; })) {
-                    LoaderTrace result{}; result.reason = "asi_path_encoding_or_length"; emit(result, 0, hash); return 1;
+                    return reject("asi_path_encoding_or_length", hash);
                 }
                 for (const auto ch : path) asi_path.push_back(static_cast<char>(ch));
                 asi_specs.assign(specs.begin(), specs.end());
@@ -509,14 +730,14 @@ int wmain(int argc, wchar_t** argv) {
             }
             prepared = std::make_unique<PreparedLoaderPolicy>(specs, reviewed_loader_engine_hash, executable.hash(), game, system, asi_mode);
             if (!prepared->error().empty()) {
-                LoaderTrace result{}; result.reason = prepared->error(); emit(result, 0, hash, prepared->failed_module()); return 1;
+                return reject(prepared->error(), hash, prepared->failed_module());
             }
             pins = prepared->pins();
         } else {
             constexpr std::array names{L"ntdll.dll", L"kernel32.dll", L"kernelbase.dll"};
             for (std::size_t i = 0; i < names.size(); ++i) {
                 basic_files[i] = std::make_unique<LoaderFile>((system + L"\\" + names[i]).c_str());
-                if (!basic_files[i]->valid()) { LoaderTrace result{}; result.reason = "loader_system_pin_failed"; emit(result, 0, hash); return 1; }
+                if (!basic_files[i]->valid()) { return reject("loader_system_pin_failed", hash); }
                 basic_pins[i] = basic_files[i].get();
             }
             pins = basic_pins;
@@ -525,7 +746,7 @@ int wmain(int argc, wchar_t** argv) {
         if (proxy_mode) {
             for (const auto pin : pins)
                 if (std::string_view(pin->identity().name.data()) == reviewed_proxy_module) proxy.module = pin;
-            if (!proxy.module) { LoaderTrace result{}; result.reason = "proxy_policy_module_missing"; emit(result, 0, hash); return 1; }
+            if (!proxy.module) { return reject("proxy_policy_module_missing", hash); }
         }
         auto codec = reviewed_codec_spec;
         auto asi = reviewed_asi_spec;
@@ -533,18 +754,27 @@ int wmain(int argc, wchar_t** argv) {
         if (asi_mode) {
             asi.requested_path = asi_path;
             for (const auto pin : pins) if (std::string_view(pin->identity().name.data()) == reviewed_asi_artifact_name) asi.module = pin;
-            if (!asi.module) { LoaderTrace result{}; result.reason = "asi_policy_module_missing"; emit(result, 0, hash); return 1; }
+            if (!asi.module) { return reject("asi_policy_module_missing", hash); }
         }
         std::array<const LoaderFile*, 3> codec_pins{};
         if (codec_mode) {
             for (std::size_t i = 0; i < reviewed_codec_modules.size(); ++i) {
                 for (const auto pin : pins)
                     if (std::string_view(pin->identity().name.data()) == reviewed_codec_modules[i]) codec_pins[i] = pin;
-                if (!codec_pins[i]) { LoaderTrace result{}; result.reason = "codec_policy_module_missing"; emit(result, 0, hash); return 1; }
+                if (!codec_pins[i]) { return reject("codec_policy_module_missing", hash); }
             }
             codec.modules = codec_pins;
         }
-        LoaderTrace trace{};
+        auto query=reviewed_cwd_query_spec;std::string query_directory;
+        if(query_mode) {
+            for(const auto ch:context->directory()) {
+                if(ch<32 || ch>126) {return reject("cwd_query_expected_directory", hash);}
+                query_directory.push_back(static_cast<char>(ch));
+            }
+            query.expected_directory=query_directory;
+            if(!cwd_query_directory(query_directory)) {return reject("cwd_query_expected_directory", hash);}
+        }
+        auto trace = std::make_unique<LoaderTrace>();
         {
             SuspendedImage child(executable_path.c_str(), executable.layout().image_size, context.get());
             pid = child.process_id();
@@ -555,40 +785,47 @@ int wmain(int argc, wchar_t** argv) {
                 const auto check = check_mapped_observation(child, executable.bytes(), executable.layout(), observed_profile);
                 if (check != ProfileResult::matched_observation) reason = profile_result_name(check);
             }
-            // One return slot avoids a large temporary per ternary branch in MSVC /Od.
-            if (reason.empty()) trace = [&]() -> LoaderTrace {
-                if (acquire_mode) return LoaderObservation::run_cwd_acquire(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec,reviewed_cwd_acquire_spec);
-                if (lock_mode) return LoaderObservation::run_cwd_lock(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec);
-                if (seh_mode) return LoaderObservation::run_cwd_seh(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec);
-                if (manager_mode) return LoaderObservation::run_file_manager_entry(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec);
-                if (prelude_mode) return LoaderObservation::run_game_prelude(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec);
-                if (routing_mode) return LoaderObservation::run_application_routing(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec);
-                if (dispatch_mode) return LoaderObservation::run_event_dispatch(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec);
-                if (instance_mode) return LoaderObservation::run_instance_startup(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec);
-                if (suppression_mode) return LoaderObservation::run_platform_suppression(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec);
-                if (platform_mode) return LoaderObservation::run_to_platform_startup(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec);
-                if (application_mode) return LoaderObservation::run_to_application_entry(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec);
-                if (crt_mode) return LoaderObservation::run_to_crt_startup(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec);
-                if (tail_mode) return LoaderObservation::run_to_startup_return(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec);
-                if (frame_mode) return LoaderObservation::run_frame_target_observation(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec, codec, reviewed_binding_spec, asi, bootstrap, reviewed_frame_spec);
-                if (bootstrap_mode) return LoaderObservation::run_bootstrap_lifecycle(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec, codec, reviewed_binding_spec, asi, bootstrap);
-                if (asi_mode) return LoaderObservation::run_to_asi_return(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec, codec, reviewed_binding_spec, asi);
-                if (binding_mode) return LoaderObservation::run_to_codec_bindings(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec, codec, reviewed_binding_spec);
-                if (codec_mode) return LoaderObservation::run_to_codec_return(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec, codec);
-                if (startup_mode) return LoaderObservation::run_to_startup_call(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec);
-                if (proxy_mode) return LoaderObservation::run_to_proxy_return(child, executable.handle(), pins, entry, proxy);
-                if (entry_mode) return LoaderObservation::run_to_entry(child, executable.handle(), pins, entry);
-                return LoaderObservation::run(child, executable.handle(), pins);
+            // Each branch has a separate bounded result frame, including unoptimized builds.
+            if (reason.empty()) [&]() {
+                if (channels_mode) return observe_into(*trace,[&] { return LoaderObservation::run_cd_stream_channels(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec,reviewed_cwd_acquire_spec,query,reviewed_cwd_copy_spec,reviewed_cwd_return_spec,reviewed_file_manager_ready_spec,reviewed_cd_stream_tables_spec,reviewed_cd_stream_disk_spec,reviewed_cd_stream_allocation_spec,reviewed_cd_stream_channels_spec); });
+                if (allocation_mode) return observe_into(*trace,[&] { return LoaderObservation::run_cd_stream_allocation(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec,reviewed_cwd_acquire_spec,query,reviewed_cwd_copy_spec,reviewed_cwd_return_spec,reviewed_file_manager_ready_spec,reviewed_cd_stream_tables_spec,reviewed_cd_stream_disk_spec,reviewed_cd_stream_allocation_spec); });
+                if (disk_mode) return observe_into(*trace,[&] { return LoaderObservation::run_cd_stream_disk(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec,reviewed_cwd_acquire_spec,query,reviewed_cwd_copy_spec,reviewed_cwd_return_spec,reviewed_file_manager_ready_spec,reviewed_cd_stream_tables_spec,reviewed_cd_stream_disk_spec); });
+                if (tables_mode) return observe_into(*trace,[&] { return LoaderObservation::run_cd_stream_tables(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec,reviewed_cwd_acquire_spec,query,reviewed_cwd_copy_spec,reviewed_cwd_return_spec,reviewed_file_manager_ready_spec,reviewed_cd_stream_tables_spec); });
+                if (ready_mode) return observe_into(*trace,[&] { return LoaderObservation::run_file_manager_ready(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec,reviewed_cwd_acquire_spec,query,reviewed_cwd_copy_spec,reviewed_cwd_return_spec,reviewed_file_manager_ready_spec); });
+                if (return_mode) return observe_into(*trace,[&] { return LoaderObservation::run_cwd_return(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec,reviewed_cwd_acquire_spec,query,reviewed_cwd_copy_spec,reviewed_cwd_return_spec); });
+                if (copy_mode) return observe_into(*trace,[&] { return LoaderObservation::run_cwd_copy(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec,reviewed_cwd_acquire_spec,query,reviewed_cwd_copy_spec); });
+                if (query_mode) return observe_into(*trace,[&] { return LoaderObservation::run_cwd_query(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec,reviewed_cwd_acquire_spec,query); });
+                if (acquire_mode) return observe_into(*trace,[&] { return LoaderObservation::run_cwd_acquire(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec,reviewed_cwd_acquire_spec); });
+                if (lock_mode) return observe_into(*trace,[&] { return LoaderObservation::run_cwd_lock(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec,reviewed_cwd_lock_spec); });
+                if (seh_mode) return observe_into(*trace,[&] { return LoaderObservation::run_cwd_seh(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec,reviewed_cwd_seh_spec); });
+                if (manager_mode) return observe_into(*trace,[&] { return LoaderObservation::run_file_manager_entry(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec,reviewed_file_manager_spec); });
+                if (prelude_mode) return observe_into(*trace,[&] { return LoaderObservation::run_game_prelude(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec,reviewed_prelude_spec); });
+                if (routing_mode) return observe_into(*trace,[&] { return LoaderObservation::run_application_routing(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec,reviewed_routing_spec); });
+                if (dispatch_mode) return observe_into(*trace,[&] { return LoaderObservation::run_event_dispatch(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec,reviewed_dispatch_spec); });
+                if (instance_mode) return observe_into(*trace,[&] { return LoaderObservation::run_instance_startup(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec,reviewed_instance_spec); });
+                if (suppression_mode) return observe_into(*trace,[&] { return LoaderObservation::run_platform_suppression(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec,reviewed_suppression_spec); });
+                if (platform_mode) return observe_into(*trace,[&] { return LoaderObservation::run_to_platform_startup(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec,reviewed_platform_spec); });
+                if (application_mode) return observe_into(*trace,[&] { return LoaderObservation::run_to_application_entry(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec,reviewed_application_spec); });
+                if (crt_mode) return observe_into(*trace,[&] { return LoaderObservation::run_to_crt_startup(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec,reviewed_crt_spec); });
+                if (tail_mode) return observe_into(*trace,[&] { return LoaderObservation::run_to_startup_return(child,executable.handle(),pins,entry,proxy,reviewed_startup_spec,codec,reviewed_binding_spec,asi,reviewed_startup_return_spec); });
+                if (frame_mode) return observe_into(*trace,[&] { return LoaderObservation::run_frame_target_observation(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec, codec, reviewed_binding_spec, asi, bootstrap, reviewed_frame_spec); });
+                if (bootstrap_mode) return observe_into(*trace,[&] { return LoaderObservation::run_bootstrap_lifecycle(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec, codec, reviewed_binding_spec, asi, bootstrap); });
+                if (asi_mode) return observe_into(*trace,[&] { return LoaderObservation::run_to_asi_return(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec, codec, reviewed_binding_spec, asi); });
+                if (binding_mode) return observe_into(*trace,[&] { return LoaderObservation::run_to_codec_bindings(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec, codec, reviewed_binding_spec); });
+                if (codec_mode) return observe_into(*trace,[&] { return LoaderObservation::run_to_codec_return(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec, codec); });
+                if (startup_mode) return observe_into(*trace,[&] { return LoaderObservation::run_to_startup_call(child, executable.handle(), pins, entry, proxy, reviewed_startup_spec); });
+                if (proxy_mode) return observe_into(*trace,[&] { return LoaderObservation::run_to_proxy_return(child, executable.handle(), pins, entry, proxy); });
+                if (entry_mode) return observe_into(*trace,[&] { return LoaderObservation::run_to_entry(child, executable.handle(), pins, entry); });
+                return observe_into(*trace,[&] { return LoaderObservation::run(child, executable.handle(), pins); });
             }();
-            else { trace.reason = reason; trace.exit_confirmed = child.created() && child.stop(); }
-            exit_confirmed = trace.exit_confirmed;
+            else { trace->reason = reason; trace->exit_confirmed = child.created() && child.stop(); }
+            exit_confirmed = trace->exit_confirmed;
         } // Cleanup and all borrowed handles remain valid before output allocation/IO.
-        emit(trace, pid, hash);
-        const bool complete = acquire_mode ? trace.reason == "cwd_acquire_verified" : lock_mode ? trace.reason == "cwd_lock_verified" : seh_mode ? trace.reason == "cwd_seh_verified" : manager_mode ? trace.reason == "file_manager_entry_verified" : prelude_mode ? trace.reason == "game_prelude_verified" : routing_mode ? trace.reason == "application_routing_boundary_verified" : dispatch_mode ? trace.reason == "event_dispatch_boundary_verified" : instance_mode ? trace.reason == "instance_startup_verified" : suppression_mode ? trace.reason == "platform_suppression_verified" : platform_mode ? trace.reason == "platform_startup_boundary_verified" : application_mode ? trace.reason == "application_entry_verified" : crt_mode ? trace.reason == "crt_initializer_boundary_verified" : tail_mode ? trace.reason == "startup_return_verified" : frame_mode ? trace.reason == "frame_target_samples_verified" : bootstrap_mode ? trace.reason == "bootstrap_lifecycle_verified" : asi_mode ? trace.reason == "asi_return_verified" : binding_mode ? trace.reason == "codec_bindings_verified" : codec_mode ? trace.reason == "codec_return_verified" : startup_mode ? trace.reason == "startup_call_verified" : proxy_mode ? trace.reason == "proxy_return_verified"
-            : entry_mode ? (trace.entry_reached && trace.entry_bytes_read) : trace.breakpoint_candidate;
-        return complete && trace.exit_confirmed ? 3 : 1;
+        emit(*trace, pid, hash);
+        const bool complete = channels_mode ? trace->reason == "cd_stream_channels_verified" : allocation_mode ? trace->reason == "cd_stream_allocation_verified" : disk_mode ? trace->reason == "cd_stream_disk_verified" : tables_mode ? trace->reason == "cd_stream_tables_verified" : ready_mode ? trace->reason == "file_manager_ready_verified" : return_mode ? trace->reason == "cwd_return_verified" : copy_mode ? trace->reason == "cwd_copy_verified" : query_mode ? trace->reason == "cwd_query_verified" : acquire_mode ? trace->reason == "cwd_acquire_verified" : lock_mode ? trace->reason == "cwd_lock_verified" : seh_mode ? trace->reason == "cwd_seh_verified" : manager_mode ? trace->reason == "file_manager_entry_verified" : prelude_mode ? trace->reason == "game_prelude_verified" : routing_mode ? trace->reason == "application_routing_boundary_verified" : dispatch_mode ? trace->reason == "event_dispatch_boundary_verified" : instance_mode ? trace->reason == "instance_startup_verified" : suppression_mode ? trace->reason == "platform_suppression_verified" : platform_mode ? trace->reason == "platform_startup_boundary_verified" : application_mode ? trace->reason == "application_entry_verified" : crt_mode ? trace->reason == "crt_initializer_boundary_verified" : tail_mode ? trace->reason == "startup_return_verified" : frame_mode ? trace->reason == "frame_target_samples_verified" : bootstrap_mode ? trace->reason == "bootstrap_lifecycle_verified" : asi_mode ? trace->reason == "asi_return_verified" : binding_mode ? trace->reason == "codec_bindings_verified" : codec_mode ? trace->reason == "codec_return_verified" : startup_mode ? trace->reason == "startup_call_verified" : proxy_mode ? trace->reason == "proxy_return_verified"
+            : entry_mode ? (trace->entry_reached && trace->entry_bytes_read) : trace->breakpoint_candidate;
+        return complete && trace->exit_confirmed ? 3 : 1;
     } catch (const std::exception&) {
-        LoaderTrace result{}; result.reason = "loader_probe_exception"; result.exit_confirmed = exit_confirmed;
-        emit(result, pid, ""); return 1;
+        return reject("loader_probe_exception");
     }
 }

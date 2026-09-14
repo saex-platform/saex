@@ -272,3 +272,51 @@ Lock(7) selector girişi, tablo seçimi ve CMP sonrası/JNE öncesi durak özel 
 ### 0.1.31 geçiş sonucu
 
 Mevcut lock(7) dalı, doğal EnterCriticalSection ve CRT selector dönüşü özel GTA 12/12 koşuda doğrulandı. GTA image içindeki kritik bölümde recursion 0→1 ve owner 0→ana thread geçişi, caller/SEH/buffer korunumu ile birlikte geçti. Dört Windows akışı ve [40/40 matris](development/d1-cwd-acquire.md) tamamlandı. Sonraki kesit wrapper POP ECX/SEH durum değişimi ve cwd helper/OS/copy yoludur; 126/127 ANSI-byte suffix sınırı korunur. Unlock(7), SEH sökümü, cwd/manager/initializer dönüşü, renderer/doğal frame ve N2/N3/D1/D2 açık.
+
+## Kod 0.1.32 — Cwd sorgusu ve OS yeniden doğrulama gereği
+
+[Query kesiti](development/d1-cwd-query.md), wrapper/helper ve Win32 çalışma dizini dönüşüne kadar bağımsız observer ekler; kopyalama öncesi 126-byte kapasite kapısı vardır. Windows fixture sonucu ve gerçek GTA sonucu ayrıdır. Güncel sistem DLL'leri önceki GTA pinlerinden farklı olduğundan, GTA'da ilerlemek için önce yeni OS profilinin bağımsız kaynak/export/runtime incelemesi gerekir; pinned arşiv DLL'leri sisteme yüklenmez. Ardından bu query'nin GTA pozitif kanıtı, doğal strcpy/helper dönüşü, unlock/SEH sökümü ve manager/initializer tamamlanması gelir. N3 frame ve D2 sırası değişmez. [ReAgent](references/reagent.md) ileride büyük native fonksiyon gruplarında isteğe bağlı araştırma aracı olabilir; araç kurulumu D1 önkoşulu değildir.
+
+## Kod 0.1.33 — Yeni Windows dosyalarıyla yeniden doğrulama
+
+[26200.9445 profili](development/d1-system-profile-9445.md) eski OS pinlerinin yerini açık kimlik/hash geçişiyle alır. İlk hedef mevcut query'nin yeni OS üzerinde gerçek GTA pozitif kanıtıdır; test/gözlem sonuçları raporda izlenir. Bunun ardından doğal query sonuç dalları, strcpy/helper dönüşü, unlock(7), SEH sökümü ve CFileMgr/initializer tamamlanması gelir. Renderer/doğal frame/N3 ve iki istemcili D2 sırası korunur.
+
+### 0.1.33 geçiş sonucu
+
+Yeni Windows profilindeki query gerçek GTA'da doğrulandı; 50/50 matris ve dört Windows akışı geçti. [Profil raporu](development/d1-system-profile-9445.md), ilk Debug CLI stack overflow düzeltmesini ve kanıt sınırını saklar. Sıradaki kod kesiti API sonucunun doğal CRT kontrol dalları ve CFileMgr tamponuna kopyalanmasıdır. Ardından cookie/helper dönüşü, unlock(7), SEH sökümü ve manager/initializer tamamlanması gelir. D1/N2/N3 ve D2 açık.
+
+## Kod 0.1.34 — Doğal cwd tampon kopyası
+
+[Copy kesiti](development/d1-cwd-copy.md) API sonrasındaki non-null/kapasite kontrollerini ve doğal yordam dönüşünü açar. Kopyalanmış hedef, kaynak değişmezliği ve yaşam süresi kayıtları ayrı kanıttır. Sonraki sıra argüman/cookie/helper dönüşü → unlock(7) → SEH sökümü → CFileMgr sonlandırıcı/backslash/dönüş → diğer initializer yardımcılarıdır. Dört Windows build'i ve gerçek GTA 20 pozitif kopya / 54 koşuluk matris geçti; ayrıntılı kanıt copy raporundadır. N2/N3/D1 ve D2 açık kalır.
+
+## Kod 0.1.35 — Cookie kontrolü ve helper dönüşü
+
+[Return kesiti](development/d1-cwd-return.md) kopya sonrası argüman temizliğini, cookie checker'ın eşitlik yolunu ve LEAVE/RET'i gözler. Dört Windows akışı ve gerçek GTA 20 pozitif helper dönüşü / 56 koşuluk matris geçti; kanıt kapsamı return raporundadır. Sonraki sıra wrapper argüman temizliği/sonuç kaydı/try-state → unlock(7) → SEH epilogue → CFileMgr suffix/dönüş → initializer/frame/N3 → D2'dir. N2/N3/D1/D2 açık kalır.
+
+## Kod 0.1.36 — Fonksiyon tamamlayan kesit ve somut çalıştırma
+
+[File-manager-ready](development/d1-file-manager-ready.md) wrapper/unlock/SEH/suffix/manager dönüşünü tek davranış kesitinde birleştirir. `./tools/Run-SAEX.ps1` gerçek yerel GTA doğrulamasını ve HTML raporunu tek komutla üretir. Dosya yöneticisi sonrası başlangıç yardımcıları mümkün olan fonksiyon gruplarıyla tamamlanacak; ardından renderer/doğal frame/N3 ve D1 kapıları sonrasında iki istemcili GNS örneği gelir. İlerleme artık instruction sayısıyla değil tamamlanan alt sistem ve tekrar çalıştırılabilir sonuçla raporlanır. Oynanabilir sürüm için tarih veya kapasite doğrulanmış değildir.
+
+## Kod 0.1.37 — Araştırmayı fonksiyon gruplarına taşıma
+
+[Streaming tabloları](development/d1-cd-stream-tables.md) doğal GTA komutlarıyla doğrulandı; [Ghidra bridge](references/ghidra-bridge.md) kurulup yerel toplu analizde kullanıldı. Sıradaki sıra: disk sorgusu/sektör ve allocation → yerel patched CdStreamOpen/Read hedeflerinin kanıtı ve GTA3.IMG kapsülü → pending I/O/cleanup → semaphore/thread yaşam döngüsü → CPad → initializer/RsInitialize → renderer/frame/N3. Thread girişi otomatik Ghidra root envanterinde eksiktir; manuel function tanımı ancak gerçek instruction sınırı incelemesinden sonra yapılır. 15 export veya 21.041 analiz kaydı, bu alt sistemlerin çalıştığı kanıtı değildir. Araştırma export'u ile runtime izin kapısı ayrılır; D1 kapıları kapanmadan D2 hazır ilan edilmez.
+
+0.1.37 final kapısı: GTA 60/60 matris ve Release standart 52/79/304 geçti; Debug bootstrap test runner stack regresyonu onarıldı ve birleşik doğrulama tamamlandı. Sıradaki çalışma yukarıdaki disk/allocation ve patched I/O bağımlılıklarını kapatır; yalnız initialized bayrağı veya static export sayısı geçiş koşulu değildir.
+
+## Kod 0.1.38 — Disk sorgusundan bellek sahipliğine geçiş
+
+Disk BOOL, mantıksal geometri, natural flags ve ilk allocation argümanları ayrı kesitte kodlandı; 0x406BF4 terminali gerçek GTA'da gözlendi. Sonraki geçiş **MallocAlign/CRT allocation ve release sahipliği**: null-result dereference, toplam boyut/hizalama/payload sınırları ve heap allocator closure kanıtı gerekir. Ardından LocalAlloc kanal yapıları, reviewed özel GTA3.IMG I/O ve patched Open/Read hedefleri, thread/semaphore yaşam döngüsü, CPad ve renderer/doğal frame gelir. Physically aligned I/O bu sorgunun mantıksal sektör sonucundan varsayılamaz. [Mevcut kabul ve eksikler](development/d1-cd-stream-disk.md). D1/D2 için bir bayrak veya yalnız test sayısı yeterli değildir.
+
+0.1.38 final kapısı: iki tam Windows x86 akışı 54/79/313, GTA 27/27 ve 11/11 iki yerel rapor geçti. Bu sonuç disk/argument önkoşulunu kapatır; allocator/IO/thread ve genel D1 kabulünü kapatmaz.
+
+## Kod 0.1.39 — Allocation tamamlandı, I/O lifecycle sırada
+
+İlk MallocAlign/CRT/HeapAlloc zinciri artık doğal dönüşe kadar yürütülüyor; gerçek GTA'da 2048-byte payload, 512-byte hizalama, back-pointer ve bellek bütünlüğü doğrulandı. Terminal 0x406BF9. Native free çağrısı henüz yürütülmedi; process teardown bu kapıyı kapatmaz.
+
+Sonraki kesit: LocalAlloc kanal yapıları ve failure cleanup, özel yerel GTA3.IMG açma/okuma yönlendirmeleri, thread/semaphore oluşturma ve sahipliği, ardından doğal FreeAlign/HeapFree. Bu aradaki çağrılara atlayarak lifecycle kanıtı üretilemez. Devamında CPad, renderer, doğal frame ve kontrollü bağlanma/kapanış gelir. D1 kapıları kapandıktan sonra GNS ile iki istemcili tutarlılık; asset/resource dikey kesiti ve ölçek testleri takip eder. [Allocation kapsamı ve kabul](development/d1-cd-stream-allocation.md). Araştırılan 24 fonksiyon, bütün callee closure veya hazır runtime yeteneği değildir.
+
+## Kod 0.1.40 — Kanal depolamasından arşiv I/O yoluna
+
+SetLastError, 5 kanal için 240 sıfır byte LocalAlloc ve global pointer kaydı kodlandı; gerçek ilk GTA terminali 0x406C34. Bir sonraki kesit 0x4067B0 → 0x1564A90 yerel yönlendirmesinin ve CdStreamOpen callee/handle/failure dallarının kanıtıdır. Özel yerel GTA3.IMG kapsülünde açma ve gerekli okuma yolları; pending I/O ve cleanup; semaphore/thread sahipliği; LocalFree ile FreeAlign/HeapFree doğal kapanışı takip eder. Bu işler tamamlanmadan CPad/renderer/frame ve genel D1 kapısı kapanmaz; ardından GNS ile iki istemcili tutarlılık gelir. [Kanal belleği sözleşmesi ve kanıt](development/d1-cd-stream-channels.md).
+
+0.1.40 final kapısı: iki x86 tam akış 58/79/331, GTA 27/27 ve iki 13/13 rapor geçti. Bu sonuç kanal depolamasını doğrular; sonraki çalışma arşiv açma/okuma ve doğal lifecycle kanıtıdır.

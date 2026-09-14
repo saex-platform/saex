@@ -1,6 +1,6 @@
 # SAEX — San Andreas Extended
 
-Kod 0.1.31 / mimari v0.38: [CRT mevcut kilidi alma ve dönüş](docs/development/d1-cwd-acquire.md) özel GTA kopyasında 12/12 koşuda doğrulandı. Pencere/renderer ve multiplayer henüz hazır değil.
+Kod 0.1.40 / mimari v0.47: [streaming kanal belleğinin oluşturulması](docs/development/d1-cd-stream-channels.md). `./tools/Run-SAEX.ps1` gerçek GTA başlangıç kesitini çalıştırır ve HTML raporu üretir. D1 sürüyor; oynanabilir sürüm henüz hazır değil.
 
 ![SAEX — San Andreas Extended](docs/branding/saex-banner.svg)
 
@@ -11,7 +11,7 @@ Kod 0.1.31 / mimari v0.38: [CRT mevcut kilidi alma ve dönüş](docs/development
 
 SAEX; dünya, oyun kuralları, içerik ve arayüzlerini tanımlayabilmek için geliştirilen modüler bir platformdur. C++20 çekirdek ve C#/.NET 10 araçları üzerine kuruludur.
 
-**D1 geliştirme aşamasında · Kod 0.1.31 · Mimari v0.38**
+**D1 geliştirme aşamasında · Kod 0.1.40 · Mimari v0.47**
 
 Çekirdek temeli ve doğrulama araçları mevcuttur. Oynanabilir multiplayer istemcisi/sunucusu, production SDK ve launcher henüz yayımlanmadı. [Uygulama durumu](docs/development/status.md), kodlanmış ve doğrulanmış kapsamı ayrı gösterir.
 

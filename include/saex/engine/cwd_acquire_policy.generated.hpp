@@ -3,8 +3,8 @@
 #include "saex/engine/cwd_acquire.hpp"
 #include "saex/engine/cwd_lock_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_cwd_lock_digest == "098567bb8f34f0619e5a31f3c0f760e89d32af659ec4b9fec633245215ac6327");
+static_assert(reviewed_cwd_lock_digest == "55f3fdceaebbcf44ff074506cc2265b697f8f8323010f841165abe5bca22e39e");
 inline constexpr std::string_view reviewed_cwd_acquire_id="gta-sa.f01a00ce.cwd-acquire-v1";
-inline constexpr std::string_view reviewed_cwd_acquire_digest="de8ff2899242f67396333ad305102eaf91a2afc9f21034962b2b1c0837dd3fd9";
-inline constexpr CwdAcquireSpec reviewed_cwd_acquire_spec{4554988U,BootstrapExportSpec{344784U,{std::byte{0x8b}, std::byte{0xff}, std::byte{0x55}, std::byte{0x8b}, std::byte{0xec}, std::byte{0x51}, std::byte{0x56}, std::byte{0x8b}, std::byte{0x75}, std::byte{0x08}, std::byte{0x33}, std::byte{0xd2}, std::byte{0x57}, std::byte{0x64}, std::byte{0x8b}, std::byte{0x3d}, std::byte{0x18}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}},1260912640U,0U},{std::byte{0x59}, std::byte{0x83}, std::byte{0x65}, std::byte{0xfc}, std::byte{0x00}, std::byte{0xff}, std::byte{0x75}, std::byte{0x0c}, std::byte{0xff}, std::byte{0x75}, std::byte{0x08}, std::byte{0x6a}, std::byte{0x00}, std::byte{0xe8}, std::byte{0xed}, std::byte{0xfe}}};
+inline constexpr std::string_view reviewed_cwd_acquire_digest="d082f21922b19c205d17a209666d8d862fe7991ffd5ce33305d9a5e2020055df";
+inline constexpr CwdAcquireSpec reviewed_cwd_acquire_spec{4554988U,BootstrapExportSpec{345056U,{std::byte{0x8b}, std::byte{0xff}, std::byte{0x55}, std::byte{0x8b}, std::byte{0xec}, std::byte{0x51}, std::byte{0x56}, std::byte{0x8b}, std::byte{0x75}, std::byte{0x08}, std::byte{0x33}, std::byte{0xd2}, std::byte{0x57}, std::byte{0x64}, std::byte{0x8b}, std::byte{0x3d}, std::byte{0x18}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}},1260912640U,0U},{std::byte{0x59}, std::byte{0x83}, std::byte{0x65}, std::byte{0xfc}, std::byte{0x00}, std::byte{0xff}, std::byte{0x75}, std::byte{0x0c}, std::byte{0xff}, std::byte{0x75}, std::byte{0x08}, std::byte{0x6a}, std::byte{0x00}, std::byte{0xe8}, std::byte{0xed}, std::byte{0xfe}}};
 }

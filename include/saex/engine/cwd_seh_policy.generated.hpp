@@ -3,8 +3,8 @@
 #include "saex/engine/cwd_seh.hpp"
 #include "saex/engine/file_manager_entry_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_file_manager_digest == "0e65b724069c440804e61d3aad88fa781ff490ffd757a7928c62c318e63cc2a4");
+static_assert(reviewed_file_manager_digest == "a7dfec624fcba478c2d9fa69ba34f2f78c33ed5d66f00fa3427a63aa4cfb536b");
 inline constexpr std::string_view reviewed_cwd_seh_id="gta-sa.f01a00ce.cwd-seh-v1";
-inline constexpr std::string_view reviewed_cwd_seh_digest="995b9d5bc9223df40245583de1ba6226d04b372fc4585d046df039d7859cd198";
+inline constexpr std::string_view reviewed_cwd_seh_digest="8d2309d8b8c5fde7a0414fe13243f1173242c1518a318d4856f45752716a867c";
 inline constexpr CwdSehSpec reviewed_cwd_seh_spec{FrameTargetSpec{4194304U,18313216U,1279739U,4419217U,{std::byte{0xe8}, std::byte{0x91}, std::byte{0xe7}, std::byte{0x2f}, std::byte{0x00}},{std::byte{0x6a}, std::byte{0x0c}, std::byte{0x68}, std::byte{0x18}, std::byte{0xdf}, std::byte{0x88}, std::byte{0x00}, std::byte{0xe8}, std::byte{0x43}, std::byte{0x18}, std::byte{0xff}, std::byte{0xff}, std::byte{0x6a}, std::byte{0x07}, std::byte{0xe8}, std::byte{0x1a}}},FrameTargetSpec{4194304U,18313216U,4419224U,4359904U,{std::byte{0xe8}, std::byte{0x43}, std::byte{0x18}, std::byte{0xff}, std::byte{0xff}},{std::byte{0x68}, std::byte{0xa4}, std::byte{0x5e}, std::byte{0x82}, std::byte{0x00}, std::byte{0x64}, std::byte{0xa1}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x50}, std::byte{0x8b}, std::byte{0x44}, std::byte{0x24}, std::byte{0x10}}},4775704U,4349604U,4419278U,{std::byte{0x6a}, std::byte{0x07}, std::byte{0xe8}, std::byte{0x1a}, std::byte{0x3f}, std::byte{0xff}, std::byte{0xff}, std::byte{0x59}, std::byte{0x83}, std::byte{0x65}, std::byte{0xfc}, std::byte{0x00}, std::byte{0xff}, std::byte{0x75}, std::byte{0x0c}, std::byte{0xff}}};
 }

@@ -246,8 +246,62 @@ Ayrı event-dispatch modu, instance dönüşünden doğal olay dağıtıcısı C
 
 `--observe-cwd-acquire` mevcut/unowned lock(7) nesnesi için doğal dal, admitted ntdll API entry/return ve CRT selector dönüşünü açar; 0x836EA4 terminalinde durur. [Sözleşme ve sonuç](d1-cwd-acquire.md). Beş durakta object/slot/84-byte caller/SEH korunumu ve API sonrası thread sahipliği doğrulanır. x86 24-byte kritik bölüm düzeni pinned Windows uygulamasına aittir; VOID dönüşte EAX başarı kodu sayılmaz. Heap veya aynı GTA image nesnesi için sınır/koruma denetimi vardır. Üst modda branch/criticalSectionCallAllowed=true, acquired readback ile ayrıdır; lazy/directory/unlock kapalı kalır. Önceki lock terminali korunur; kilit tutulurken bütün owned child kapatılır, observer veri/TEB/context rollback yapmaz. C++ trace yeniden derlenir; C ABI 1/GNS/otorite/IPC aynı, dependency/kaldırma/kalıcı migration yoktur. Cwd/SEH/manager dönüşü ve N2/N3/D1/D2 açıktır.
 
+## Kod 0.1.32 — Query doğrulaması ve araştırma araçları
+
+Standart Windows build'e cwd_query_policy --check, alt negatif Python corpus'u, portable cwd_query_spec ve x86 cwd_query fixture eklendi. Linux CI tanımı portable alt kümeyi içerir; tanım eklenmesi yeni hosted başarı değildir. Query CLI explicit cwd ister; aynı 5 saniye/128 event/16 thread bütçeleri ve child ownership kuralları korunur. Fixture kontrollü event/helper/Win32 çağrısını kendi process'inde yapar; orijinal GTA dosyaları test girdisi değildir. Yeni OS profil farkı ret olarak kaydedilir, eski policy otomatik yenilenmez. [Kesit raporu](d1-cwd-query.md) · [ReAgent kaynak ve kullanım sınırı](../references/reagent.md).
+
+## 0.1.33 — Windows profil bağı
+
+[26200.9445 incelemesi](d1-system-profile-9445.md), bu bileşenin bağlı olduğu OS pinleri/API reçeteleri ve parent SHA-256 zincirini günceller. Bileşenin GTA durak/izin sınırı aynı kalır; önceki runtime sonuçları eski profil bağlamındadır. Yeni dosyalarla fixture ve gerçek GTA kanıtının kapsamı profil raporunda ayrıca izlenir. Eski OS pinlerine otomatik fallback yoktur; kaynak ve generated policy birlikte yeniden derlenir.
+
+## 0.1.34 — Doğal cwd copy bağı
+
+[Ayrı copy kesiti](d1-cwd-copy.md), query'den sonra native kontrol/CALL/dönüş ve gerçek hedef içerik kanıtını ekler. Önceki komutların terminali korunur; helper/unlock/SEH sökümü yeni izin kapsamına girmez. Source/guard, caller/SEH/kilit/cookie denetimleri ve yeni test/GTA kanıtının kapsamı ilgili rapordadır. C ABI 1, OS modül pinleri, GNS/otorite ve production kapıları aynı kalır; C++ observer yeniden derlenir.
+
+## 0.1.35 — Cwd helper dönüş bağı
+
+[Ayrı return kesiti](d1-cwd-return.md) copy sonrasındaki iki POP, cookie checker eşitliği ve doğal LEAVE/RET'i açar. Önceki terminal izinleri korunur; wrapper/unlock/SEH işlemleri henüz açılmaz. Kaynak stack ömrü, CALL ile değişen saved slot, hedef/caller/kilit/SEH ve hata retleri sözleşmede açıklanır. C++ trace yeniden derlenir; C ABI 1, OS pinleri, GNS/otorite ve production kapıları aynı kalır. Yeni fixture/gerçek GTA kanıtı ilgili raporda ayrı izlenir.
+
+## 0.1.36 — Dosya yöneticisinin tamamlanması
+
+Tamamlanmış davranış kesiti için hedefli build/test ve ardından standart `tools/build.ps1` uygulanır; aynı kaynakta her ara düzeltmeden sonra dört tam matrisi tekrar etmek gerekmez. Standart build GTA başlatmaz. Gerçek GTA için ayrıca `./tools/Run-SAEX.ps1` çalıştırılır; `-GameDirectory`, `-Configuration`, `-OpenReport` desteklenir. Python gerekmeyen bu araç yerel HTML/JSON üretir ve eski çıktıları silmez. [Sözleşme, kullanıcı komutu ve doğrulama](d1-file-manager-ready.md).
+
+0.1.36 araç doğrulama düzeltmesi: Run-SAEX hash okuması .NET SHA256/FileStream kullanır; Windows PowerShell Get-FileHash modül keşfine bağlı değildir. UTF-8 BOM/konsol ve kısmi hata raporu ile Windows PowerShell 5.1 üzerinde Debug/Release pozitif akış ve eksik klasör/bilinmeyen exe retleri geçti. Native izin ve başarı koşulları değişmedi.
+
+## Kod 0.1.37 — Streaming tablo kesitiyle bağlantı
+
+[CdStream tablo sözleşmesi](d1-cd-stream-tables.md) ortak observer/CLI ve fixture zincirine ayrı bir üst mod ekler. Bu belgenin eski komut ve checkpoint sınırı korunur; yalnız `--observe-cd-stream-tables` tam manager dönüşünden sonra iki tablo döngüsünü ve disk argüman hazırlığını açar. Sonuç yeni `cdStreamTablesObservation` alanında izlenir; eski kayıtlar final durum değil önceki checkpoint snapshot'ıdır. C++ trace tüketicileri yeniden derlenir; C ABI 1, GNS, OS pinleri ve production IPC sınırı değişmez. Yeni portable/native testler ile eski mod regresyonları standart build'e dahildir; gerçek GTA ve platform bazındaki final kanıt ana raporda tutulur.
+
+`Run-SAEX.ps1` artık streaming tablo terminaline ulaşır ve dokuz kontrol sunar; disk okuma/thread başlatma bu kullanıcı komutunun kapsamında değildir. [Yerel Ghidra aracı](../references/ghidra-bridge.md) opt-in araştırmadır; normal build ek runtime kurmaz.
+
+0.1.37 test çalıştırıcısı kuralı: büyüyen LoaderTrace kayıtlarını çok sayıda otomatik local/ternary temporary ile x86 ana stack üzerinde biriktirmeyin. Bootstrap lifecycle fixture sonuçları heap üzerinde, dispatch tek return slot ile tutulur. Üretim stack reserve büyütülmez. İlk Debug tam koşunun başarısızlığı, aynı testin hedefli onarımı ve kalan standart aşamaların ayrı tamamlanması raporda birleşik kanıt olarak belirtilir; tek seferlik temiz full Debug koşu diye sunulmaz. Release standart akışı ayrıca uygulanır.
+
+## Kod 0.1.38 — Disk ve allocation hazırlığı
+
+Standart akışa cd_stream_disk_policy --check, sekiz generator testi, portable geometri/frame/global corpus'u ve x86 native disk fixture eklendi. Başarılı BOOL/geometri kontrolünden sonra allocation CALL önünde durulur; normal build yine GTA başlatmaz. Açık gerçek deneme --observe-cd-stream-disk veya Run-SAEX ile yapılır. Runner source/probe disk policy digest'ini denetler, disk sorgusunu ve allocation hazırlığını ayrı raporlar. C++ trace native fixture sonuçları heap'te tutulur. İlk build hatası log'u korunur; final sonuç [native rapordadır](d1-cd-stream-disk.md). Windows fixture'ında gerçek başarısız disk API/4K volume enjeksiyonu yapılmaz; bunlar portable karar corpus'unda kapsanır.
+
+## Kod 0.1.39 — Allocation, çağrı frame'i ve kabul türleri
+
+Standart akışa `cd_stream_allocation_policy.py --check`, sekiz Python policy testi, portable request/layout/ABI corpus'u ve dört fixture kullanan x86 native suite eklendi. Fixture symbol bütçesi 64'tür; runtime modül/pin kabulünü genişletmez. Dosyadaki fixture code, preferred image base ile karşılaştırılır; child code kontrolü gerçek mapped base ile yapılır. CLI her value-returning gözlemi ayrı `observe_into` frame'inde çağırır; Debug stack sınırı büyütülmez.
+
+Normal build GTA başlatmaz. Açık motor denemesi `--observe-cd-stream-allocation` veya `./tools/Run-SAEX.ps1` ile yapılır. Yeni mod 160, eski modlar 128 olay sınırındadır. Runner 12 kontrol, 19 hash girdisi ve iki policy/probe digest eşitliğini raporlar; JSON çıkmayan hata da probe exit code'uyla gösterilir. Native/free, fiziksel I/O ve gerçek başarısız HeapAlloc enjeksiyonu henüz kabul edilmemiştir. [Çalıştırmalar, hata düzeltmeleri ve final kanıt](d1-cd-stream-allocation.md).
+
+## Kod 0.1.40 — Kanal belleği doğrulama akışı
+
+Standart build `cd_stream_channels_policy.py --check`, sekiz policy testi, portable corpus ve üç fixture kullanan x86 native suite çalıştırır. Probe CLI gate testi yeni modun bilinmeyen executable/argüman/relative cwd/legacy null davranışını denetler. Normal build GTA başlatmaz. Explicit `--observe-cd-stream-channels` ve Run-SAEX terminali 0x406C34'tür; runner 13 kontrol/20 hash girdisi ve üç policy digest eşleşmesi raporlar. Allocation/yeni mod tavanı 160, önceki modlar 128 kalır. C++ trace yeniden derlenir; CLI ayrı çağrı frame'lerini korur. [GTA, test ve failure sınırı](d1-cd-stream-channels.md).
+
+
+
 ## Visual Studio 2026 ile foundation doğrulaması
 
 `tools/build.ps1 -Architecture x86 -Configuration Debug -VisualStudio 2026` seçeneği CMake 4.2 veya üstüyle `Visual Studio 18 2026` generator'ını ve kurulu `v143` C++ toolset'ini seçer. Yerel varsayılan VS 2022 preset'i korunur. GitHub x86 işleri bu açık seçeneği kullanır; eksik generator/toolset güvenli derleme hatasıdır. Pinned native SDK işinin exact MSVC/CMake/SDK lock'u bu foundation seçeneğinden etkilenmez.
 
 Python executable yolu PATH önceliğindeki ilk Application sonucundan alınır; birden fazla Python/WindowsApps alias eşleşmesi tek CMake yoluna birleştirilmez. `-Python` ile verilen açık dosya yolu aynı şekilde kullanılabilir.
+
+## Güncel GitHub ile geliştirme teslimi
+
+14 Eylül 2026 kullanıcı yetkisiyle tamamlanan SAEX kesitleri kaynakları ve sahip belgeleriyle aynı teslimatta GitHub'a aktarılır. Başlangıçta fetch/status/upstream incelenir; temiz güncel main'den codex dalı açılır. Eski merged publish dalında sonraki sürüm biriktirilmez. Başka görev aynı checkout'ta aktifse ayrı worktree kullanılır; index/branch değiştirilmez.
+
+Yayın: kaynak ZIP/manifest ve Git bundle → belge/policy/generator ve ilgili tam build kontrolleri → commit/push → PR → yedi required check → kontrol edilen head için normal squash merge. Sonra temiz checkout main'e dönüp ff-only eşitlenir. Yeni draft veya aktif iş varsa korunur; kullanıcıya henüz yayımlanmayan kapsam açıklanır. Force push, cleanup/reset ve CI bypass kullanılmaz. Ana dal protection'ı ve x86 runner/Python düzeltmeleri sonraki sürümlere taşınır.
+
+Örnek başlangıç: `git fetch origin`, `git status --short --branch`, temizse `git switch main`, `git merge --ff-only origin/main`, `git switch -c codex/<kesit>`. Yayın bitince `git switch main` ve `git merge --ff-only origin/main`. Açık iş varsa bu örnek branch geçişleri uygulanmaz; ayrı checkout ile ilerlenir. Güncel sonuçlar [yayın raporunda](github-publication.md) izlenir.

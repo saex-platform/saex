@@ -3,8 +3,8 @@
 #include "saex/engine/event_dispatch.hpp"
 #include "saex/engine/instance_startup_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_instance_digest == "26c06199eaa5d4e14c1e693ac60bd6df5c69cb3557e80b1baad320d7fc46f7e9");
+static_assert(reviewed_instance_digest == "911109662368bc58f07a22c7849f9b55c48beca958e8b002b6971437c194730b");
 inline constexpr std::string_view reviewed_dispatch_id="gta-sa.f01a00ce.event-dispatch-v1";
-inline constexpr std::string_view reviewed_dispatch_digest="6265420804ada87df4beae0fc034fcb0478ad408dd05d04e9173d6d02f681058";
+inline constexpr std::string_view reviewed_dispatch_digest="77662469d61f491223d64f12e4f4c5176c8a75d871090dd3dd5b6176e9fe3a1d";
 inline constexpr EventDispatchSpec reviewed_dispatch_spec{FrameTargetSpec{4194304U,18313216U,3442489U,2202464U,{std::byte{0xe8}, std::byte{0x22}, std::byte{0x14}, std::byte{0xed}, std::byte{0xff}},{std::byte{0x56}, std::byte{0x8b}, std::byte{0x74}, std::byte{0x24}, std::byte{0x0c}, std::byte{0x57}, std::byte{0x8b}, std::byte{0x7c}, std::byte{0x24}, std::byte{0x0c}, std::byte{0x56}, std::byte{0x57}, std::byte{0xe8}, std::byte{0x9f}, std::byte{0x50}, std::byte{0xf2}}},FrameTargetSpec{4194304U,18313216U,2202476U,1305616U,{std::byte{0xe8}, std::byte{0x9f}, std::byte{0x50}, std::byte{0xf2}, std::byte{0xff}},{std::byte{0x8b}, std::byte{0x44}, std::byte{0x24}, std::byte{0x04}, std::byte{0x83}, std::byte{0xf8}, std::byte{0x26}, std::byte{0x0f}, std::byte{0x87}, std::byte{0xb9}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x90}, std::byte{0x90}, std::byte{0xe9}}},{std::byte{0x8b}, std::byte{0x44}, std::byte{0x24}, std::byte{0x04}, std::byte{0x83}, std::byte{0xf8}, std::byte{0x26}, std::byte{0x0f}, std::byte{0x87}, std::byte{0xb9}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x90}, std::byte{0x90}, std::byte{0xe9}, std::byte{0xaa}, std::byte{0x2c}, std::byte{0xec}, std::byte{0xff}, std::byte{0xff}}};
 }

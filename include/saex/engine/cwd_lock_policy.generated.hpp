@@ -3,8 +3,8 @@
 #include "saex/engine/cwd_lock.hpp"
 #include "saex/engine/cwd_seh_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_cwd_seh_digest == "995b9d5bc9223df40245583de1ba6226d04b372fc4585d046df039d7859cd198");
+static_assert(reviewed_cwd_seh_digest == "8d2309d8b8c5fde7a0414fe13243f1173242c1518a318d4856f45752716a867c");
 inline constexpr std::string_view reviewed_cwd_lock_id="gta-sa.f01a00ce.cwd-lock-v1";
-inline constexpr std::string_view reviewed_cwd_lock_digest="098567bb8f34f0619e5a31f3c0f760e89d32af659ec4b9fec633245215ac6327";
+inline constexpr std::string_view reviewed_cwd_lock_digest="55f3fdceaebbcf44ff074506cc2265b697f8f8323010f841165abe5bca22e39e";
 inline constexpr CwdLockSpec reviewed_cwd_lock_spec{FrameTargetSpec{4194304U,18313216U,4419231U,4369854U,{std::byte{0xe8}, std::byte{0x1a}, std::byte{0x3f}, std::byte{0xff}, std::byte{0xff}},{std::byte{0x55}, std::byte{0x8b}, std::byte{0xec}, std::byte{0x8b}, std::byte{0x45}, std::byte{0x08}, std::byte{0x56}, std::byte{0x8d}, std::byte{0x34}, std::byte{0xc5}, std::byte{0xc0}, std::byte{0x31}, std::byte{0x8e}, std::byte{0x00}, std::byte{0x83}, std::byte{0x3e}}},5124544U,{std::byte{0x75}, std::byte{0x13}, std::byte{0x50}, std::byte{0xe8}, std::byte{0x68}, std::byte{0xff}, std::byte{0xff}, std::byte{0xff}, std::byte{0x85}, std::byte{0xc0}, std::byte{0x59}, std::byte{0x75}, std::byte{0x08}, std::byte{0x6a}, std::byte{0x11}, std::byte{0xe8}}};
 }

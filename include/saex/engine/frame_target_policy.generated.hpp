@@ -4,9 +4,9 @@
 #include "saex/engine/bootstrap_lifecycle_policy.generated.hpp"
 #include "saex/engine/observed_profile.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_bootstrap_policy_digest == "cd6f7822e4916a1082ec502cc24e45915cefd0e78f5e17eb894655f17443948e");
+static_assert(reviewed_bootstrap_policy_digest == "8bb3a30af35985c8b9d0f86612ec54a6d625d0b799739b395c124e38245f28d4");
 static_assert(observed_profile_source_digest == "0653426a913c3fdef809ea9e6a614fca7d26498e66cb63148d7073fe8d965436");
 inline constexpr std::string_view reviewed_frame_policy_id = "gta-sa.f01a00ce.frame-candidate-v1";
-inline constexpr std::string_view reviewed_frame_policy_digest = "03b425ca10f2187fdc11a635798ccca269b8716c36bfe3f06a41e0f19315794d";
+inline constexpr std::string_view reviewed_frame_policy_digest = "8bfb3b0974dc2222b6459eb2a323516ce08b568c8f59412aacdb2c9993810d0b";
 inline constexpr FrameTargetSpec reviewed_frame_spec{4194304U, 18313216U, 1304961U, 1294048U, {std::byte{0xe8}, std::byte{0x5a}, std::byte{0xd5}, std::byte{0xff}, std::byte{0xff}}, {std::byte{0x83}, std::byte{0xec}, std::byte{0x0c}, std::byte{0x53}, std::byte{0x56}, std::byte{0x57}, std::byte{0xe8}, std::byte{0xe5}, std::byte{0x5e}, std::byte{0x00}, std::byte{0x00}, std::byte{0xb9}, std::byte{0x78}, std::byte{0x29}, std::byte{0xb7}, std::byte{0x00}}};
 }

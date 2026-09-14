@@ -1,28 +1,33 @@
 {
   "schemaVersion": 1,
-  "id": "gta-sa.f01a00ce.windows-26200.startup-return-v1",
+  "id": "gta-sa.f01a00ce.windows-26200-9445.startup-return-v1",
   "stage": "natural-startup-return",
-  "framePolicySha256": "03b425ca10f2187fdc11a635798ccca269b8716c36bfe3f06a41e0f19315794d",
+  "framePolicySha256": "8bfb3b0974dc2222b6459eb2a323516ce08b568c8f59412aacdb2c9993810d0b",
   "reviewDocument": "docs/development/d1-startup-return.md",
   "protectCallRva": 6989,
   "protectSlotRva": 16396,
   "startupSlotRva": 16424,
   "forwardRva": 7097,
   "protectReturnHex": "8b4df464890d00000000595f5e8b4df0",
-  "resultProtections": [64, 128],
+  "resultProtections": [
+    64,
+    128
+  ],
   "systemModule": {
     "name": "kernel32.dll",
-    "bytes": 683312,
-    "sha256": "4ef63ecfe99158e16a387028be295308b00618cec64d94f016f99b79ffe84e05"
+    "bytes": 687472,
+    "sha256": "bafd9e061964642802d62f1eb694e7e4af60de739a8df1a492f90006dc5680f3"
   },
   "protectFunction": {
     "rva": 92976,
-    "prefixHex": "8bff558bec5dff254c160810cccccccccccccccc",
+    "prefixHex": "8bff558bec5dff258c160810cccccccccccccccc",
     "preferredBase": 268435456,
-    "highlowOffsets": [8]
+    "highlowOffsets": [
+      8
+    ]
   },
   "startupFunction": {
-    "rva": 410208,
+    "rva": 410912,
     "prefixHex": "8bff558bec64a13000000083ec18538b5810568b",
     "preferredBase": 268435456,
     "highlowOffsets": []

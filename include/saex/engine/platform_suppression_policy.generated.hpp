@@ -3,8 +3,8 @@
 #include "saex/engine/platform_suppression.hpp"
 #include "saex/engine/platform_startup_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_platform_digest == "a5c666a8b72a2e4576770419fc801c8210416a08e54440f983f4993195bd35c7");
-inline constexpr std::string_view reviewed_suppression_id="gta-sa.f01a00ce.windows-26200.platform-suppression-v1";
-inline constexpr std::string_view reviewed_suppression_digest="222da1c0f85ee4747b2f0010d3eadda50c85a560724201d5fab345368fa8acda";
-inline constexpr PlatformSuppressionSpec reviewed_suppression_spec{4554900U, BootstrapExportSpec{144448U,{std::byte{0x64}, std::byte{0xa1}, std::byte{0x34}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0xc3}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0x64}, std::byte{0xa1}, std::byte{0x30}, std::byte{0x00}},268435456U,0U}};
+static_assert(reviewed_platform_digest == "33433396cd874a1a3744d8b713559529410706a1e271f26fe214bdb07aace082");
+inline constexpr std::string_view reviewed_suppression_id="gta-sa.f01a00ce.windows-26200-9445.platform-suppression-v1";
+inline constexpr std::string_view reviewed_suppression_digest="8833e2adb596afb6d0aeae54660054ea4d212ebf584c27a137c789e992a6c323";
+inline constexpr PlatformSuppressionSpec reviewed_suppression_spec{4554900U, BootstrapExportSpec{144960U,{std::byte{0x64}, std::byte{0xa1}, std::byte{0x34}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0xc3}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0xcc}, std::byte{0x64}, std::byte{0xa1}, std::byte{0x30}, std::byte{0x00}},268435456U,0U}};
 }

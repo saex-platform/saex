@@ -3,11 +3,11 @@
 #include "saex/engine/platform_startup.hpp"
 #include "saex/engine/application_entry_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_application_policy_digest == "d683a244ece6bcfeffcb78f461daeb1232b6fd7a33c6e7f7055fdbdb8bd5bca9");
+static_assert(reviewed_application_policy_digest == "058b5def00081ec2292c92d32173c3c53956663b78b1116138d892963be08800");
 static_assert(platform_startup_arguments == std::array<std::uint32_t,4>{8193,0,0,2});
-inline constexpr std::string_view reviewed_platform_id="gta-sa.f01a00ce.windows-26200.platform-startup-v1";
-inline constexpr std::string_view reviewed_platform_digest="a5c666a8b72a2e4576770419fc801c8210416a08e54440f983f4993195bd35c7";
+inline constexpr std::string_view reviewed_platform_id="gta-sa.f01a00ce.windows-26200-9445.platform-startup-v1";
+inline constexpr std::string_view reviewed_platform_digest="33433396cd874a1a3744d8b713559529410706a1e271f26fe214bdb07aace082";
 inline constexpr std::array<std::byte,23> reviewed_platform_prologue{std::byte{0x81}, std::byte{0xec}, std::byte{0x84}, std::byte{0x00}, std::byte{0x00}, std::byte{0x00}, std::byte{0x53}, std::byte{0x6a}, std::byte{0x02}, std::byte{0x33}, std::byte{0xdb}, std::byte{0x53}, std::byte{0x53}, std::byte{0x68}, std::byte{0x01}, std::byte{0x20}, std::byte{0x00}, std::byte{0x00}, std::byte{0xc6}, std::byte{0x44}, std::byte{0x24}, std::byte{0x17}, std::byte{0x01}};
 inline constexpr PlatformStartupSpec reviewed_platform_spec{reviewed_platform_prologue,3442471U,4555372U,152U,{std::byte{0xe8}, std::byte{0xae}, std::byte{0xe1}, std::byte{0xff}, std::byte{0xff}, std::byte{0x85}, std::byte{0xc0}, std::byte{0x75}, std::byte{0x0f}, std::byte{0x53}, std::byte{0x6a}, std::byte{0x18}, std::byte{0xe8}, std::byte{0x22}, std::byte{0x14}, std::byte{0xed}},
-BootstrapExportSpec{746928U,{std::byte{0x6a}, std::byte{0x10}, std::byte{0x68}, std::byte{0xf8}, std::byte{0xe1}, std::byte{0x0b}, std::byte{0x10}, std::byte{0xe8}, std::byte{0x28}, std::byte{0xc6}, std::byte{0xfa}, std::byte{0xff}, std::byte{0x83}, std::byte{0x65}, std::byte{0xe4}, std::byte{0x00}, std::byte{0xe8}, std::byte{0xec}, std::byte{0xd6}, std::byte{0xf6}},268435456U,8U}};
+BootstrapExportSpec{800128U,{std::byte{0x6a}, std::byte{0x10}, std::byte{0x68}, std::byte{0xe8}, std::byte{0xb1}, std::byte{0x0c}, std::byte{0x10}, std::byte{0xe8}, std::byte{0x54}, std::byte{0xcd}, std::byte{0xfa}, std::byte{0xff}, std::byte{0x83}, std::byte{0x65}, std::byte{0xe4}, std::byte{0x00}, std::byte{0xe8}, std::byte{0x6c}, std::byte{0x0b}, std::byte{0xf6}},268435456U,8U}};
 }

@@ -6,6 +6,156 @@
   "components": [
     {
       "patterns": [
+        "include/saex/engine/cd_stream_channels*",
+        "src/engine/loader/cd_stream_channels.cpp",
+        "contracts/engine/cd-stream-channels-policy.json",
+        "tools/cd_stream_channels_policy.py",
+        "tests/engine/cd_stream_channels*",
+        "tests/engine/test_cd_stream_channels_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-cd-stream-channels.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/cd_stream_allocation*",
+        "src/engine/loader/cd_stream_allocation.cpp",
+        "contracts/engine/cd-stream-allocation-policy.json",
+        "tools/cd_stream_allocation_policy.py",
+        "tests/engine/cd_stream_allocation*",
+        "tests/engine/test_cd_stream_allocation_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-cd-stream-allocation.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/cd_stream_disk*",
+        "src/engine/loader/cd_stream_disk.cpp",
+        "contracts/engine/cd-stream-disk-policy.json",
+        "tools/cd_stream_disk_policy.py",
+        "tests/engine/cd_stream_disk*",
+        "tests/engine/test_cd_stream_disk_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-cd-stream-disk.md"
+      ]
+    },
+    {
+      "patterns": [
+        "tools/research/*",
+        "contracts/research/*",
+        "tests/engine/test_ghidra_snapshot.py"
+      ],
+      "documents": [
+        "docs/references/ghidra-bridge.md",
+        "docs/development/workflow.md",
+        "docs/development/d1-cd-stream-tables.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/cd_stream_tables*",
+        "src/engine/loader/cd_stream_tables.cpp",
+        "contracts/engine/cd-stream-tables-policy.json",
+        "tools/cd_stream_tables_policy.py",
+        "tests/engine/cd_stream_tables*",
+        "tests/engine/test_cd_stream_tables_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-cd-stream-tables.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/file_manager_ready*",
+        "src/engine/loader/file_manager_ready.cpp",
+        "contracts/engine/file-manager-ready-policy.json",
+        "tools/file_manager_ready_policy.py",
+        "tools/Run-SAEX.ps1",
+        "tests/engine/file_manager_ready*",
+        "tests/engine/test_file_manager_ready_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-file-manager-ready.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/platform/launcher-operations.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/cwd_return*",
+        "src/engine/loader/cwd_return.cpp",
+        "contracts/engine/cwd-return-policy.json",
+        "tools/cwd_return_policy.py",
+        "tests/engine/cwd_return*",
+        "tests/engine/test_cwd_return_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-cwd-return.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/cwd_copy*",
+        "src/engine/loader/cwd_copy.cpp",
+        "contracts/engine/cwd-copy-policy.json",
+        "tools/cwd_copy_policy.py",
+        "tests/engine/cwd_copy*",
+        "tests/engine/test_cwd_copy_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-cwd-copy.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "contracts/engine/*policy.json",
+        "include/saex/engine/*policy.generated.hpp"
+      ],
+      "documents": [
+        "docs/development/d1-system-profile-9445.md",
+        "docs/development/d1-loader-policy.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
+        "include/saex/engine/cwd_query*",
+        "src/engine/loader/cwd_query.cpp",
+        "contracts/engine/cwd-query-policy.json",
+        "tools/cwd_query_policy.py",
+        "tests/engine/cwd_query*",
+        "tests/engine/test_cwd_query_policy.py"
+      ],
+      "documents": [
+        "docs/development/d1-cwd-query.md",
+        "docs/architecture/native-sdk-integration.md",
+        "docs/architecture/execution-contracts.md",
+        "docs/validation/scenarios.md",
+        "docs/decisions/architecture-decisions.md"
+      ]
+    },
+    {
+      "patterns": [
         "include/saex/engine/cwd_acquire*",
         "src/engine/loader/cwd_acquire.cpp",
         "contracts/engine/cwd-acquire-policy.json",

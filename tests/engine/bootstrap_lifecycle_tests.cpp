@@ -1,3 +1,4 @@
+#include <memory>
 #include "proxy_fixture_support.hpp"
 #include "saex/engine/observed_profile.generated.hpp"
 #include "saex/engine/bootstrap_artifact.generated.hpp"
@@ -91,58 +92,63 @@ int wmain(int argc, wchar_t** argv) {
                 std::thread other([&]{foreign=LoaderObservation::run_bootstrap_lifecycle(child,exe.file.handle(),pins,entry,proxy,startup,codec,binding,asi,spec);});
                 other.join(); require(foreign.reason=="loader_owner_thread" && !child.stopped(),"foreign owner");
             }
-            auto result=frame_mode ? LoaderObservation::run_frame_target_observation(child,exe.file.handle(),pins,entry,proxy,startup,codec,binding,asi,spec,frame,limits)
-                : mode==8 ? LoaderObservation::run_to_asi_return(child,exe.file.handle(),pins,entry,proxy,startup,codec,binding,asi)
-                : LoaderObservation::run_bootstrap_lifecycle(child,exe.file.handle(),pins,entry,proxy,startup,codec,binding,asi,spec,limits);
-            std::cout<<"case="<<cases<<" variant="<<variant<<" mode="<<mode<<" reason="<<result.reason<<" calls="<<result.bootstrap.calls_returned<<'\n';
-            require(result.exit_confirmed && child.stopped() && child.stop(),"child exit");
+            // Keep diagnostic records off the x86 caller stack as observation scopes grow.
+            // One dispatch return slot also avoids one large /Od temporary per ternary arm.
+            auto result=std::make_unique<LoaderTrace>();
+            *result=[&]() -> LoaderTrace {
+                if(frame_mode)return LoaderObservation::run_frame_target_observation(child,exe.file.handle(),pins,entry,proxy,startup,codec,binding,asi,spec,frame,limits);
+                if(mode==8)return LoaderObservation::run_to_asi_return(child,exe.file.handle(),pins,entry,proxy,startup,codec,binding,asi);
+                return LoaderObservation::run_bootstrap_lifecycle(child,exe.file.handle(),pins,entry,proxy,startup,codec,binding,asi,spec,limits);
+            }();
+            std::cout<<"case="<<cases<<" variant="<<variant<<" mode="<<mode<<" reason="<<result->reason<<" calls="<<result->bootstrap.calls_returned<<'\n';
+            require(result->exit_confirmed && child.stopped() && child.stop(),"child exit");
             for(auto suffix:{L".asi-after-return",L".asi-end-escaped",L".asi-export-called",L".binding-function-called"}) require(!markers.exists(suffix),"boundary escaped");
-            if(result.bootstrap.verified) {
-                require(result.asi_verified && result.bootstrap.calls_armed==8 && result.bootstrap.calls_returned==8,"incomplete lifecycle");
+            if(result->bootstrap.verified) {
+                require(result->asi_verified && result->bootstrap.calls_armed==8 && result->bootstrap.calls_returned==8,"incomplete lifecycle");
                 for(unsigned i=0;i<8;++i) {
-                    const auto& c=result.bootstrap.calls[i];
+                    const auto& c=result->bootstrap.calls[i];
                     require(c.armed && c.continued && c.returned && c.stack_valid && c.guards_valid && c.status_valid &&
                         c.export_index==bootstrap_call_sequence[i] && c.return_code==0,"call evidence");
                 }
             }
             return result;
         };
-        require(run(0).reason=="bootstrap_lifecycle_verified","normal lifecycle");
-        require(run(1).reason=="bootstrap_lifecycle_host_rejected","fixture host rejection");
-        for(int i:{2,3,4,5,6,7}) require(run(i).reason=="bootstrap_status_mismatch","bad status accepted");
-        require(run(8).reason=="bootstrap_output_overrun","overrun accepted");
-        require(run(9).reason=="bootstrap_call_failed","busy accepted");
-        require(run(10).reason=="entry_unexpected_exception","fault ignored");
-        const auto stalled=run(11); require(stalled.reason=="loader_wait_failed" || stalled.reason=="loader_timeout","stall ignored");
-        const auto actual_result=run(12); require(actual_result.reason=="bootstrap_lifecycle_host_rejected" &&
-            actual_result.bootstrap.calls[1].status.reason==SAEX_BOOTSTRAP_FILE_REJECTED,"real DLL unknown host failed");
-        for(int mode:{1,2,3,4}) require(run(0,mode).reason=="bootstrap_invalid_spec","invalid spec accepted");
-        require(run(0,5).reason=="bootstrap_export_shape","wrong prefix accepted");
-        require(run(0,6).reason=="bootstrap_calling_convention","stdcall accepted");
-        require(run(0,7).reason=="bootstrap_calling_convention","register corruption accepted");
-        const auto legacy=run(0,8); require(legacy.reason=="asi_return_verified" && !legacy.bootstrap.calls_armed && !legacy.bootstrap.stack_written,"legacy invoked exports");
-        require(run(0,9).reason=="bootstrap_lifecycle_verified","owner recovery");
-        require(run(0,10).reason=="loader_event_limit","budget ignored");
-        require(run(0,11).reason=="bootstrap_return_shape","post-call prefix drift ignored");
+        require(run(0)->reason=="bootstrap_lifecycle_verified","normal lifecycle");
+        require(run(1)->reason=="bootstrap_lifecycle_host_rejected","fixture host rejection");
+        for(int i:{2,3,4,5,6,7}) require(run(i)->reason=="bootstrap_status_mismatch","bad status accepted");
+        require(run(8)->reason=="bootstrap_output_overrun","overrun accepted");
+        require(run(9)->reason=="bootstrap_call_failed","busy accepted");
+        require(run(10)->reason=="entry_unexpected_exception","fault ignored");
+        const auto stalled=run(11); require(stalled->reason=="loader_wait_failed" || stalled->reason=="loader_timeout","stall ignored");
+        const auto actual_result=run(12); require(actual_result->reason=="bootstrap_lifecycle_host_rejected" &&
+            actual_result->bootstrap.calls[1].status.reason==SAEX_BOOTSTRAP_FILE_REJECTED,"real DLL unknown host failed");
+        for(int mode:{1,2,3,4}) require(run(0,mode)->reason=="bootstrap_invalid_spec","invalid spec accepted");
+        require(run(0,5)->reason=="bootstrap_export_shape","wrong prefix accepted");
+        require(run(0,6)->reason=="bootstrap_calling_convention","stdcall accepted");
+        require(run(0,7)->reason=="bootstrap_calling_convention","register corruption accepted");
+        const auto legacy=run(0,8); require(legacy->reason=="asi_return_verified" && !legacy->bootstrap.calls_armed && !legacy->bootstrap.stack_written,"legacy invoked exports");
+        require(run(0,9)->reason=="bootstrap_lifecycle_verified","owner recovery");
+        require(run(0,10)->reason=="loader_event_limit","budget ignored");
+        require(run(0,11)->reason=="bootstrap_return_shape","post-call prefix drift ignored");
         const auto framed=run(0,12);
-        require(framed.reason=="frame_target_samples_verified" && framed.frame_target.verified,"frame phases incomplete");
-        for(const auto& sample:framed.frame_target.samples) require(sample.attempted && sample.call_read && sample.target_read &&
-            sample.match && sample.thread_id==framed.last_event_thread_id,"frame sample missing");
-        require(framed.frame_target.samples[0].event_index==0 && framed.frame_target.samples[1].event_index>0 &&
-            framed.frame_target.samples[2].event_index>framed.frame_target.samples[1].event_index,"frame phase order");
-        for(int mode:{13,14}) { const auto r=run(0,mode); require(r.reason=="frame_invalid_spec" && !r.advanced,"bad frame recipe advanced"); }
-        const auto wrong=run(0,15); require(wrong.reason=="frame_create_sample_rejected" && !wrong.advanced &&
-            wrong.frame_target.samples[0].target_read,"wrong prefix advanced");
-        const auto inaccessible=run(0,16); require(inaccessible.reason=="frame_create_sample_rejected" &&
-            !inaccessible.frame_target.samples[0].target_read && !inaccessible.advanced,"non-executable target read");
-        const auto asi_drift=run(13); require(asi_drift.reason=="frame_asi_sample_rejected" && asi_drift.asi_verified &&
-            !asi_drift.bootstrap.stack_written && !asi_drift.frame_target.samples[2].attempted,"ASI target drift ignored");
-        const auto terminal_drift=run(14); require(terminal_drift.reason=="frame_terminal_sample_rejected" &&
-            terminal_drift.bootstrap.verified && !terminal_drift.frame_target.verified,"terminal target drift ignored");
-        require(!legacy.frame_target.samples[0].attempted && !legacy.frame_target.verified,"legacy frame mode leaked");
+        require(framed->reason=="frame_target_samples_verified" && framed->frame_target.verified,"frame phases incomplete");
+        for(const auto& sample:framed->frame_target.samples) require(sample.attempted && sample.call_read && sample.target_read &&
+            sample.match && sample.thread_id==framed->last_event_thread_id,"frame sample missing");
+        require(framed->frame_target.samples[0].event_index==0 && framed->frame_target.samples[1].event_index>0 &&
+            framed->frame_target.samples[2].event_index>framed->frame_target.samples[1].event_index,"frame phase order");
+        for(int mode:{13,14}) { const auto r=run(0,mode); require(r->reason=="frame_invalid_spec" && !r->advanced,"bad frame recipe advanced"); }
+        const auto wrong=run(0,15); require(wrong->reason=="frame_create_sample_rejected" && !wrong->advanced &&
+            wrong->frame_target.samples[0].target_read,"wrong prefix advanced");
+        const auto inaccessible=run(0,16); require(inaccessible->reason=="frame_create_sample_rejected" &&
+            !inaccessible->frame_target.samples[0].target_read && !inaccessible->advanced,"non-executable target read");
+        const auto asi_drift=run(13); require(asi_drift->reason=="frame_asi_sample_rejected" && asi_drift->asi_verified &&
+            !asi_drift->bootstrap.stack_written && !asi_drift->frame_target.samples[2].attempted,"ASI target drift ignored");
+        const auto terminal_drift=run(14); require(terminal_drift->reason=="frame_terminal_sample_rejected" &&
+            terminal_drift->bootstrap.verified && !terminal_drift->frame_target.verified,"terminal target drift ignored");
+        require(!legacy->frame_target.samples[0].attempted && !legacy->frame_target.verified,"legacy frame mode leaked");
         const auto scenarios=cases;
         DWORD before{},after{}; require(GetProcessHandleCount(GetCurrentProcess(),&before)!=0,"handles before");
-        for(int i=0;i<12;++i) require(run(i%2?12:0,12).bootstrap.verified,"warm lifecycle failure");
+        for(int i=0;i<12;++i) require(run(i%2?12:0,12)->bootstrap.verified,"warm lifecycle failure");
         require(GetProcessHandleCount(GetCurrentProcess(),&after)!=0 && before==after,"lifecycle handle leak");
         std::cout<<"PASS bootstrap lifecycle: "<<scenarios<<" scenarios and 12 warm cycles; handles "<<before<<" -> "<<after<<'\n';
         return 0;

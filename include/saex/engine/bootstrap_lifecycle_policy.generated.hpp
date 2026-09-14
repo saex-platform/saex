@@ -2,9 +2,9 @@
 #pragma once
 #include "saex/engine/asi_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_asi_policy_digest == "42947538ada61d7a163ff3a085c17b5218a8d702a7fe44445cfd2a2be154b1e8", "Bootstrap ASI drift");
+static_assert(reviewed_asi_policy_digest == "ac29aeefa1b2a2ccb54777a9c96ee40248f90b244c51e0587eca8912664407c7", "Bootstrap ASI drift");
 static_assert(bootstrap_call_sequence == std::array<std::uint32_t,8>{1,0,1,0,2,1,0,2});
-inline constexpr std::string_view reviewed_bootstrap_policy_id = "gta-sa.f01a00ce.windows-26200.bootstrap-lifecycle-v1";
-inline constexpr std::string_view reviewed_bootstrap_policy_digest = "cd6f7822e4916a1082ec502cc24e45915cefd0e78f5e17eb894655f17443948e";
-inline constexpr LoaderPinSpec reviewed_bootstrap_crypto_pin{LoaderOrigin::system_x86, "bcryptprimitives.dll", 501112ULL, {std::byte{0xc0}, std::byte{0xfb}, std::byte{0xa4}, std::byte{0x40}, std::byte{0x6b}, std::byte{0xf9}, std::byte{0xca}, std::byte{0x90}, std::byte{0x9f}, std::byte{0x6f}, std::byte{0x46}, std::byte{0x3f}, std::byte{0x08}, std::byte{0x18}, std::byte{0x9d}, std::byte{0x6e}, std::byte{0xb4}, std::byte{0x72}, std::byte{0x38}, std::byte{0xd7}, std::byte{0xbb}, std::byte{0x59}, std::byte{0x0d}, std::byte{0x58}, std::byte{0x34}, std::byte{0x4a}, std::byte{0xf8}, std::byte{0xca}, std::byte{0xdd}, std::byte{0x6b}, std::byte{0xda}, std::byte{0x8e}}};
+inline constexpr std::string_view reviewed_bootstrap_policy_id = "gta-sa.f01a00ce.windows-26200-9445.bootstrap-lifecycle-v1";
+inline constexpr std::string_view reviewed_bootstrap_policy_digest = "8bb3a30af35985c8b9d0f86612ec54a6d625d0b799739b395c124e38245f28d4";
+inline constexpr LoaderPinSpec reviewed_bootstrap_crypto_pin{LoaderOrigin::system_x86, "bcryptprimitives.dll", 501136ULL, {std::byte{0xdf}, std::byte{0xd2}, std::byte{0x9f}, std::byte{0x2c}, std::byte{0x1f}, std::byte{0x28}, std::byte{0x03}, std::byte{0x49}, std::byte{0x49}, std::byte{0xf0}, std::byte{0xa3}, std::byte{0x71}, std::byte{0x6a}, std::byte{0x99}, std::byte{0xf0}, std::byte{0x08}, std::byte{0x16}, std::byte{0xbd}, std::byte{0xa0}, std::byte{0xbf}, std::byte{0xfd}, std::byte{0x48}, std::byte{0xa5}, std::byte{0xa2}, std::byte{0x75}, std::byte{0x0b}, std::byte{0xe4}, std::byte{0x56}, std::byte{0x9e}, std::byte{0x7d}, std::byte{0x21}, std::byte{0xee}}};
 }

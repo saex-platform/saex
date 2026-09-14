@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.cd-stream-tables-v1",
+  "stage": "before-disk-query-call",
+  "readyPolicySha256": "44d7fb56bdba33282749287b1b3a78417c8d0d3d24549ed707c47d32955fe013",
+  "reviewDocument": "docs/development/d1-cd-stream-tables.md",
+  "targetRva": 27504,
+  "handlesRva": 5128208,
+  "namesRva": 5128344,
+  "diskIatRva": 4554944,
+  "bodyHex": "83ec1057b92000000033c0bf10408e00ba98408e00f3abeb078da42400000000c6020083c24081fa98488e007cf28d442408508d4c2410518d54240c528d44241c506a00ff15c0808500",
+  "diskImport": "GetDiskFreeSpaceA"
+}

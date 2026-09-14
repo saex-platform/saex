@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.cd-stream-channels-v1",
+  "stage": "before-stream-open",
+  "allocationPolicySha256": "c0a0bc0d4a617c5b02d44fe54f7639a79a7728fe4aa3ec67160fe8cd2aa31391",
+  "reviewDocument": "docs/development/d1-cd-stream-channels.md",
+  "bodyHex": "83c40c6a008bf8ff159c8085008b44241c8d0c40c1e104516a40c70594408e0000000000a390408e00ff15b88085006a0068f48a8500a3fc3f8e00e877fbffff",
+  "filename": "MODELS\\GTA3.IMG",
+  "channelCount": 5,
+  "channelStride": 48,
+  "eventLimit": 160,
+  "errorIatRva": 4554908,
+  "localIatRva": 4554936,
+  "pointerRva": 5128188,
+  "filenameRva": 4557556,
+  "openRva": 26544,
+  "errorThunkSlotRva": 532500,
+  "localThunkSlotRva": 528056,
+  "errorThunk": {
+    "rva": 85760,
+    "prefixHex": "ff2514200810cccccccccccccccccccc8bff558b",
+    "preferredBase": 268435456,
+    "highlowOffsets": [
+      2
+    ]
+  },
+  "errorImplementation": {
+    "rva": 401456,
+    "prefixHex": "8bff558bec64a1180000008b15209d3b4b8b4d08",
+    "preferredBase": 1260912640,
+    "highlowOffsets": [
+      13
+    ]
+  },
+  "localThunk": {
+    "rva": 116736,
+    "prefixHex": "8bff558bec5dff25b80e0810cccccccccccccccc",
+    "preferredBase": 268435456,
+    "highlowOffsets": [
+      8
+    ]
+  },
+  "localImplementation": {
+    "rva": 1325408,
+    "prefixHex": "8bff558bec6afe68d8222610686024171064a100",
+    "preferredBase": 268435456,
+    "highlowOffsets": [
+      8,
+      13
+    ]
+  },
+  "systemModules": [
+    {
+      "name": "kernel32.dll",
+      "bytes": 687472,
+      "sha256": "bafd9e061964642802d62f1eb694e7e4af60de739a8df1a492f90006dc5680f3"
+    },
+    {
+      "name": "kernelbase.dll",
+      "bytes": 2974168,
+      "sha256": "85ad413ff860898f9e511f2e63c0e30f7aed1275fd1fd44fa90801211d328253"
+    },
+    {
+      "name": "ntdll.dll",
+      "bytes": 1822400,
+      "sha256": "7e15bd30890e9bf93b47fc894a68b2445618ee7528eb39584a263b21e112f9df"
+    }
+  ]
+}

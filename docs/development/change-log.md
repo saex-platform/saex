@@ -1,12 +1,59 @@
 # Kaynak ve belge değişiklik kaydı
 
+## 14 Eylül 2026 — GitHub 0.1.40 ve teslim akışı
+
+[PR #11](https://github.com/saex-platform/saex/pull/11) tesliminde tamamlanan tüm kaynaklar korundu; eski publish dalıyla güncel main arasındaki fark, OS/policy exact byte'ları ve yeni davranışları koruyarak birleştirildi. Önceki CI runner/VS/Python düzeltmeleri geri taşındı. AGENTS ve workflow tamamlanan kesitlerin aynı teslimatta PR/yedi kontrol/squash ile yayımlanmasını ve temiz main'e dönüşü tanımlar. Ham kaynak/Git yedekleri alındı; [yayın raporu](github-publication.md) gerçek GTA ve yeni kaynak kontrollerini ayrı tutar. Ürün davranışı/ABI/otorite izni genişlemez.
+
+## Kod 0.1.40 / mimari v0.47 — 14 Eylül 2026
+
+Streaming kanal belleği için C++ API/CLI, parent-hash policy ve generated header eklendi. Dokuz evrede SetLastError/LocalAlloc gerçek thunk/implementation/return ilişkisi, 240 byte sıfırlama, global yayın ve parent allocation korunumu denetlenir. Üç native fixture, portable mutasyon corpus'u, sekiz policy testi ve CLI gate testi eklendi. Run-SAEX 13 kontrol/20 hash girdisiyle güncellendi; yeni terminal 0x406C34. C++ trace tüketicileri yeniden derlenir; bootstrap C ABI 1, OS pinleri, GNS/HTTPS ve SDK davranışı aynı. Kaldırılan özellik, veri migration'ı veya yeni runtime bağımlılığı yok. ADR-75, AC-90 alt kesiti ve component sahipleri aynı değişiklikte güncellendi. Native free/I/O/thread kapıları açık. [Ayrıntı ve sonuçlar](d1-cd-stream-channels.md).
+
+Nihai sonuç: x86 Debug/Release 58 native / 79 managed / 331 Python; yeni 2585 portable kontrol, 18 native senaryo, bir canary ve 12 warm; GTA 27/27, 14 pozitif, 22/22 child çıkışı, 141/141 girdi korunumu; iki PowerShell 5.1 raporu 13/13. Final 354 kaynak/config hash korunumu doğrulandı.
+
+## Kod 0.1.39 / mimari v0.46 — 14 Eylül 2026
+
+Gerçek hizalı streaming allocation için C++ model/API/CLI, strict parent-hash policy, CRT normal yol code reçeteleri, branch/SEH/ABI/metadata/hash denetimi, dört native fixture ve portable/negatif testler eklendi. Yeni modun 160 olay sınırı eski modların 128 sınırını değiştirmez. Run-SAEX allocation policy doğrulaması ve 12 sonuç kontrolüyle güncellendi. CLI dispatch'inde Debug stack taşması ayrı çağrı frame'leriyle giderildi; boş JSON raporu açık exit code verir. İlk scope cleanup taslağı executable'daki 0x82421F ile düzeltildi. C++ tüketicileri yeniden derlenir; C ABI 1, GNS/HTTPS ve OS pinleri aynı. Kaldırılan özellik, yeni runtime bağımlılığı veya veri migration'ı yok. Native free/streaming hazır iddiası yok. ADR-74, AC-90 alt kesiti ve component sahipleri birlikte güncellendi. [Kanıt ve açık işler](d1-cd-stream-allocation.md).
+
+Nihai sonuç: x86 Debug/Release 56 native/79 managed/322 Python; GTA 27/27, 14 allocation, 22/22 child çıkışı ve 140/140 girdi korunumu. PowerShell 5.1 iki rapor 12/12; final 346 kaynak/config hash'i aynı. CMake sürüm metadata'sı eşitlendi; Debug 216 artifact hash'i aynı kaldı. İlk başarısız denemeler son başarılı matristen ayrı tutulur.
+
+## Kod 0.1.38 / mimari v0.45 — 14 Eylül 2026
+
+Disk sorgusu ve allocation hazırlığı için ayrı C++ API/CLI, parent-hash policy/generator, BOOL/geometri kararı, dört native durak, guards ve negatif testler eklendi. Gerçek GTA ilk koşuda 0x406BF4'e ulaştı. API failure output'u kullanılmaz; mantıksal/fiziksel hizalama ayrılır. Run-SAEX en ileri moda taşındı, iki kontrol ve policy/probe digest eşleşmesi eklendi. C++ tüketicileri yeniden derlenir; C ABI 1, OS pinleri ve GNS/HTTPS aynı; kaldırma, dependency, veri migration'ı yok. İlk public method declaration ve generator import hataları düzeltildi; ilk derleme log'u saklandı. ADR-73, AC-90, component map ve sahip belgeler güncellendi. Final: x86 Debug/Release tam 54/79/313; GTA 27/27, 14 pozitif, 22/22 child ve 139/139 girdi; iki runner 11/11, x64 Debug 296 portable kontrol; 338 kaynak/config aynı. [Sözleşme ve nihai sonuç](d1-cd-stream-disk.md).
+
+## Kod 0.1.37 / mimari v0.44 — 14 Eylül 2026
+
+CdStreamInit tablo hazırlığı için ayrı C++ API/CLI, parent-bound policy/generator, 2.192-byte before/after kontrolü, iki checkpoint ve negatif testler eklendi. Run-SAEX varsayılanı en ileri doğrulanmış terminale taşındı; eski CLI sınırları korundu. Ghidra/Java/PyGhidra/bridge yalnız yerel araştırma bağımlılığı olarak kuruldu; version/source lock, bounded export/verify aracı ve offline negatif testler eklendi. 15 fonksiyon analizinde bir eksik root ve patched Open/Read gövdeleri açık bulundu. ReAgent agent/model pipeline'ı çalıştırılmadı. C++ yeniden derlenir; C ABI 1/GNS/OS pinleri aynı, kaldırma veya veri migration'ı yok. İlk fixture ad çakışması ve yanlış metin değiştirme kaynaklı iki derleme hatası düzeltildi; log'lar saklandı. ADR-72, AC-90 ve sahip belgeler birlikte güncellendi. Sonuç: GTA 60/60, 20 pozitif, 55/55 child ve 178/178 girdi; Release tam 52/79/304. Debug ilk 51/52 + bootstrap testinin heap onarımı 1/1 + kalan 79/304 kontrollerle birleşik doğrulandı. 330 kaynak/config hash'i aynı kaldı. İki PowerShell 5.1 raporu 9/9, x64 Debug portable suite geçti. [Native kanıt](d1-cd-stream-tables.md), [araç kararı](../references/ghidra-bridge.md).
+
+## Kod 0.1.36 / mimari v0.43 — 14 Eylül 2026
+
+CFileMgr::Initialise doğal dönüşüne kadar wrapper cleanup, unlock(7), SEH epilogue ve suffix akışı tek explicit izin/CLI altında tamamlandı. Dokuz checkpoint, bağımlı policy, API/stack/kilit/FS/caller/buffer denetimleri ve negatif testler eklendi. Yeni `fileManagerReadyObservation` nihai sonucu taşır; parent kayıtları checkpoint snapshot'ıdır. `tools/Run-SAEX.ps1` yedi dosyalı özel kopya ve çevrimdışı HTML/JSON sonucu üretir; orijinal oyun girdilerini değiştirmez. İlk iki derleyici hatası düzeltildi ve kayıtları korundu. ADR-71/AC-90, eşleme ve sahip belgeler güncellendi. C++ yeniden derlenir; C ABI 1/GNS/OS pinleri aynı, dependency/kaldırma/migration yok. x86 Debug/Release 50 native/79 managed; 285+2 ve 287 Python, x64 Debug portable suite geçti. GTA 58/58 matris, 20 tam dönüş ve 53/53 child çıkışı; Run-SAEX iki yapılandırmada 8/8 kontrol verdi. 319 source/config hash aynı kaldı. [Nihai kanıt](d1-file-manager-ready.md). D1/D2 açık.
+
+## Kod 0.1.35 / mimari v0.42 — 14 Eylül 2026
+
+Ayrı `run_cwd_return` / `--observe-cwd-return`, altı durak, native cookie checker eşitlik yolu ve helper LEAVE/RET gözlemi eklendi. Parent copy sonuçları korunur; `helperReturnAllowed/Verified` ve yeni JSON kaydı ayrıdır. Kaynak retired durumu, eski saved-EBX slotunun CALL ile değişmesi ve caller argümanları açık denetlenir. Strict parent-bound policy/generator, ABI/flags/range negatifleri, native canary/owner/warm ve CLI retleri eklendi. İlk CLI testindeki relative cwd için 2 beklentisi, mevcut `launch_directory_input`/1 sözleşmesine göre düzeltildi; üretim davranışı değişmedi. ADR-70/AC-90, eşleme ve sahip belgeler güncellendi. C++ yeniden derlenir; C ABI 1/GNS/otorite/OS pinleri aynı, kaldırma/dependency/migration yok. Dört Windows akışı ve GTA 56/56 matris geçti; 20 pozitif helper dönüşü, 51/51 child çıkışı doğrulandı. 309 kaynak/config hash'i aynı kaldı. Wrapper/unlock/SEH açık. [Kanıt ve kapsam](d1-cwd-return.md).
+
+## Kod 0.1.34 / mimari v0.41 — 14 Eylül 2026
+
+İlk tam testte saptanan gövde kontrolü marker sızıntısı, kontrolün owned child/marker runner'ına taşınmasıyla düzeltildi. İki tekrar temizliği ve ortak fixture için CTest resource lock eklendi; başarısız ilk koşu copy raporunda korunur.
+
+Ayrı `--observe-cwd-copy` ve `run_cwd_copy` izni, beş checkpoint, exact native strcpy gövdesi ve hedef/source/stack/SEH/kilit/cookie korunumları eklendi. Önceki query durağı korunur; copy dönüşünde argümanlar hâlâ stack üzerindedir. Strict parent-bound policy/generator, byte/ABI/guard negatifleri, native fixture/gövde kontrolü ve CLI retleri eklendi. ADR-69/AC-90, sahip belgeler/component map birlikte güncellendi. C++ yeniden derlenir; C ABI 1, OS pinleri, GNS/otorite aynı, yeni dependency/kaldırma/kalıcı migration yoktur. Dört Windows akışı ve gerçek GTA matrisi geçti: 20 pozitif kopya, 54/54 beklenen sonuç, 49/49 child çıkışı. 301 kaynak/config hash'i aynı kaldı. Argüman/helper/unlock/SEH dönüşü açık. [Kaynak ve doğrulama](d1-cwd-copy.md).
+
+## Kod 0.1.33 / mimari v0.40 — 14 Eylül 2026
+
+İlk GTA Debug kabul yolunda saptanan CLI stack overflow düzeltildi: büyük trace/hata kayıtları heap üzerinde yönetilir; stack rezervi ve gözlem izinleri büyütülmedi. Windows 26200.9445 için 26 sistem pini, API RVA/operand/HIGHLOW verileri ve 23 policy/header digest zinciri yenilendi. Modül kümesi, GTA native stage/terminal, C ABI 1 ve GNS/otorite aynı kaldı. Eski profil bu derlemede aktif değildir; otomatik fallback yoktur, yeniden derleme gerekir. Eski kaynak snapshot/hash ve runtime kanıtı korunur. Ancestor drift ve karma OS modülü ret testleri eklendi; ADR-68/AC-90 ve sahip belgeleri güncellendi. [Statik inceleme ve runtime sonuçları](d1-system-profile-9445.md).
+
+## Kod 0.1.32 / mimari v0.39 — 14 Eylül 2026
+
+`--observe-cwd-query`, strict JSON/generator ve yedi duraklı doğal directory API gözlemi eklendi. 260-byte local API buffer ile 128-byte CFileMgr hedefi ayrıdır; NUL/uzunluk/dizin eşleşmesi ve 126-byte suffix sınırı denetlenir. Stack/SEH/kilit/cookie/çevre korunumları ve hata nedenleri kaydedilir; eski acquire komutunun terminali korunur. C++ trace yeniden derlenir; C ABI 1/GNS/otorite değişmez, kaldırma/migration yoktur. ADR-67/AC-90 alt kapsamı ve tüm sahip belgeler güncellenir. Mevcut Windows dosyalarının eski pinlerden farklı olduğu saptandı; eski statik export'lar WinSxS hash eşleşmesiyle incelendi, OS pinleri gevşetilmedi. ReAgent isteğe bağlı araştırma aracı olarak [değerlendirildi](../references/reagent.md), kurulmadı/çalıştırılmadı. Build ve doğrulama ayrıntıları [query raporundadır](d1-cwd-query.md).
+
+
 ## 14 Eylül 2026 — 0.1.31 CI fixture düzeltmesi
 
-İlk hosted x86 Debug/Release koşusu, yerel Windows export adreslerini devralan 13 fixture grubunda reddedildi. Sistem export/HIGHLOW reçetelerini tutulan host PE dosyalarından okuyan test yardımcısı, beş canlı prefix karşılaştırması ve on bozuk metadata reddi eklendi; ilgili fixture alanları buna bağlandı. İkinci hosted HIGHLOW reddi sonrası exact prefix reçeteleri host modül tabanına normalleştirildi; normalleştirme eşitliği ve hatalı maskenin reddi eklendi. Üçüncü koşudaki GetLastError komut biçimi reddi sonrası x86 CI, Windows Server 2025 ortamına alındı; x64 Server 2022 ve tüm yedi required check korundu. Yeni runner VS 2026 taşıdığı için foundation script'ine açık generator/v143 seçeneği eklendi; yerel VS 2022 varsayılanı ve SDK lock'u korunur. Çoklu Python PATH eşleşmesi ilk Application yolu seçilerek düzeltildi. Üretim JSON/generated policy, ABI/otorite ve GTA destek kapsamı aynı kaldı. Sahip belgeleri/component map birlikte güncellendi; ayrıntılar [startup-return raporunda](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği), kontrol durumu [yayın raporunda](github-publication.md).
+İlk hosted x86 Debug/Release koşusu, yerel Windows export adreslerini devralan 13 fixture grubunda reddedildi. Sistem export/HIGHLOW reçetelerini tutulan host PE dosyalarından okuyan test yardımcısı, beş canlı prefix karşılaştırması ve on bozuk metadata reddi eklendi; ilgili fixture alanları buna bağlandı. İkinci hosted HIGHLOW reddi sonrası exact prefix reçeteleri host modül tabanına normalleştirildi; normalleştirme eşitliği ve hatalı maskenin reddi eklendi. Üretim JSON/generated policy, ABI/otorite ve GTA destek kapsamı aynı kaldı. Sahip belgeleri/component map birlikte güncellendi; ayrıntılar [startup-return raporunda](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği), kontrol durumu [yayın raporunda](github-publication.md).
 
 ## 14 Eylül 2026 — 0.1.14–0.1.31 kaynaklarının GitHub yayını
 
-Kullanıcının tüm birikmiş kaynakları yayımlama isteğiyle 0.1.31 / mimari v0.38 anlık görüntüsü [PR #10](https://github.com/saex-platform/saex/pull/10) ile yüklendi; ilk 394 dosya ve ek test yardımcısı birlikte teslim edildi. Kaynak/test/policy/generator, bütün sahip belgeleri ve güncel marka varlıkları tek PR kapsamındadır. Kaynak ZIP/manifest ve Git bundle yedekleri alındı; temiz checkout ve mevcut yedi hosted kontrol yayın kapısıdır. Bu kayıt yeni ürün davranışı, ABI/otorite değişimi veya migration eklemez. [Yayın raporu](github-publication.md) geçmiş gerçek GTA ve yeni kaynak CI kanıtını ayrı tutar.
+Kullanıcının tüm birikmiş kaynakları yayımlama isteğiyle 0.1.31 / mimari v0.38 anlık görüntüsü hazırlandı. Kaynak/test/policy/generator, bütün sahip belgeleri ve güncel marka varlıkları tek PR kapsamındadır. Kaynak ZIP/manifest ve Git bundle yedekleri alındı; temiz checkout ve mevcut yedi hosted kontrol yayın kapısıdır. Bu kayıt yeni ürün davranışı, ABI/otorite değişimi veya migration eklemez. [Yayın raporu](github-publication.md) geçmiş gerçek GTA ve yeni kaynak CI kanıtını ayrı tutar.
 
 ## Kod 0.1.31 / mimari v0.38 — 13 Eylül 2026
 
@@ -262,3 +309,25 @@ Kaldırılan ürün özelliği yoktur. “Yalnız Markdown çalışma dizini” 
 [Ayrı yaşam döngüsü sözleşmesi ve kanıtı](d1-bootstrap-lifecycle.md): aynı build'in üç denetlenmiş export'u sekiz sabit çağrıyla, ASI dönüşünden sonra çalıştırılır. Yığın veri yazımı ve EIP/ESP yönlendirmesi ayrı izindir; eski komutların durakları korunur. C ABI 1, engine profili, GNS/HTTPS ve otorite değişmedi. Dört yerel Windows akışı, 24 test senaryosu + 12 tekrar ve gerçek GTA 12/12 koşuda 96/96 dönüş geçti. N2/N3 ve oynanabilir D2 açık; geçmiş sürüm başlıkları o kesitin kanıtını anlatır.
 
 Export girişleri 20 byte'tır; PE32 HIGHLOW alanları metadata'dan tam dört byte olarak normalize edilir. Kısmi/çakışan fixup ve bilinmeyen tip reddedilir. Hiçbir prefix byte'ı karşılaştırmadan çıkarılmaz; C ABI 1 aynı kalır.
+
+## Kod 0.1.32 — Sonuç kaydı
+
+Dört Windows standart akışı geçti: x86 Debug/Release 43 native suite/79 managed/261 Python; x64 Debug/Release 20/79/190. Yeni 583 portable kontrol, 12 native senaryo, bir canary ve 12 warm başarılıdır. GTA query/acquire Debug/Release 4/4 beklenen OS profil reddi verdi; oyun süreci oluşturulmadı. 17 OS girdisi eski pinlerden farklı, 61/61 kontrol girdisi ve son 293 kaynak/config hash'i korundu. Gerçek GTA query pozitif kanıtı yoktur; yeni OS kabulü, copy/unlock/SEH ve D1/N3/D2 açık. [Ayrıntılı sonuç](d1-cwd-query.md).
+
+## 0.1.33 nihai kanıt
+
+Dört Windows akışı geçti: x86 43 native/79 managed/263 Python, x64 20/79/192. Yeni OS üzerinde gerçek GTA: 14 pozitif query, iki 127-byte ret, 50/50 matris, 41/41 child çıkışı. 293 kaynak/config hash'i korundu. Ayrıntılı ilk başarısızlık, düzeltme ve girdi/artifact kayıtları [profil raporunda](d1-system-profile-9445.md). Linux/hosted/N1 tekrar koşulmadı; sonraki doğal copy/unlock/SEH aşamaları açık.
+
+0.1.36 araç doğrulama düzeltmesi: Run-SAEX hash okuması .NET SHA256/FileStream kullanır; Windows PowerShell Get-FileHash modül keşfine bağlı değildir. UTF-8 BOM/konsol ve kısmi hata raporu ile Windows PowerShell 5.1 üzerinde Debug/Release pozitif akış ve eksik klasör/bilinmeyen exe retleri geçti. Native izin ve başarı koşulları değişmedi.
+
+## 0.1.37 — Bootstrap fixture stack regresyonu
+
+İlk tam Debug kontrolünde 51/52 suite geçti; bootstrap lifecycle fixture çalıştırıcısı **0xC00000FD (stack overflow)** ile çıktı. Ortak trace'e tablo snapshot'ları eklenince eski testteki çok sayıda değer olarak tutulan büyük sonuç ve ternary temporary x86 stack sınırını aştı. Test çalıştırıcısı sonuçları heap üzerinde tutacak ve tek dispatch return slot'u kullanacak şekilde düzeltildi. Test senaryoları, üretim stack reserve, native izinler ve doğrulamalar gevşetilmedi. Hata `cd-stream-bootstrap-failure.json` ve ilk tam Debug log'unda korunur; hedefli tekrar ve tam sonuçlar final kanıtta kaydedilir.
+
+## 0.1.31 GitHub kabul kaydı
+
+[PR #10](https://github.com/saex-platform/saex/pull/10) yedi zorunlu kontrolü geçerek main dalına birleştirildi. x86 hosted Windows Server 2025 / VS 2026 / v143, tek Python executable seçimi ve yayın envanterinin ayrıntıları [yayın raporunda](github-publication.md) korunur. 0.1.40 geliştirmesi bu güncel tabanla birleştirildi.
+
+## 14 Eylül 2026 — Linux fixture derleme düzeltmesi
+
+0.1.40 GitHub yayınında GCC strict uyarısı, file-manager portable testindeki tek satırlık döngü/terminator yazımını reddetti. Döngü gövdesi süslü parantezle açıklaştırıldı ve terminator ayrı satıra alındı; test koşulları, üretim davranışı ve strict -Werror aynı kaldı. İlk hosted ret [yayın raporunda](github-publication.md) tutulur.

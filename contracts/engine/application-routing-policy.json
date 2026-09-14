@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "gta-sa.f01a00ce.application-routing-v1",
   "stage": "before-game-initializer-call",
-  "dispatchPolicySha256": "6265420804ada87df4beae0fc034fcb0478ad408dd05d04e9173d6d02f681058",
+  "dispatchPolicySha256": "77662469d61f491223d64f12e4f4c5176c8a75d871090dd3dd5b6176e9fe3a1d",
   "reviewDocument": "docs/development/d1-application-routing.md",
   "initializer": {
     "callRva": 1305643,

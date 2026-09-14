@@ -2,9 +2,9 @@
 #pragma once
 #include "saex/engine/entry_policy.generated.hpp"
 namespace saex::engine {
-static_assert(reviewed_entry_policy_digest == "56328c7da0b0de6f3584e526b5fae3484634af927ce3a2cc8ace311112166cb2", "proxy policy entry drift");
-inline constexpr std::string_view reviewed_proxy_policy_id = "gta-sa.f01a00ce.windows-26200.proxy-return-v1";
-inline constexpr std::string_view reviewed_proxy_policy_digest = "20ff7fb664b56f3a43cded86faaa15743495e0cc1d9f17ccb675ccf6732fddcf";
+static_assert(reviewed_entry_policy_digest == "007e352551e021b4dd647866f9b58bb100a31a2be280134f6cf296b23f5453f1", "proxy policy entry drift");
+inline constexpr std::string_view reviewed_proxy_policy_id = "gta-sa.f01a00ce.windows-26200-9445.proxy-return-v1";
+inline constexpr std::string_view reviewed_proxy_policy_digest = "15adfca7cf644462ae99dc8dd9a7db3368d86cec0c8900a559d32bd43348109b";
 inline constexpr std::string_view reviewed_proxy_module = "vorbisfile.dll";
 inline constexpr ProxyStopSpec reviewed_proxy_spec{nullptr, 7520, 7136, 25624, 4555248, 7072};
 }

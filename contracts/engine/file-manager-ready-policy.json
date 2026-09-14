@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "gta-sa.f01a00ce.file-manager-ready-v1",
+  "stage": "after-file-manager-return",
+  "returnPolicySha256": "46e4f2c0b9ba2217ae1eb7d54927306e97c0f653ee04a0ee16105799b1ba1bdb",
+  "reviewDocument": "docs/development/d1-file-manager-ready.md",
+  "unlockRva": 4369682,
+  "iatRva": 4554984,
+  "epilogueRva": 4359963,
+  "wrapperHex": "83c40c8945e4834dfcffe8090000008b45e4e84e18ffffc3",
+  "cleanupHex": "6a07e83d3effff59c3",
+  "unlockHex": "558bec8b4508ff34c5c0318e00ff15e88085005dc3",
+  "epilogueHex": "8b4df064890d00000000595f5e5bc951c3",
+  "function": {
+    "rva": 341088,
+    "prefixHex": "8bff558bec83ec0853568b750857834608ff0f85",
+    "preferredBase": 1260912640,
+    "highlowOffsets": []
+  },
+  "systemModule": {
+    "name": "ntdll.dll",
+    "bytes": 1822400,
+    "sha256": "7e15bd30890e9bf93b47fc894a68b2445618ee7528eb39584a263b21e112f9df"
+  }
+}

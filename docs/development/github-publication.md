@@ -173,9 +173,53 @@ Yayın kısa ömürlü dal → PR → yedi zorunlu kontrol → squash merge akı
 
 [PR #10](https://github.com/saex-platform/saex/pull/10) için `432ac47130541672d9755fe97f5da3fa44380e62` kaynak anlık görüntüsü gönderildi. Temiz yerel Windows x86 Debug tam akışı geçti. [Build 34800439726](https://github.com/saex-platform/saex/actions/runs/34800439726) Linux x64 ve iki Windows x64 işinde geçti; iki Windows x86 işi 13 native grubun `startup_return_precondition_shape` reddiyle başarısız oldu. [Documentation ve Secret scan](https://github.com/saex-platform/saex/actions/runs/34800439729) geçti.
 
-Ortak [test reçetesi](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği), fixture sistem export alanlarını host PE metadata'sından kuracak şekilde düzeltildi. Üretim JSON/generated policy dosyaları korunur. Yerel ve hosted tekrar kayıtları aşağıdadır; en son commit'in kabul/birleştirme durumu [PR #10](https://github.com/saex-platform/saex/pull/10) üzerinde tutulur.
+Ortak [test reçetesi](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği), fixture sistem export alanlarını host PE metadata'sından kuracak şekilde düzeltildi. Üretim JSON/generated policy dosyaları korunur. Bu düzeltmenin yerel ve hosted tekrar sonuçları yayın kaydına eklenecektir.
 
 `7654a09` için temiz yerel x86 Debug tam akışı **41 native/79 managed/254 Python** ile geçti. [İkinci hosted build](https://github.com/saex-platform/saex/actions/runs/34802108937) beş kontrolün ardından x86 işlerinde `system unrelocated export contract` verdi. Exact prefix test reçeteleri için HIGHLOW host adres normalizasyonu eklendi; üretim kodu ve policy dosyaları yine değişmedi.
+
+## Kod 0.1.32 — Cwd query bağlantısı
+
+0.1.32 query kaynakları yerel geliştirmedir. Portable CI tanımı genişledi; bu çalışmada push/PR/merge veya hosted CI başlatılmadı. Önceki 0.1.31 hosted sonuçları bu yeni kaynağın doğrulaması değildir. [Sözleşme, kaynak ve güncel kanıt](d1-cwd-query.md).
+
+## 0.1.33 — Windows profil bağı
+
+[26200.9445 incelemesi](d1-system-profile-9445.md), bu bileşenin bağlı olduğu OS pinleri/API reçeteleri ve parent SHA-256 zincirini günceller. Bileşenin GTA durak/izin sınırı aynı kalır; önceki runtime sonuçları eski profil bağlamındadır. Yeni dosyalarla fixture ve gerçek GTA kanıtının kapsamı profil raporunda ayrıca izlenir. Eski OS pinlerine otomatik fallback yoktur; kaynak ve generated policy birlikte yeniden derlenir.
+
+## 0.1.34 — Doğal cwd copy bağı
+
+[Ayrı copy kesiti](d1-cwd-copy.md), query'den sonra native kontrol/CALL/dönüş ve gerçek hedef içerik kanıtını ekler. Önceki komutların terminali korunur; helper/unlock/SEH sökümü yeni izin kapsamına girmez. Source/guard, caller/SEH/kilit/cookie denetimleri ve yeni test/GTA kanıtının kapsamı ilgili rapordadır. C ABI 1, OS modül pinleri, GNS/otorite ve production kapıları aynı kalır; C++ observer yeniden derlenir.
+
+## 0.1.35 — Cwd helper dönüş bağı
+
+[Ayrı return kesiti](d1-cwd-return.md) copy sonrasındaki iki POP, cookie checker eşitliği ve doğal LEAVE/RET'i açar. Önceki terminal izinleri korunur; wrapper/unlock/SEH işlemleri henüz açılmaz. Kaynak stack ömrü, CALL ile değişen saved slot, hedef/caller/kilit/SEH ve hata retleri sözleşmede açıklanır. C++ trace yeniden derlenir; C ABI 1, OS pinleri, GNS/otorite ve production kapıları aynı kalır. Yeni fixture/gerçek GTA kanıtı ilgili raporda ayrı izlenir.
+
+## 0.1.36 — Dosya yöneticisinin tamamlanması
+
+0.1.36 kaynağına portable ready policy/suite, x86 fixture ve yerel Run-SAEX aracı eklendi. CI portable generator/test listesi güncellendi. Bu yerel geliştirme hosted CI veya yayın sonucu değildir; remote/push/release/deployment yapılmadı. [Sözleşme, kullanıcı komutu ve doğrulama](d1-file-manager-ready.md).
+
+## Kod 0.1.37 — Streaming tablo kesitiyle bağlantı
+
+[CdStream tablo sözleşmesi](d1-cd-stream-tables.md) ortak observer/CLI ve fixture zincirine ayrı bir üst mod ekler. Bu belgenin eski komut ve checkpoint sınırı korunur; yalnız `--observe-cd-stream-tables` tam manager dönüşünden sonra iki tablo döngüsünü ve disk argüman hazırlığını açar. Sonuç yeni `cdStreamTablesObservation` alanında izlenir; eski kayıtlar final durum değil önceki checkpoint snapshot'ıdır. C++ trace tüketicileri yeniden derlenir; C ABI 1, GNS, OS pinleri ve production IPC sınırı değişmez. Yeni portable/native testler ile eski mod regresyonları standart build'e dahildir; gerçek GTA ve platform bazındaki final kanıt ana raporda tutulur.
+
+Bu değişiklik yereldir; önceki hosted CI/yayın sonuçları 0.1.37 için tekrar kullanılamaz. Remote, push, deployment veya server restart yapılmadı.
+
+## Kod 0.1.38 — Disk sonucu ve allocation önkoşulu
+
+[Disk hazırlığı sözleşmesi](d1-cd-stream-disk.md) önceki native zincire ayrı `--observe-cd-stream-disk` modu ekler. BOOL başarısızsa dört output kullanılmadan ret; başarılı ve kabul edilen mantıksal geometride doğal bayrak/argüman hazırlığı, 0x406BF4 allocation CALL önünde doğrulanır. Eski modların terminal ve snapshot anlamı korunur. C++ trace tüketicileri yeniden derlenir; bootstrap C ABI 1, OS pinleri, GNS/HTTPS, network otoritesi ve sandbox kapsamı değişmez. Gerçek allocation, fiziksel hizalama, dosya okuma ve thread/renderer hazır kanıtı bu değişiklikten çıkarılamaz. Portable hata kararı ile native/gerçek GTA kanıtının ayrımı yeni raporun kabul tablosunda izlenir.
+
+Bu yerel değişiklik için remote/push/PR/hosted CI çalıştırılmadı; önceki yayın kanıtı yeni kod için tekrar kullanılamaz.
+
+## Kod 0.1.39 — Hizalı tamponun doğal dönüşü
+
+[Allocation sözleşmesi](d1-cd-stream-allocation.md) ayrı `--observe-cd-stream-allocation` API/CLI ile MallocAlign → CRT → HeapAlloc → back-pointer → 0x406BF9 doğal dönüşünü ekler. Heap modu/new-handler/SBH dalı yürütmeden önce denetlenir; NULL, taşma, metadata ve payload bütünlüğü guard'ları vardır. Eski alt modların terminalleri ve snapshot anlamı korunur; yeni mod 160, eskiler 128 olay üst sınırındadır. C++ trace tüketicileri yeniden derlenir; bootstrap C ABI 1, OS pinleri, GNS/HTTPS ve sandbox kapsamı değişmez. İlk gerçek GTA allocation geçti; güncel toplu kanıt yeni sözleşmede izlenir. Native free, I/O/thread, renderer ve D1/D2 hazır kabul edilmez.
+
+Bu kesit yereldir; remote, push, PR veya hosted CI çalıştırılmadı. Önceki yayın kanıtı 0.1.39 için yeniden kullanılmaz.
+
+## Kod 0.1.40 — Kanal belleği kesiti
+
+[Yeni sözleşme](d1-cd-stream-channels.md) `run_cd_stream_channels` / `--observe-cd-stream-channels` ile SetLastError ve LocalAlloc doğal yolunu, 5 × 48 sıfır byte ve global pointer kaydını ekler. Terminal 0x406C34, arşiv CALL önüdür. Önceki allocation/parent kayıtları kendi duraklarının snapshot anlamını korur; canlı tabloda yalnız kanal sayısı/etkin sayı DWORD çifti değişebilir. C++ trace tüketicileri yeniden derlenir; C ABI 1 ve mevcut OS pinleri aynıdır. Allocation ve yeni mod 160, daha eski modlar 128 olay sınırındadır. Native free, dosya açma/okuma, thread, renderer ve D1/D2 kapıları açıktır. Güncel test ve GTA kanıtı yeni sözleşmede tutulur.
+
+Bu değişiklik yereldir; remote/push/PR veya hosted CI çalıştırılmadı.
 
 [Üçüncü hosted koşuda](https://github.com/saex-platform/saex/actions/runs/34802632385) önceki startup zinciri geçti; dokuz x86 grup Server 2022'nin farklı GetLastError komut biçiminde reddedildi. Yerelde son adres normalizasyonu ile 41/41 native grup geçti. x86 işleri, GitHub'ın [Windows Server 2025 görüntüsüne](https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md) taşındı; x64 Server 2022 işleri korundu. Hiçbir test/required check kaldırılmadı, üretim kontrolü gevşetilmedi. Yeni runner sonucu PR #10 kontrollerinde ayrıca izlenir.
 
@@ -190,3 +234,17 @@ Yerel temiz checkout'ta ilk fixture düzeltmesi 41 native/79 managed/254 Python 
 Organizasyon profili banner'ı [.github PR #1](https://github.com/saex-platform/.github/pull/1) ile ana kaynak deposunun canonical SVG'sine bağlandı; yinelenen profil görseli artık gösterilmez. Yayın sırasında yeniden başlayan cwd-query geliştirmesi bu 0.1.31 anlık görüntüsünden ayrıdır ve kaynak çalışma alanında korunur. Bu rapor yeni GTA çalıştırması veya oynanabilir binary release iddiası taşımaz.
 
 VS 2026/v143 configure aşaması [sonraki koşuda](https://github.com/saex-platform/saex/actions/runs/34803447972) geçti; Python keşfi iki executable yolunu birleştirdiği için FindPython3 reddetti. Foundation script PATH önceliğindeki ilk Application sonucunu seçer; WindowsApps alias'ı ikinci yol olarak CMake'e eklenmez.
+
+## Kod 0.1.40 tam eşitleme — 14 Eylül 2026
+
+Yerel kod 0.1.40 / mimari v0.47, eski publish/0.1.31 dalında main'in dört CI/doküman commit'ini almadan ilerlemişti. Kaynakların tamamı yeni codex dalında korundu; güncel main birleştirilerek x86 Windows Server 2025/VS 2026/v143 ve tek Python executable düzeltmeleri, yeni 0.1.32–0.1.40 kaynak/test/policy/generator/araştırma/kanıt belgeleriyle birlikte taşındı. 475 dosyalık ham kaynak ZIP/SHA-256 manifest ve tam Git bundle yedeği alındı; binary/oyun dosyası yok. İlk geçmiş sır taraması temizdir.
+
+Sıfır OS giriş noktası/host fixture metadata ve eski Windows reddi kuralları korunur. Üretim 26200.9445 profil güncellemesi 0.1.33'ün açık incelemesine aittir; bu yayın otomatik bilinmeyen OS desteği eklemez. Önceki gerçek GTA kanıtları kendi raporlarıyla sınırlıdır. Yeni temiz checkout/hosted sonuçları PR kabul kaydıyla ayrı izlenir. AGENTS/workflow, tamamlanan kesitleri aynı teslimatta yayımlamayı ve temiz güncel main'e dönmeyi zorunlu kılar.
+
+0.1.40 [ilk hosted build](https://github.com/saex-platform/saex/actions/runs/34841308859), Linux portable file-manager testindeki misleading-indentation uyarısını -Werror ile reddetti. Test döngüsünün gövdesi ve terminator yazımı açıklaştırıldı; compiler kontrolü korunur.
+
+### 0.1.40 teslim ve nihai kabul bağlantıları
+
+[PR #11](https://github.com/saex-platform/saex/pull/11), 475 kaynak dosyasını ve güncel geliştirme kurallarını aynı teslimatta taşır. [Yedi zorunlu kontrol](https://github.com/saex-platform/saex/pull/11/checks) en son head için değerlendirilir; [PR kabul kaydı](https://github.com/saex-platform/saex/pull/11) squash commit ve birleştirme zamanını gösterir. Yalnız bu head başarılıysa birleştirilir. Yerel main, çalışma alanı temizken GitHub main ile ff-only eşitlenir; eski publish dalı teslimin açık dalı olarak bırakılmaz. Tam kaynak/Git yedeği ve final GitHub blob karşılaştırma makbuzu yerel out/github-publication altında tutulur.
+
+0.1.40 gerçek GTA kanıtı d1-cd-stream-channels raporundaki artifact/OS sınırındadır. Yayın doğrulaması GTA çalıştırmaz; yeni hosted başarı üretim OS pinlerini genişletmez. İlk Linux uyarısı üstte korunur ve uyarıyı kapatarak geçilmiş sayılmaz.

@@ -1,6 +1,6 @@
 # SAEX dokümantasyonu
 
-Kod 0.1.31 / mimari v0.38: [CRT mevcut kilidi alma ve dönüş](development/d1-cwd-acquire.md) özel GTA kopyasında 12/12 koşuda doğrulandı. Pencere/renderer ve multiplayer henüz hazır değil.
+Kod 0.1.40 / mimari v0.47: [streaming kanal belleğinin oluşturulması](development/d1-cd-stream-channels.md). Run-SAEX 13 kontrolle 5 × 48 sıfır byte ve global kaydı doğrular; CdStreamOpen çağrısı önünde durur. [Ghidra bridge](references/ghidra-bridge.md) kaydı mevcut native kodla karşılaştırıldı. Arşiv I/O, thread, doğal bellek bırakma, CPad ve renderer açık; D1 sürüyor.
 
 SAEX — San Andreas Extended. Belgeler Türkçedir; API ve kaynak kimlikleri İngilizcedir. Önce **uygulama durumu**, ardından ilgili normatif sözleşme okunmalıdır.
 
@@ -74,3 +74,17 @@ Ayrı event-dispatch modu, instance dönüşünden doğal olay dağıtıcısı C
 ## Kod 0.1.31 bağlantısı
 
 `--observe-cwd-acquire` mevcut/unowned lock(7) nesnesi için doğal dal, admitted ntdll API entry/return ve CRT selector dönüşünü açar; 0x836EA4 terminalinde durur. [Sözleşme ve sonuç](development/d1-cwd-acquire.md). Beş durakta object/slot/84-byte caller/SEH korunumu ve API sonrası thread sahipliği doğrulanır. x86 24-byte kritik bölüm düzeni pinned Windows uygulamasına aittir; VOID dönüşte EAX başarı kodu sayılmaz. Heap veya aynı GTA image nesnesi için sınır/koruma denetimi vardır. Üst modda branch/criticalSectionCallAllowed=true, acquired readback ile ayrıdır; lazy/directory/unlock kapalı kalır. Önceki lock terminali korunur; kilit tutulurken bütün owned child kapatılır, observer veri/TEB/context rollback yapmaz. C++ trace yeniden derlenir; C ABI 1/GNS/otorite/IPC aynı, dependency/kaldırma/kalıcı migration yoktur. Cwd/SEH/manager dönüşü ve N2/N3/D1/D2 açıktır.
+
+## Kod 0.1.32 bağlantısı
+
+[Cwd sorgusu ve kopyalama önkoşulu](development/d1-cwd-query.md), Windows fixture doğrulaması ve güncel OS profilinde GTA kabul reddini ayrı kaydeder. [ReAgent incelemesi](references/reagent.md) isteğe bağlı native araştırma aracının rolünü açıklar; kurulum veya runtime kullanım kanıtı değildir.
+
+## Güncel D1 çalıştırma kesiti — 0.1.36
+
+[Dosya yöneticisinin tam dönüşü ve Run-SAEX](development/d1-file-manager-ready.md): tek komutla gerçek GTA başlangıç alt kesiti, çevrimdışı HTML/JSON raporu ve kalan iş sınırları.
+
+## Kod 0.1.37
+
+[Streaming tablo hazırlığı](development/d1-cd-stream-tables.md) · [Ghidra bridge kurulumu ve kullanımı](references/ghidra-bridge.md). Native izin ve static araştırma kanıtı ayrı izlenir.
+
+Güncel D1 kesiti: [0.1.40 streaming kanal belleği](development/d1-cd-stream-channels.md); arşiv açma, okuma ve thread yaşam döngüsü sonraki kapılardır.

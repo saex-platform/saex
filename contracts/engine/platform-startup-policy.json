@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "gta-sa.f01a00ce.windows-26200.platform-startup-v1",
+  "id": "gta-sa.f01a00ce.windows-26200-9445.platform-startup-v1",
   "stage": "before-system-parameter-call",
-  "applicationPolicySha256": "d683a244ece6bcfeffcb78f461daeb1232b6fd7a33c6e7f7055fdbdb8bd5bca9",
+  "applicationPolicySha256": "058b5def00081ec2292c92d32173c3c53956663b78b1116138d892963be08800",
   "reviewDocument": "docs/development/d1-platform-startup.md",
   "prologueHex": "81ec84000000536a0233db53536801200000c644241701",
   "callRva": 3442471,
@@ -10,12 +10,12 @@
   "returnPrefixHex": "e8aee1ffff85c0750f536a18e82214ed",
   "systemModule": {
     "name": "user32.dll",
-    "bytes": 1916288,
-    "sha256": "b3cc6f999873061683021abd4aeea6551f0a56a642c6f90c77744e10488248d9"
+    "bytes": 1972624,
+    "sha256": "bff75906f4abcc050cf85e38e20090ea0edf7dc33e0ed60cb74cf9e1bc007527"
   },
   "function": {
-    "rva": 746928,
-    "prefixHex": "6a1068f8e10b10e828c6faff8365e400e8ecd6f6",
+    "rva": 800128,
+    "prefixHex": "6a1068e8b10c10e854cdfaff8365e400e86c0bf6",
     "preferredBase": 268435456,
     "highlowOffsets": [
       3
