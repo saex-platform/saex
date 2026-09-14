@@ -76,6 +76,18 @@ BootstrapExportSpec system_export(const Fixture& image, std::string_view wanted)
     return result;
 }
 
+BootstrapExportSpec system_absolute_export(const Fixture& image, const wchar_t* module, std::string_view name) {
+    auto result = system_export(image, name);
+    const auto base = reinterpret_cast<std::uintptr_t>(GetModuleHandleW(module));
+    require(base && base <= UINT32_MAX, "system absolute module already loaded");
+    std::array<std::byte,20> normalized{};
+    require(bootstrap_export_prefix(result, static_cast<DWORD>(base), normalized), "system absolute normalization");
+    // Exact-prefix observers receive an address-specific fixture recipe. The
+    // child's pinned mapping/code checks still reject a different relocated body.
+    result.prefix = normalized; result.preferred_base = static_cast<DWORD>(base); result.highlow_mask = 0;
+    return result;
+}
+
 struct SystemFixtureExports {
     Fixture kernel32, kernelbase, ntdll;
     BootstrapExportSpec protect, startup, last_error, create_event, enter_critical_section;
@@ -85,8 +97,9 @@ struct SystemFixtureExports {
           kernelbase((directory + L"\\kernelbase.dll").c_str(), true),
           ntdll((directory + L"\\ntdll.dll").c_str(), true, true),
           protect(system_export(kernel32, "VirtualProtect")), startup(system_export(kernel32, "GetStartupInfoA")),
-          last_error(system_export(kernel32, "GetLastError")), create_event(system_export(kernelbase, "CreateEventA")),
-          enter_critical_section(system_export(ntdll, "RtlEnterCriticalSection")) {
+          last_error(system_absolute_export(kernel32, L"kernel32.dll", "GetLastError")),
+          create_event(system_absolute_export(kernelbase, L"kernelbase.dll", "CreateEventA")),
+          enter_critical_section(system_absolute_export(ntdll, L"ntdll.dll", "RtlEnterCriticalSection")) {
         create_thunk_rva = system_export_rva(kernel32, "CreateEventA", 6);
         const auto thunk = kernel32.at<std::array<std::byte,6>>(create_thunk_rva);
         require(thunk[0] == std::byte{0xff} && thunk[1] == std::byte{0x25}, "system CreateEventA thunk");
@@ -94,13 +107,16 @@ struct SystemFixtureExports {
         require(operand >= kernel32.layout.image_base, "system CreateEventA operand");
         create_thunk_slot_rva = operand - kernel32.layout.image_base;
         require(raw_offset(kernel32.layout, create_thunk_slot_rva, 4).has_value(), "system CreateEventA slot");
-        // These observer contracts compare all 20 bytes without relocation.
-        require(!last_error.highlow_mask && !create_event.highlow_mask && !enter_critical_section.highlow_mask,
-            "system unrelocated export contract");
     }
 };
 
 [[maybe_unused]] void test_system_fixture_exports(SystemFixtureExports& system) {
+    const auto absolute = system_absolute_export(system.kernel32, L"kernel32.dll", "VirtualProtect");
+    std::array<std::byte,20> normalized{};
+    require(bootstrap_export_prefix(system.protect, absolute.preferred_base, normalized) &&
+        !absolute.highlow_mask && absolute.prefix == normalized, "system absolute export recipe");
+    auto malformed = system.protect; malformed.highlow_mask = 1U << 19;
+    require(!bootstrap_export_prefix(malformed, absolute.preferred_base, normalized), "system invalid absolute relocation accepted");
     for (const auto pair : {std::pair{L"kernel32.dll", &system.protect}, {L"kernel32.dll", &system.startup},
             {L"kernel32.dll", &system.last_error}, {L"kernelbase.dll", &system.create_event}, {L"ntdll.dll", &system.enter_critical_section}}) {
         const auto base = reinterpret_cast<std::uintptr_t>(GetModuleHandleW(pair.first));

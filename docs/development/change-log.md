@@ -2,7 +2,7 @@
 
 ## 14 Eylül 2026 — 0.1.31 CI fixture düzeltmesi
 
-İlk hosted x86 Debug/Release koşusu, yerel Windows export adreslerini devralan 13 fixture grubunda reddedildi. Sistem export/HIGHLOW reçetelerini tutulan host PE dosyalarından okuyan test yardımcısı, beş canlı prefix karşılaştırması ve on bozuk metadata reddi eklendi; ilgili fixture alanları buna bağlandı. Üretim JSON/generated policy, ABI/otorite ve GTA destek kapsamı aynı kaldı. Sahip belgeleri/component map birlikte güncellendi; ayrıntılar [startup-return raporunda](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği), kontrol durumu [yayın raporunda](github-publication.md).
+İlk hosted x86 Debug/Release koşusu, yerel Windows export adreslerini devralan 13 fixture grubunda reddedildi. Sistem export/HIGHLOW reçetelerini tutulan host PE dosyalarından okuyan test yardımcısı, beş canlı prefix karşılaştırması ve on bozuk metadata reddi eklendi; ilgili fixture alanları buna bağlandı. İkinci hosted HIGHLOW reddi sonrası exact prefix reçeteleri host modül tabanına normalleştirildi; normalleştirme eşitliği ve hatalı maskenin reddi eklendi. Üretim JSON/generated policy, ABI/otorite ve GTA destek kapsamı aynı kaldı. Sahip belgeleri/component map birlikte güncellendi; ayrıntılar [startup-return raporunda](d1-startup-return.md#14-eylül-2026--windows-fixture-taşınabilirliği), kontrol durumu [yayın raporunda](github-publication.md).
 
 ## 14 Eylül 2026 — 0.1.14–0.1.31 kaynaklarının GitHub yayını
 
